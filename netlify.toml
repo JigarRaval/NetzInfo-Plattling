@@ -1,0 +1,63 @@
+# ============================================================================
+# Netlify builds and serves the FRONTEND only.
+#
+# This project also has an Express backend (API, sessions, the JSON store and
+# the 30-minute scheduler). Netlify cannot run it: its functions are
+# stateless and have no writable disk, so sessions, the database and the
+# timer would all break. Deploy the backend somewhere that runs a normal Node
+# process - Render, Railway, Fly.io or a municipal server - and point the
+# proxy below at it.
+#
+# With the proxy in place the browser keeps calling /api on its own origin,
+# so there is no CORS to configure and no API address baked into the bundle.
+# ============================================================================
+
+[build]
+  base = "client"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# ---------------------------------------------------------------- the API --
+# REPLACE the host below with your backend address.
+[[redirects]]
+  from = "/api/*"
+  to = "https://YOUR-BACKEND.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/feed.xml"
+  to = "https://YOUR-BACKEND.onrender.com/feed.xml"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/widget"
+  to = "https://YOUR-BACKEND.onrender.com/widget"
+  status = 200
+  force = true
+
+# ------------------------------------------------------- the single page --
+# Everything else is the React app; hash routing still needs index.html.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# ------------------------------------------------------------- hardening --
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    Permissions-Policy = "geolocation=(self), microphone=(self), camera=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+# The service worker must never be cached, or an update never arrives.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
