@@ -28,10 +28,12 @@
   force = true
 
 # React single-page application fallback. Keep this after the proxy rules.
+# force=false ensures existing files (JS, CSS, images) are served directly.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = false
 
 # Security headers.
 [[headers]]
@@ -47,3 +49,9 @@
   for = "/sw.js"
   [headers.values]
     Cache-Control = "no-cache"
+
+# Ensure JavaScript files have correct MIME type.
+[[headers]]
+  for = "/assets/*.js"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
