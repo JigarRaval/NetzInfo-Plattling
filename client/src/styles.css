@@ -138,6 +138,16 @@ a { color: var(--brand-2); text-underline-offset: 2px; }
 
 .header-tools { margin-left: auto; display: flex; align-items: center; gap: 6px; }
 
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.header-user:hover {
+  opacity: 0.8;
+}
 .header-user-avatar {
   width: 36px;
   height: 36px;
@@ -149,11 +159,18 @@ a { color: var(--brand-2); text-underline-offset: 2px; }
   justify-content: center;
   font-size: var(--text-md);
   font-weight: 700;
-  cursor: pointer;
-  transition: opacity 0.2s;
+  flex-shrink: 0;
 }
-.header-user-avatar:hover {
-  opacity: 0.8;
+.header-user-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+@media (max-width: 768px) {
+  .header-user-name {
+    display: none;
+  }
 }
 
 .notification-wrapper {
@@ -170,6 +187,18 @@ a { color: var(--brand-2); text-underline-offset: 2px; }
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
   z-index: 100;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .notification-header {
@@ -527,7 +556,7 @@ input[type='range'] { width: 100%; accent-color: var(--brand-2); height: 34px; }
 /* --- the interactive map under the captured position ------------------- */
 .picker { margin: 12px 0 8px; }
 .picker-map {
-  width: 100%; height: 230px; border: 1px solid var(--border);
+  width: 100%; min-height: 230px; height: 230px; border: 1px solid var(--border);
   border-radius: var(--radius-sm); background: var(--surface-3); overflow: hidden;
   /* the map must stay below the header and the toast */
   z-index: 0;

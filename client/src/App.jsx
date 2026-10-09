@@ -244,8 +244,11 @@ export default function App() {
           <div className="header-tools">
             {/* Current user indicator */}
             {worker && (
-              <div className="header-user-avatar" title={`${worker.name} · ${t("lg_out")}`}>
-                {worker.name.charAt(0).toUpperCase()}
+              <div className="header-user" title={t("lg_out")}>
+                <div className="header-user-avatar">
+                  {worker.name.charAt(0).toUpperCase()}
+                </div>
+                <span className="header-user-name">{worker.name}</span>
               </div>
             )}
 
@@ -266,9 +269,9 @@ export default function App() {
             <div className="notification-wrapper">
               <button
                 className={pushOn ? "iconbtn on" : "iconbtn"}
-                onClick={() => {
+                onClick={async () => {
                   if (!pushOn) {
-                    turnOnPush();
+                    await turnOnPush();
                   } else {
                     setShowNotifications(!showNotifications);
                   }
