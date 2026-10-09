@@ -39,7 +39,7 @@ export default function Home({
     (i) => i.status !== "resolved" && i.publishedAt
   );
   const resolved = incidents.filter((i) => i.status === "resolved");
-  const displayedResolved = showAllHistory ? resolved : resolved.slice(0, 4);
+  const displayedResolved = showAllHistory ? resolved : resolved.slice(0, 10);
   const waiting = drafts.filter((d) => d.status === "draft").length;
 
   /** One press: mark the outage as fixed, write the all-clear, send it. */
@@ -207,7 +207,7 @@ export default function Home({
               />
             ))}
           </div>
-          {resolved.length > 4 && (
+          {resolved.length > 10 && (
             <Button
               variant="ghost"
               size="sm"

@@ -191,8 +191,8 @@ export default function App() {
     );
   }
 
-  // The PIN screen replaces everything else until the device has a session.
-  if (authRequired && !signedIn) {
+  // Always require login to access the application
+  if (!signedIn) {
     return (
       <Login
         t={t}
