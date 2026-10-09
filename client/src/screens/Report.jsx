@@ -760,7 +760,7 @@ export default function Report({
             </Field>
 
             <Field
-              label={`� ${t("rp_radius")}: ${(radiusMeters / 1000).toFixed(1)} km`}
+              label={`📏 ${t("rp_radius")}: ${(radiusMeters / 1000).toFixed(1)} km`}
               htmlFor="radius"
             >
               <input
