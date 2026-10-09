@@ -235,7 +235,7 @@ export default function App() {
             <LogoMark />
             <span className="logo-text">
               <span className="logo-name">
-                Netz<em>Info</em>
+                Stadtwerke Plattling
               </span>
               <span className="logo-sub">{t("app_tagline")}</span>
             </span>

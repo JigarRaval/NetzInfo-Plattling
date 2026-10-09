@@ -50,7 +50,7 @@ export default function Login({ t, workers = [], onDone }) {
       <div className="login-box">
         <LogoMark size={54} />
         <h1 className="login-title">
-          Netz<em>Info</em>
+          Stadtwerke Plattling
         </h1>
         <p className="login-sub">{t("lg_sub")}</p>
 
