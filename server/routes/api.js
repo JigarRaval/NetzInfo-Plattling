@@ -38,6 +38,20 @@ import { config } from "../config.js";
 
 export const api = express.Router();
 
+/**
+ * GET /api/geocode/reverse?lat=&lng= - the street behind a GPS position.
+ * Answers 200 with null when the lookup is unavailable; a missing street is
+ * never treated as an error.
+ * This endpoint is public (no auth required) as it's only a lookup service.
+ */
+api.get("/geocode/reverse", async (req, res) => {
+  const place = await reverseGeocode(
+    Number(req.query.lat),
+    Number(req.query.lng)
+  );
+  res.json({ place });
+});
+
 /* -------------------------------------------------------------------- login
  * Reading stays open (the widget and the feed need that). Everything that
  * changes or sends something requires a session - see lib/auth.js.
@@ -81,19 +95,6 @@ api.get("/auth/state", (req, res) => {
     workers: workerList(), // names only, never the PINs
     worker: req.worker || null,
   });
-});
-
-/**
- * GET /api/geocode/reverse?lat=&lng= - the street behind a GPS position.
- * Answers 200 with null when the lookup is unavailable; a missing street is
- * never treated as an error.
- */
-api.get("/geocode/reverse", async (req, res) => {
-  const place = await reverseGeocode(
-    Number(req.query.lat),
-    Number(req.query.lng)
-  );
-  res.json({ place });
 });
 
 /* ------------------------------------------------------------ push notices */
