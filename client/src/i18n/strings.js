@@ -9,10 +9,10 @@
 export const STRINGS = {
   /* ------------------------------------------------------------ branding */
   app_name: {
-    de: "NetzInfo Plattling",
-    en: "NetzInfo Plattling",
-    fr: "NetzInfo Plattling",
-    es: "NetzInfo Plattling",
+    de: "Stadtwerke Plattling",
+    en: "Stadtwerke Plattling",
+    fr: "Stadtwerke Plattling",
+    es: "Stadtwerke Plattling",
   },
   app_tagline: {
     de: "Störungsmeldungen der Stadtwerke",

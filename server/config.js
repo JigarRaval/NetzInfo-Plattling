@@ -148,7 +148,7 @@ export const config = {
     // Nominatim asks every application to identify itself.
     userAgent:
       process.env.GEOCODING_AGENT ||
-      "NetzInfo-Plattling/1.0 (municipal outage tool)",
+      "Stadtwerke-Plattling/1.0 (municipal outage tool)",
   },
 
   // --- Automatic updates for long outages ---------------------------------

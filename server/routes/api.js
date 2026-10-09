@@ -113,7 +113,7 @@ api.get("/health", (req, res) => {
   const db = all();
   res.json({
     ok: true,
-    app: "netzinfo",
+    app: "stadtwerke",
     version: "2.0.0",
     time: nowIso(),
     counts: {

@@ -71,18 +71,18 @@ async function sendUpdate(incident) {
   await publishEverywhere(current, findById("drafts", draft.id), {
     auto: true,
   });
-  console.log(`[netzinfo] automatic update sent for ${current.id}`);
+  console.log(`[stadtwerke] automatic update sent for ${current.id}`);
 }
 
 /** Start the timer. Called once when the server boots. */
 export function startScheduler() {
   if (!config.autoUpdate.enabled) {
-    console.log("[netzinfo] automatic updates are switched off");
+    console.log("[stadtwerke] automatic updates are switched off");
     return;
   }
 
   console.log(
-    `[netzinfo] automatic updates every ${config.autoUpdate.everyMinutes} minutes`
+    `[stadtwerke] automatic updates every ${config.autoUpdate.everyMinutes} minutes`
   );
 
   // Checking once a minute is accurate enough and costs nothing.
@@ -91,7 +91,7 @@ export function startScheduler() {
       try {
         await sendUpdate(incident);
       } catch (error) {
-        console.error("[netzinfo] automatic update failed:", error.message);
+        console.error("[stadtwerke] automatic update failed:", error.message);
       }
     }
   }, 60 * 1000);

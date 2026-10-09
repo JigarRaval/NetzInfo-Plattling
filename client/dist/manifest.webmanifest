@@ -1,6 +1,6 @@
 {
-  "name": "NetzInfo Plattling",
-  "short_name": "NetzInfo",
+  "name": "Stadtwerke Plattling",
+  "short_name": "Stadtwerke",
   "description": "Störungskommunikation der Stadtwerke Plattling",
   "start_url": "/",
   "display": "standalone",

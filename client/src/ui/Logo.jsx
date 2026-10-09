@@ -10,14 +10,14 @@ import React from 'react';
 
 export function LogoMark({ size = 38 }) {
   return (
-    <svg className="logo-mark" width={size} height={size} viewBox="0 0 64 64" role="img" aria-label="NetzInfo">
+    <svg className="logo-mark" width={size} height={size} viewBox="0 0 64 64" role="img" aria-label="Stadtwerke Plattling">
       <defs>
-        <linearGradient id="netzinfo-logo" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id="stadtwerke-logo" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#1b74b8" />
           <stop offset="1" stopColor="#0a2e52" />
         </linearGradient>
       </defs>
-      <rect width="64" height="64" rx="15" fill="url(#netzinfo-logo)" />
+      <rect width="64" height="64" rx="15" fill="url(#stadtwerke-logo)" />
       {/* a network ring: the four utilities connected by one system */}
       <circle cx="32" cy="32" r="22" fill="none" stroke="#ffffff" strokeOpacity=".3" strokeWidth="2" />
       {/* the bolt: the moment something fails */}

@@ -6,7 +6,7 @@
  * never cached: outage information must always be current.
  */
 
-const CACHE = "netzinfo-v3";
+const CACHE = "stadtwerke-v1";
 const SHELL = ["/", "/index.html", "/icon.svg", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
@@ -51,7 +51,7 @@ self.addEventListener("fetch", (event) => {
  * the application is closed, and tapping it opens the app.
  */
 self.addEventListener("push", (event) => {
-  let data = { title: "NetzInfo Plattling", body: "", url: "/" };
+  let data = { title: "Stadtwerke Plattling", body: "", url: "/" };
   try {
     data = { ...data, ...event.data.json() };
   } catch {
@@ -63,7 +63,7 @@ self.addEventListener("push", (event) => {
       body: data.body,
       icon: "/icon.svg",
       badge: "/icon.svg",
-      tag: "netzinfo", // a newer message replaces the previous one
+      tag: "stadtwerke", // a newer message replaces the previous one
       renotify: true,
     })
   );

@@ -71,16 +71,16 @@ if (fs.existsSync(dist)) {
 startScheduler();
 
 app.listen(config.port, "0.0.0.0", () => {
-  console.log(`[netzinfo] ready on http://0.0.0.0:${config.port}`);
+  console.log(`[stadtwerke] ready on http://0.0.0.0:${config.port}`);
   // Make the two settings that silently break a demo visible at startup.
   const hi = config.heimatInfo;
   console.log(
-    `[netzinfo] settings: ${
+    `[stadtwerke] settings: ${
       envFileLoaded ? "server/.env loaded" : "no server/.env, using defaults"
     }`
   );
   console.log(
-    `[netzinfo] Heimat-Info: ${
+    `[stadtwerke] Heimat-Info: ${
       hi.organizationId ? "configured" : "NO CREDENTIALS"
     }` +
       ` · posts are created as "${hi.status}"` +
@@ -90,17 +90,17 @@ app.listen(config.port, "0.0.0.0", () => {
           : ""
       }`
   );
-  console.log(`[netzinfo] data: ${config.dataFile}`);
+  console.log(`[stadtwerke] data: ${config.dataFile}`);
 
   // Without a WORKERS setting the pins are random, so they have to be shown
   // once - otherwise nobody could sign in on a fresh checkout.
   if (config.auth.enabled && !process.env.WORKERS) {
     console.log(
-      "[netzinfo] WARNING: no WORKERS configured, using temporary accounts:"
+      "[stadtwerke] WARNING: no WORKERS configured, using temporary accounts:"
     );
     for (const worker of config.auth.workers) {
-      console.log(`[netzinfo]   ${worker.name.padEnd(16)} PIN ${worker.pin}`);
+      console.log(`[stadtwerke]   ${worker.name.padEnd(16)} PIN ${worker.pin}`);
     }
-    console.log("[netzinfo] Set WORKERS in server/.env before any real use.");
+    console.log("[stadtwerke] Set WORKERS in server/.env before any real use.");
   }
 });
