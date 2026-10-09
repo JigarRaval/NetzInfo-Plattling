@@ -17,7 +17,7 @@
  * frontend has to call a backend on a different domain directly; then that
  * domain must also allow this origin through ALLOWED_ORIGINS.
  */
-const BASE = (import.meta.env.VITE_API_BASE || "").replace(/\/+$/, "");
+const BASE = import.meta.env.VITE_API_BASE || "";
 
 const TOKEN_KEY = "netzinfo-token";
 
