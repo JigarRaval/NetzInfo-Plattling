@@ -75,8 +75,21 @@
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
 
-# Ensure JavaScript files have correct MIME type.
+# Ensure JavaScript files have correct MIME type and short cache.
 [[headers]]
   for = "/assets/*.js"
   [headers.values]
     Content-Type = "application/javascript; charset=utf-8"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Ensure CSS files have short cache.
+[[headers]]
+  for = "/assets/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Ensure other static assets have short cache.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

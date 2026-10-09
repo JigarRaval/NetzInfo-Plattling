@@ -4,16 +4,19 @@
  * A field worker may be in a cellar or at the edge of coverage, so the app
  * shell is cached and the interface still opens offline. API responses are
  * never cached: outage information must always be current.
+ *
+ * Network-first for HTML to avoid serving stale cached versions on refresh.
+ * Cache-first for static assets for offline support.
  */
 
-const CACHE = "stadtwerke-v1";
-const SHELL = ["/", "/index.html", "/icon.svg", "/manifest.webmanifest"];
+const CACHE = "stadtwerke-v2";
+const STATIC_ASSETS = ["/icon.svg", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(CACHE)
-      .then((c) => c.addAll(SHELL))
+      .then((c) => c.addAll(STATIC_ASSETS))
       .then(() => self.skipWaiting())
   );
 });
@@ -33,13 +36,33 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
-  if (url.pathname.startsWith("/api")) return; // never cache live data
+
+  // Never cache API requests
+  if (url.pathname.startsWith("/api")) return;
+
+  // Network-first for HTML to always get fresh content
+  if (url.pathname === "/" || url.pathname === "/index.html") {
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => caches.match("/index.html"))
+    );
+    return;
+  }
+
+  // Cache-first for static assets
   event.respondWith(
     caches
       .match(event.request)
       .then(
         (hit) =>
-          hit || fetch(event.request).catch(() => caches.match("/index.html"))
+          hit || fetch(event.request).then((response) => {
+            // Cache successful responses for static assets
+            if (response.ok) {
+              const responseClone = response.clone();
+              caches.open(CACHE).then((cache) => cache.put(event.request, responseClone));
+            }
+            return response;
+          }).catch(() => caches.match("/index.html"))
       )
   );
 });
