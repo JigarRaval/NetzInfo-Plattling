@@ -6,7 +6,7 @@
  * never cached: outage information must always be current.
  */
 
-const CACHE = "netzinfo-v2";
+const CACHE = "netzinfo-v3";
 const SHELL = ["/", "/index.html", "/icon.svg", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
