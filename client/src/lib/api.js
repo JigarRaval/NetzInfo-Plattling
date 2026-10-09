@@ -19,7 +19,7 @@
  */
 const BASE = import.meta.env.VITE_API_BASE || "";
 
-const TOKEN_KEY = "netzinfo-token";
+const TOKEN_KEY = "stadtwerke-token";
 
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY) || "";

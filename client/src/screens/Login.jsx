@@ -13,7 +13,7 @@ import { LogoMark } from "../ui/Logo.jsx";
 
 export default function Login({ t, workers = [], onDone }) {
   const [workerId, setWorkerId] = useState(
-    () => localStorage.getItem("netzinfo-worker") || ""
+    () => localStorage.getItem("stadtwerke-worker") || ""
   );
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
@@ -33,7 +33,7 @@ export default function Login({ t, workers = [], onDone }) {
       const result = await api.login(value, workerId);
       setToken(result.token);
       // Remember the person on this device, so the next shift start is faster.
-      if (workerId) localStorage.setItem("netzinfo-worker", workerId);
+      if (workerId) localStorage.setItem("stadtwerke-worker", workerId);
       onDone(result.worker);
     } catch (problem) {
       // 429 means this person is locked out after too many wrong attempts.

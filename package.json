@@ -1,8 +1,8 @@
 {
-  "name": "netzinfo-plattling",
+  "name": "stadtwerke-plattling",
   "version": "1.0.0",
   "private": true,
-  "description": "NetzInfo Plattling - intelligent outage communication for Stadtwerke Plattling (Innovation Challenge 2026, Use Case 9)",
+  "description": "Stadtwerke Plattling - intelligent outage communication (Innovation Challenge 2026, Use Case 9)",
   "scripts": {
     "setup": "cd server && npm install && cd ../client && npm install",
     "check": "node scripts/check-i18n.mjs",

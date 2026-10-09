@@ -45,7 +45,7 @@ export default function App() {
 
   const [route, setRoute] = useState(routeFromHash);
   const [theme, setTheme] = useState(
-    () => localStorage.getItem("netzinfo-theme") || "light"
+    () => localStorage.getItem("stadtwerke-theme") || "light"
   );
   const [catalog, setCatalog] = useState(null);
   const [incidents, setIncidents] = useState([]);
@@ -58,7 +58,7 @@ export default function App() {
   const [signedIn, setSignedIn] = useState(Boolean(getToken()));
   const [authReady, setAuthReady] = useState(false);
   const [pushOn, setPushOn] = useState(
-    () => localStorage.getItem("netzinfo-push") === "on"
+    () => localStorage.getItem("stadtwerke-push") === "on"
   );
   const [workers, setWorkers] = useState([]); // who can be on shift
   const [worker, setWorker] = useState(null); // who is on shift now
@@ -79,7 +79,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("netzinfo-theme", theme);
+    localStorage.setItem("stadtwerke-theme", theme);
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
@@ -165,7 +165,7 @@ export default function App() {
   async function turnOnPush() {
     const result = await enablePush();
     if (result.ok) {
-      localStorage.setItem("netzinfo-push", "on");
+      localStorage.setItem("stadtwerke-push", "on");
       setPushOn(true);
       notify(`🔔 ${t("ps_on")}`);
     } else {

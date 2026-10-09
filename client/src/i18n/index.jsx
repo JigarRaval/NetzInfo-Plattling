@@ -21,7 +21,7 @@ export const LANGUAGES = [
   { id: 'es', flag: '🇪🇸', label: 'Español' }
 ];
 
-const STORAGE_KEY = 'netzinfo-lang';
+const STORAGE_KEY = 'stadtwerke-lang';
 const I18nContext = createContext(null);
 
 /** Saved choice first, otherwise German as the default. */
