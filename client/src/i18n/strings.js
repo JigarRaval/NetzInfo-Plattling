@@ -292,6 +292,12 @@ export const STRINGS = {
     fr: "p. ex. Bahnhofstraße 12",
     es: "p. ej. Bahnhofstraße 12",
   },
+  rp_radius: {
+    de: "Betroffener Radius",
+    en: "Affected radius",
+    fr: "Rayon affecté",
+    es: "Radio afectado",
+  },
   rp_note: { de: "Notiz", en: "Note", fr: "Note", es: "Nota" },
   rp_note_ph: {
     de: "Freitext, nur intern",

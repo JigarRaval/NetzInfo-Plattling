@@ -33,6 +33,7 @@ export default function Report({
   const [address, setAddress] = useState(""); // street found for that position
   const [locating, setLocating] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [radiusMeters, setRadiusMeters] = useState(500); // affected area radius in meters
 
   const [busy, setBusy] = useState(false);
   const [duplicate, setDuplicate] = useState(null);
@@ -758,7 +759,22 @@ export default function Report({
             </Field>
 
             <Field
-              label={`📝 ${t("rp_note")}`}
+              label={`� ${t("rp_radius")}: ${(radiusMeters / 1000).toFixed(1)} km`}
+              htmlFor="radius"
+            >
+              <input
+                id="radius"
+                type="range"
+                min="100"
+                max="5000"
+                step="100"
+                value={radiusMeters}
+                onChange={(event) => setRadiusMeters(Number(event.target.value))}
+              />
+            </Field>
+
+            <Field
+              label={`�📝 ${t("rp_note")}`}
               hint={t("rp_dictate_hint")}
               htmlFor="note"
             >

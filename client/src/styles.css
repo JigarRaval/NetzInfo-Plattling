@@ -141,33 +141,45 @@ a { color: var(--brand-2); text-underline-offset: 2px; }
 .header-user {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
 }
 .header-user:hover {
-  opacity: 0.8;
+  background: var(--surface-3);
 }
 .header-user-avatar {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--brand);
   color: var(--on-brand);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 700;
   flex-shrink: 0;
 }
 .header-user-name {
   font-size: var(--text-sm);
   font-weight: 600;
-  color: var(--muted);
+  color: var(--text);
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
+  .header-user {
+    padding: 4px;
+    background: transparent;
+  }
+  .header-user:hover {
+    background: transparent;
+    opacity: 0.8;
+  }
   .header-user-name {
     display: none;
   }

@@ -46,9 +46,9 @@ export function LocationPicker({
         if (cancelled || !holder.current || mapRef.current) return;
 
         const map = L.map(holder.current).setView([lat, lng], 17);
-        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           maxZoom: 19,
-          attribution: "&copy; OpenStreetMap",
+          attribution: "&copy; OpenStreetMap contributors",
         }).addTo(map);
 
         // A CSS pin instead of Leaflet's default image: bundlers break the
