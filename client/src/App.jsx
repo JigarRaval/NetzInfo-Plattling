@@ -62,6 +62,7 @@ export default function App() {
   );
   const [workers, setWorkers] = useState([]); // who can be on shift
   const [worker, setWorker] = useState(null); // who is on shift now
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     const onHash = () => setRoute(routeFromHash());
@@ -243,9 +244,9 @@ export default function App() {
           <div className="header-tools">
             {/* Current user indicator */}
             {worker && (
-              <span className="header-user" title={t("lg_out")}>
-                👤 {worker.name}
-              </span>
+              <div className="header-user-avatar" title={`${worker.name} · ${t("lg_out")}`}>
+                {worker.name.charAt(0).toUpperCase()}
+              </div>
             )}
 
             <select
@@ -262,14 +263,33 @@ export default function App() {
             </select>
 
             {/* System notifications for this device, one tap. */}
-            <button
-              className={pushOn ? "iconbtn on" : "iconbtn"}
-              onClick={turnOnPush}
-              title={t(pushOn ? "ps_on" : "ps_enable")}
-              aria-label={t(pushOn ? "ps_on" : "ps_enable")}
-            >
-              {pushOn ? "🔔" : "🔕"}
-            </button>
+            <div className="notification-wrapper">
+              <button
+                className={pushOn ? "iconbtn on" : "iconbtn"}
+                onClick={() => {
+                  if (!pushOn) {
+                    turnOnPush();
+                  } else {
+                    setShowNotifications(!showNotifications);
+                  }
+                }}
+                title={t(pushOn ? "ps_on" : "ps_enable")}
+                aria-label={t(pushOn ? "ps_on" : "ps_enable")}
+              >
+                {pushOn ? "🔔" : "🔕"}
+              </button>
+              {showNotifications && pushOn && (
+                <div className="notification-dropdown">
+                  <div className="notification-header">{t("ps_recent")}</div>
+                  <div className="notification-list">
+                    <div className="notification-item">
+                      <span className="notification-icon">📢</span>
+                      <span className="notification-text">{t("ps_no_notifications")}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <button
               className="iconbtn"

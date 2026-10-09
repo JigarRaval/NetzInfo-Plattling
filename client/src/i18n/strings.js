@@ -635,6 +635,18 @@ export const STRINGS = {
     fr: "Ce navigateur ne gère pas les notifications",
     es: "Este navegador no admite notificaciones",
   },
+  ps_recent: {
+    de: "Letzte Benachrichtigungen",
+    en: "Recent notifications",
+    fr: "Notifications récentes",
+    es: "Notificaciones recientes",
+  },
+  ps_no_notifications: {
+    de: "Keine neuen Benachrichtigungen",
+    en: "No new notifications",
+    fr: "Aucune nouvelle notification",
+    es: "Sin notificaciones nuevas",
+  },
 
   /* ------------------------------------------------------- exact location */
   rp_locating: {
