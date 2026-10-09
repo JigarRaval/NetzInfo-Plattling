@@ -351,6 +351,7 @@ export default function Report({
         street,
         note,
         coords,
+        radiusMeters,
         source: note ? "speech" : "preset",
       });
       // The text is written immediately, so the next screen is ready to send.

@@ -44,6 +44,7 @@ export function buildIncident(input) {
     districts,
     street: input.street || "",
     coords: input.coords || null,
+    radiusMeters: input.radiusMeters || null, // affected area radius in meters
     boilNotice: Boolean(preset?.boilNotice),
     planned: Boolean(preset?.planned),
     startedAt: input.startedAt || capturedAt,

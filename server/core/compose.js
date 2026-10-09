@@ -72,6 +72,7 @@ const WORDS = {
     fixedAt: "Behoben um",
     affected: "Betroffen",
     households: "rund {n} Haushalte",
+    radius: "Betroffener Radius",
   },
   en: {
     since: "Since",
@@ -80,14 +81,16 @@ const WORDS = {
     fixedAt: "Fixed at",
     affected: "Affected",
     households: "about {n} households",
+    radius: "Affected radius",
   },
   fr: {
     since: "Depuis",
-    until: "Prévu jusqu’à",
+    until: "Prévu jusqu'à",
     newEstimate: "Nouvelle estimation",
     fixedAt: "Rétabli à",
     affected: "Concernés",
     households: "environ {n} foyers",
+    radius: "Rayon affecté",
   },
   es: {
     since: "Desde",
@@ -96,6 +99,7 @@ const WORDS = {
     fixedAt: "Resuelto a las",
     affected: "Afectados",
     households: "unos {n} hogares",
+    radius: "Radio afectado",
   },
 };
 
@@ -512,6 +516,10 @@ export function compose(incident, kind = "first", lang = "de", variant = 0) {
     );
     if (households > 0)
       lines.push(`${L.affected}: ${L.households.replace("{n}", households)}`);
+    if (incident.radiusMeters) {
+      const radiusKm = (incident.radiusMeters / 1000).toFixed(1);
+      lines.push(`${L.radius}: ${radiusKm} km`);
+    }
   }
 
   const tips =
