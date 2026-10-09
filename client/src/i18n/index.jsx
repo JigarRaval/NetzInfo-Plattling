@@ -24,12 +24,11 @@ export const LANGUAGES = [
 const STORAGE_KEY = 'netzinfo-lang';
 const I18nContext = createContext(null);
 
-/** Saved choice first, then the browser language, German as the fallback. */
+/** Saved choice first, otherwise German as the default. */
 function detectLanguage() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved && LANGUAGES.some((l) => l.id === saved)) return saved;
-  const browser = (navigator.language || 'de').slice(0, 2).toLowerCase();
-  return LANGUAGES.some((l) => l.id === browser) ? browser : 'de';
+  return 'de';
 }
 
 export function I18nProvider({ children }) {
