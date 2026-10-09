@@ -27,13 +27,32 @@
   status = 200
   force = true
 
-# React single-page application fallback. Keep this after the proxy rules.
-# force=false ensures existing files (JS, CSS, images) are served directly.
+# Serve static assets directly - must come BEFORE the catch-all redirect.
+[[redirects]]
+  from = "/assets/*"
+  to = "/assets/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/sw.js"
+  to = "/sw.js"
+  status = 200
+
+[[redirects]]
+  from = "/manifest.webmanifest"
+  to = "/manifest.webmanifest"
+  status = 200
+
+[[redirects]]
+  from = "/icon.svg"
+  to = "/icon.svg"
+  status = 200
+
+# React single-page application fallback - must be LAST.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  force = false
 
 # Security headers.
 [[headers]]
