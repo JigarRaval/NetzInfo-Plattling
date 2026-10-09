@@ -69,6 +69,12 @@
   [headers.values]
     Cache-Control = "no-cache"
 
+# Prevent index.html from being cached to ensure fresh asset references.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
 # Ensure JavaScript files have correct MIME type.
 [[headers]]
   for = "/assets/*.js"
