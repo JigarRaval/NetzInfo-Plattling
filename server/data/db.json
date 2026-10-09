@@ -1001,6 +1001,37 @@
       "capturedAt": "2026-10-08T21:56:14.742Z",
       "publishedAt": "2026-10-08T21:57:30.819Z",
       "resolvedAt": "2026-10-08T22:21:14.726Z"
+    },
+    {
+      "id": "INC-CA146F",
+      "service": "strom",
+      "presetId": "strom_ausfall",
+      "districts": [
+        "enzkofen"
+      ],
+      "street": "94447 Plattling",
+      "coords": {
+        "lat": 48.780973,
+        "lng": 12.860087,
+        "accuracy": 102
+      },
+      "boilNotice": false,
+      "planned": false,
+      "startedAt": "2026-10-09T04:57:44.183Z",
+      "etaMinutes": 120,
+      "etaAt": "2026-10-09T06:57:44.183Z",
+      "note": "",
+      "toneOverride": null,
+      "variant": 3,
+      "reportedBy": {
+        "id": "swp-01",
+        "name": "Anna Huber"
+      },
+      "source": "preset",
+      "status": "resolved",
+      "capturedAt": "2026-10-09T04:57:44.183Z",
+      "publishedAt": "2026-10-09T04:59:35.313Z",
+      "resolvedAt": "2026-10-09T05:01:22.416Z"
     }
   ],
   "drafts": [
@@ -16749,6 +16780,556 @@
         "id": "swp-02",
         "name": "Max Bauer"
       }
+    },
+    {
+      "id": "DRF-D4CCF2",
+      "incidentId": "INC-CA146F",
+      "kind": "first",
+      "status": "published",
+      "createdAt": "2026-10-09T04:57:44.249Z",
+      "publishedAt": "2026-10-09T04:59:34.798Z",
+      "messages": {
+        "de": {
+          "title": "Störung: Strom – Enzkofen",
+          "state": "first",
+          "tone": "steady",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "Störung: Strom"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "Die Versorgung mit Strom ist derzeit unterbrochen. Die Störungsbehebung läuft. Kabelschaden im Mittelspannungsnetz"
+            },
+            {
+              "key": "when",
+              "body": "06:57 Uhr 08:57 Uhr"
+            },
+            {
+              "key": "advice",
+              "body": "Empfindliche Geräte vom Netz trennen Kühl- und Gefriergeräte geschlossen halten Aufzüge nicht benutzen"
+            },
+            {
+              "key": "closing",
+              "body": "Wir arbeiten daran und melden uns wieder."
+            }
+          ],
+          "text": "Störung: Strom\nEnzkofen (94447 Plattling)\n\nDie Versorgung mit Strom ist derzeit unterbrochen.\nDie Störungsbehebung läuft.\nKabelschaden im Mittelspannungsnetz.\n\nSeit: 06:57 Uhr\nVoraussichtlich bis: 08:57 Uhr\nBetroffen: rund 310 Haushalte\n\nWas Sie jetzt tun können:\n- Empfindliche Geräte vom Netz trennen\n- Kühl- und Gefriergeräte geschlossen halten\n- Aufzüge nicht benutzen\n\nWir arbeiten daran und melden uns wieder.",
+          "short": "Störung Strom: Enzkofen. Voraussichtlich bis 08:57 Uhr.",
+          "html": "<h3>Störung: Strom</h3>\n<p>Enzkofen (94447 Plattling)</p>\n<p>Die Versorgung mit Strom ist derzeit unterbrochen.</p>\n<p>Die Störungsbehebung läuft.</p>\n<p>Kabelschaden im Mittelspannungsnetz.</p>\n<p>Seit: 06:57 Uhr</p>\n<p>Voraussichtlich bis: 08:57 Uhr</p>\n<p>Betroffen: rund 310 Haushalte</p>\n<p>Was Sie jetzt tun können:</p>\n<ul><li>Empfindliche Geräte vom Netz trennen</li><li>Kühl- und Gefriergeräte geschlossen halten</li><li>Aufzüge nicht benutzen</li></ul>\n<p>Wir arbeiten daran und melden uns wieder.</p>"
+        },
+        "en": {
+          "title": "Outage: Electricity – Enzkofen",
+          "state": "first",
+          "tone": "steady",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "Outage: Electricity"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "The Electricity supply is currently interrupted. Repair work is under way. Cable fault in the medium-voltage network"
+            },
+            {
+              "key": "when",
+              "body": "06:57 AM 08:57 AM"
+            },
+            {
+              "key": "advice",
+              "body": "Unplug sensitive devices Keep fridges and freezers closed Do not use lifts"
+            },
+            {
+              "key": "closing",
+              "body": "We are working on it and will report back."
+            }
+          ],
+          "text": "Outage: Electricity\nEnzkofen (94447 Plattling)\n\nThe Electricity supply is currently interrupted.\nRepair work is under way.\nCable fault in the medium-voltage network.\n\nSince: 06:57 AM\nExpected until: 08:57 AM\nAffected: about 310 households\n\nWhat you can do now:\n- Unplug sensitive devices\n- Keep fridges and freezers closed\n- Do not use lifts\n\nWe are working on it and will report back.",
+          "short": "Outage Electricity: Enzkofen. Expected until 08:57 AM.",
+          "html": "<h3>Outage: Electricity</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>The Electricity supply is currently interrupted.<br>Repair work is under way.<br>Cable fault in the medium-voltage network.</p>\n<p>Since: 06:57 AM<br>Expected until: 08:57 AM<br>Affected: about 310 households</p>\n<p><strong>What you can do now</strong></p>\n<ul><li>Unplug sensitive devices</li><li>Keep fridges and freezers closed</li><li>Do not use lifts</li></ul>\n<p>We are working on it and will report back.</p>"
+        },
+        "fr": {
+          "title": "Panne: Électricité – Enzkofen",
+          "state": "first",
+          "tone": "steady",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "Panne: Électricité"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "L’approvisionnement en Électricité est actuellement interrompu. La réparation est en cours. Défaut de câble sur le réseau moyenne tension"
+            },
+            {
+              "key": "when",
+              "body": "06:57 08:57"
+            },
+            {
+              "key": "advice",
+              "body": "Débranchez les appareils sensibles Gardez réfrigérateurs et congélateurs fermés N’utilisez pas les ascenseurs"
+            },
+            {
+              "key": "closing",
+              "body": "Nous y travaillons et reviendrons vers vous."
+            }
+          ],
+          "text": "Panne: Électricité\nEnzkofen (94447 Plattling)\n\nL’approvisionnement en Électricité est actuellement interrompu.\nLa réparation est en cours.\nDéfaut de câble sur le réseau moyenne tension.\n\nDepuis: 06:57\nPrévu jusqu’à: 08:57\nConcernés: environ 310 foyers\n\nCe que vous pouvez faire:\n- Débranchez les appareils sensibles\n- Gardez réfrigérateurs et congélateurs fermés\n- N’utilisez pas les ascenseurs\n\nNous y travaillons et reviendrons vers vous.",
+          "short": "Panne Électricité: Enzkofen. Prévu jusqu’à 08:57.",
+          "html": "<h3>Panne: Électricité</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>L’approvisionnement en Électricité est actuellement interrompu.<br>La réparation est en cours.<br>Défaut de câble sur le réseau moyenne tension.</p>\n<p>Depuis: 06:57<br>Prévu jusqu’à: 08:57<br>Concernés: environ 310 foyers</p>\n<p><strong>Ce que vous pouvez faire</strong></p>\n<ul><li>Débranchez les appareils sensibles</li><li>Gardez réfrigérateurs et congélateurs fermés</li><li>N’utilisez pas les ascenseurs</li></ul>\n<p>Nous y travaillons et reviendrons vers vous.</p>"
+        },
+        "es": {
+          "title": "Incidencia: Electricidad – Enzkofen",
+          "state": "first",
+          "tone": "steady",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "Incidencia: Electricidad"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "El suministro de Electricidad está interrumpido en este momento. La reparación está en marcha. Avería de cable en la red de media tensión"
+            },
+            {
+              "key": "when",
+              "body": "06:57 08:57"
+            },
+            {
+              "key": "advice",
+              "body": "Desconecte los aparatos sensibles Mantenga cerrados frigoríficos y congeladores No utilice los ascensores"
+            },
+            {
+              "key": "closing",
+              "body": "Seguimos trabajando y volveremos a informar."
+            }
+          ],
+          "text": "Incidencia: Electricidad\nEnzkofen (94447 Plattling)\n\nEl suministro de Electricidad está interrumpido en este momento.\nLa reparación está en marcha.\nAvería de cable en la red de media tensión.\n\nDesde: 06:57\nPrevisto hasta: 08:57\nAfectados: unos 310 hogares\n\nQué puede hacer ahora:\n- Desconecte los aparatos sensibles\n- Mantenga cerrados frigoríficos y congeladores\n- No utilice los ascensores\n\nSeguimos trabajando y volveremos a informar.",
+          "short": "Incidencia Electricidad: Enzkofen. Previsto hasta 08:57.",
+          "html": "<h3>Incidencia: Electricidad</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>El suministro de Electricidad está interrumpido en este momento.<br>La reparación está en marcha.<br>Avería de cable en la red de media tensión.</p>\n<p>Desde: 06:57<br>Previsto hasta: 08:57<br>Afectados: unos 310 hogares</p>\n<p><strong>Qué puede hacer ahora</strong></p>\n<ul><li>Desconecte los aparatos sensibles</li><li>Mantenga cerrados frigoríficos y congeladores</li><li>No utilice los ascensores</li></ul>\n<p>Seguimos trabajando y volveremos a informar.</p>"
+        }
+      },
+      "checks": [
+        {
+          "id": "structure",
+          "ok": true,
+          "params": {
+            "found": 6,
+            "total": 4,
+            "missing": ""
+          },
+          "blocking": false
+        },
+        {
+          "id": "readability",
+          "ok": true,
+          "params": {
+            "level": "easy",
+            "avg": "5.0",
+            "share": 6
+          },
+          "blocking": false
+        },
+        {
+          "id": "facts",
+          "ok": true,
+          "params": {
+            "count": 0
+          },
+          "problems": [],
+          "blocking": true
+        }
+      ],
+      "allOk": true,
+      "edited": true,
+      "sentBy": {
+        "id": "swp-01",
+        "name": "Anna Huber"
+      }
+    },
+    {
+      "id": "DRF-7A0B1F",
+      "incidentId": "INC-CA146F",
+      "kind": "update",
+      "status": "published",
+      "createdAt": "2026-10-09T05:00:15.574Z",
+      "publishedAt": "2026-10-09T05:00:19.583Z",
+      "messages": {
+        "de": {
+          "title": "Update: Strom – Enzkofen",
+          "state": "update",
+          "tone": "steady",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "Update: Strom"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "Die Arbeiten an der Strom-Versorgung dauern noch an. Die Störungsbehebung läuft. Kabelschaden im Mittelspannungsnetz"
+            },
+            {
+              "key": "when",
+              "body": "06:57 Uhr 08:57 Uhr"
+            },
+            {
+              "key": "advice",
+              "body": "Empfindliche Geräte vom Netz trennen Kühl- und Gefriergeräte geschlossen halten Aufzüge nicht benutzen"
+            },
+            {
+              "key": "closing",
+              "body": "Wir arbeiten daran und melden uns wieder."
+            }
+          ],
+          "text": "Update: Strom\nEnzkofen (94447 Plattling)\n\nDie Arbeiten an der Strom-Versorgung dauern noch an.\nDie Störungsbehebung läuft.\nKabelschaden im Mittelspannungsnetz.\n\nSeit: 06:57 Uhr\nNeue Einschätzung: 08:57 Uhr\nBetroffen: rund 310 Haushalte\n\nWas Sie jetzt tun können:\n- Empfindliche Geräte vom Netz trennen\n- Kühl- und Gefriergeräte geschlossen halten\n- Aufzüge nicht benutzen\n\nWir arbeiten daran und melden uns wieder.",
+          "short": "Update Strom: Enzkofen. Voraussichtlich bis 08:57 Uhr.",
+          "html": "<h3>Update: Strom</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>Die Arbeiten an der Strom-Versorgung dauern noch an.<br>Die Störungsbehebung läuft.<br>Kabelschaden im Mittelspannungsnetz.</p>\n<p>Seit: 06:57 Uhr<br>Neue Einschätzung: 08:57 Uhr<br>Betroffen: rund 310 Haushalte</p>\n<p><strong>Was Sie jetzt tun können</strong></p>\n<ul><li>Empfindliche Geräte vom Netz trennen</li><li>Kühl- und Gefriergeräte geschlossen halten</li><li>Aufzüge nicht benutzen</li></ul>\n<p>Wir arbeiten daran und melden uns wieder.</p>"
+        },
+        "en": {
+          "title": "Update: Electricity – Enzkofen",
+          "state": "update",
+          "tone": "steady",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "Update: Electricity"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "Work on the Electricity supply is still going on. Repair work is under way. Cable fault in the medium-voltage network"
+            },
+            {
+              "key": "when",
+              "body": "06:57 AM 08:57 AM"
+            },
+            {
+              "key": "advice",
+              "body": "Unplug sensitive devices Keep fridges and freezers closed Do not use lifts"
+            },
+            {
+              "key": "closing",
+              "body": "We are working on it and will report back."
+            }
+          ],
+          "text": "Update: Electricity\nEnzkofen (94447 Plattling)\n\nWork on the Electricity supply is still going on.\nRepair work is under way.\nCable fault in the medium-voltage network.\n\nSince: 06:57 AM\nNew estimate: 08:57 AM\nAffected: about 310 households\n\nWhat you can do now:\n- Unplug sensitive devices\n- Keep fridges and freezers closed\n- Do not use lifts\n\nWe are working on it and will report back.",
+          "short": "Update Electricity: Enzkofen. Expected until 08:57 AM.",
+          "html": "<h3>Update: Electricity</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>Work on the Electricity supply is still going on.<br>Repair work is under way.<br>Cable fault in the medium-voltage network.</p>\n<p>Since: 06:57 AM<br>New estimate: 08:57 AM<br>Affected: about 310 households</p>\n<p><strong>What you can do now</strong></p>\n<ul><li>Unplug sensitive devices</li><li>Keep fridges and freezers closed</li><li>Do not use lifts</li></ul>\n<p>We are working on it and will report back.</p>"
+        },
+        "fr": {
+          "title": "Mise à jour: Électricité – Enzkofen",
+          "state": "update",
+          "tone": "steady",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "Mise à jour: Électricité"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "Les travaux sur le réseau Électricité sont toujours en cours. La réparation est en cours. Défaut de câble sur le réseau moyenne tension"
+            },
+            {
+              "key": "when",
+              "body": "06:57 08:57"
+            },
+            {
+              "key": "advice",
+              "body": "Débranchez les appareils sensibles Gardez réfrigérateurs et congélateurs fermés N’utilisez pas les ascenseurs"
+            },
+            {
+              "key": "closing",
+              "body": "Nous y travaillons et reviendrons vers vous."
+            }
+          ],
+          "text": "Mise à jour: Électricité\nEnzkofen (94447 Plattling)\n\nLes travaux sur le réseau Électricité sont toujours en cours.\nLa réparation est en cours.\nDéfaut de câble sur le réseau moyenne tension.\n\nDepuis: 06:57\nNouvelle estimation: 08:57\nConcernés: environ 310 foyers\n\nCe que vous pouvez faire:\n- Débranchez les appareils sensibles\n- Gardez réfrigérateurs et congélateurs fermés\n- N’utilisez pas les ascenseurs\n\nNous y travaillons et reviendrons vers vous.",
+          "short": "Mise à jour Électricité: Enzkofen. Prévu jusqu’à 08:57.",
+          "html": "<h3>Mise à jour: Électricité</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>Les travaux sur le réseau Électricité sont toujours en cours.<br>La réparation est en cours.<br>Défaut de câble sur le réseau moyenne tension.</p>\n<p>Depuis: 06:57<br>Nouvelle estimation: 08:57<br>Concernés: environ 310 foyers</p>\n<p><strong>Ce que vous pouvez faire</strong></p>\n<ul><li>Débranchez les appareils sensibles</li><li>Gardez réfrigérateurs et congélateurs fermés</li><li>N’utilisez pas les ascenseurs</li></ul>\n<p>Nous y travaillons et reviendrons vers vous.</p>"
+        },
+        "es": {
+          "title": "Actualización: Electricidad – Enzkofen",
+          "state": "update",
+          "tone": "steady",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "Actualización: Electricidad"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "Los trabajos en la red de Electricidad continúan. La reparación está en marcha. Avería de cable en la red de media tensión"
+            },
+            {
+              "key": "when",
+              "body": "06:57 08:57"
+            },
+            {
+              "key": "advice",
+              "body": "Desconecte los aparatos sensibles Mantenga cerrados frigoríficos y congeladores No utilice los ascensores"
+            },
+            {
+              "key": "closing",
+              "body": "Seguimos trabajando y volveremos a informar."
+            }
+          ],
+          "text": "Actualización: Electricidad\nEnzkofen (94447 Plattling)\n\nLos trabajos en la red de Electricidad continúan.\nLa reparación está en marcha.\nAvería de cable en la red de media tensión.\n\nDesde: 06:57\nNueva previsión: 08:57\nAfectados: unos 310 hogares\n\nQué puede hacer ahora:\n- Desconecte los aparatos sensibles\n- Mantenga cerrados frigoríficos y congeladores\n- No utilice los ascensores\n\nSeguimos trabajando y volveremos a informar.",
+          "short": "Actualización Electricidad: Enzkofen. Previsto hasta 08:57.",
+          "html": "<h3>Actualización: Electricidad</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>Los trabajos en la red de Electricidad continúan.<br>La reparación está en marcha.<br>Avería de cable en la red de media tensión.</p>\n<p>Desde: 06:57<br>Nueva previsión: 08:57<br>Afectados: unos 310 hogares</p>\n<p><strong>Qué puede hacer ahora</strong></p>\n<ul><li>Desconecte los aparatos sensibles</li><li>Mantenga cerrados frigoríficos y congeladores</li><li>No utilice los ascensores</li></ul>\n<p>Seguimos trabajando y volveremos a informar.</p>"
+        }
+      },
+      "checks": [
+        {
+          "id": "structure",
+          "ok": true,
+          "params": {
+            "found": 6,
+            "total": 4,
+            "missing": ""
+          },
+          "blocking": false
+        },
+        {
+          "id": "readability",
+          "ok": true,
+          "params": {
+            "level": "easy",
+            "avg": "5.1",
+            "share": 6
+          },
+          "blocking": false
+        },
+        {
+          "id": "facts",
+          "ok": true,
+          "params": {
+            "count": 0
+          },
+          "problems": [],
+          "blocking": true
+        }
+      ],
+      "allOk": true,
+      "edited": false,
+      "sentBy": {
+        "id": "swp-01",
+        "name": "Anna Huber"
+      }
+    },
+    {
+      "id": "DRF-59E66A",
+      "incidentId": "INC-CA146F",
+      "kind": "allclear",
+      "status": "published",
+      "createdAt": "2026-10-09T05:01:22.429Z",
+      "publishedAt": "2026-10-09T05:01:22.441Z",
+      "messages": {
+        "de": {
+          "title": "Entwarnung: Strom – Enzkofen",
+          "state": "allclear",
+          "tone": "allclear",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "Entwarnung: Strom"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "Die Versorgung mit Strom läuft wieder normal.  Kabelschaden im Mittelspannungsnetz"
+            },
+            {
+              "key": "when",
+              "body": "07:01 Uhr"
+            },
+            {
+              "key": "closing",
+              "body": "Danke, dass Sie mitgedacht haben."
+            }
+          ],
+          "text": "Entwarnung: Strom\nEnzkofen (94447 Plattling)\n\nDie Versorgung mit Strom läuft wieder normal.\n\nBehoben um: 07:01 Uhr\n\nDanke, dass Sie mitgedacht haben.",
+          "short": "Entwarnung Strom: Enzkofen. Die Versorgung mit Strom läuft wieder normal.",
+          "html": "<h3>Entwarnung: Strom</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>Die Versorgung mit Strom läuft wieder normal.</p>\n<p>Behoben um: 07:01 Uhr</p>\n<p>Danke, dass Sie mitgedacht haben.</p>"
+        },
+        "en": {
+          "title": "All clear: Electricity – Enzkofen",
+          "state": "allclear",
+          "tone": "allclear",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "All clear: Electricity"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "The Electricity supply is working normally again.  Cable fault in the medium-voltage network"
+            },
+            {
+              "key": "when",
+              "body": "07:01 AM"
+            },
+            {
+              "key": "closing",
+              "body": "Thank you for bearing with us."
+            }
+          ],
+          "text": "All clear: Electricity\nEnzkofen (94447 Plattling)\n\nThe Electricity supply is working normally again.\n\nFixed at: 07:01 AM\n\nThank you for bearing with us.",
+          "short": "All clear Electricity: Enzkofen. The Electricity supply is working normally again.",
+          "html": "<h3>All clear: Electricity</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>The Electricity supply is working normally again.</p>\n<p>Fixed at: 07:01 AM</p>\n<p>Thank you for bearing with us.</p>"
+        },
+        "fr": {
+          "title": "Fin d’alerte: Électricité – Enzkofen",
+          "state": "allclear",
+          "tone": "allclear",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "Fin d’alerte: Électricité"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "L’approvisionnement en Électricité fonctionne de nouveau normalement.  Défaut de câble sur le réseau moyenne tension"
+            },
+            {
+              "key": "when",
+              "body": "07:01"
+            },
+            {
+              "key": "closing",
+              "body": "Merci d’avoir patienté avec nous."
+            }
+          ],
+          "text": "Fin d’alerte: Électricité\nEnzkofen (94447 Plattling)\n\nL’approvisionnement en Électricité fonctionne de nouveau normalement.\n\nRétabli à: 07:01\n\nMerci d’avoir patienté avec nous.",
+          "short": "Fin d’alerte Électricité: Enzkofen. L’approvisionnement en Électricité fonctionne de nouveau normalement.",
+          "html": "<h3>Fin d’alerte: Électricité</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>L’approvisionnement en Électricité fonctionne de nouveau normalement.</p>\n<p>Rétabli à: 07:01</p>\n<p>Merci d’avoir patienté avec nous.</p>"
+        },
+        "es": {
+          "title": "Todo resuelto: Electricidad – Enzkofen",
+          "state": "allclear",
+          "tone": "allclear",
+          "variant": 3,
+          "sections": [
+            {
+              "key": "head",
+              "body": "Todo resuelto: Electricidad"
+            },
+            {
+              "key": "where",
+              "body": "Enzkofen"
+            },
+            {
+              "key": "what",
+              "body": "El suministro de Electricidad vuelve a funcionar con normalidad.  Avería de cable en la red de media tensión"
+            },
+            {
+              "key": "when",
+              "body": "07:01"
+            },
+            {
+              "key": "closing",
+              "body": "Gracias por su paciencia con nosotros."
+            }
+          ],
+          "text": "Todo resuelto: Electricidad\nEnzkofen (94447 Plattling)\n\nEl suministro de Electricidad vuelve a funcionar con normalidad.\n\nResuelto a las: 07:01\n\nGracias por su paciencia con nosotros.",
+          "short": "Todo resuelto Electricidad: Enzkofen. El suministro de Electricidad vuelve a funcionar con normalidad.",
+          "html": "<h3>Todo resuelto: Electricidad</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>El suministro de Electricidad vuelve a funcionar con normalidad.</p>\n<p>Resuelto a las: 07:01</p>\n<p>Gracias por su paciencia con nosotros.</p>"
+        }
+      },
+      "checks": [
+        {
+          "id": "structure",
+          "ok": true,
+          "params": {
+            "found": 5,
+            "total": 4,
+            "missing": ""
+          },
+          "blocking": false
+        },
+        {
+          "id": "readability",
+          "ok": true,
+          "params": {
+            "level": "easy",
+            "avg": "3.8",
+            "share": 0
+          },
+          "blocking": false
+        },
+        {
+          "id": "facts",
+          "ok": false,
+          "params": {
+            "count": 1
+          },
+          "problems": [
+            {
+              "key": "fact_start_missing",
+              "params": {}
+            }
+          ],
+          "blocking": true
+        }
+      ],
+      "allOk": false,
+      "edited": false,
+      "sentBy": {
+        "id": "swp-01",
+        "name": "Anna Huber"
+      }
     }
   ],
   "publications": [
@@ -25763,6 +26344,324 @@
       "okCount": 7,
       "totalCount": 7,
       "kpiSeconds": 0
+    },
+    {
+      "id": "PUB-80E033",
+      "incidentId": "INC-CA146F",
+      "draftId": "DRF-D4CCF2",
+      "kind": "first",
+      "at": "2026-10-09T04:59:35.313Z",
+      "auto": false,
+      "sentBy": {
+        "id": "swp-01",
+        "name": "Anna Huber"
+      },
+      "measure": "first",
+      "measuredFrom": "2026-10-09T04:57:44.183Z",
+      "messages": {
+        "de": {
+          "title": "Störung: Strom – Enzkofen",
+          "text": "Störung: Strom\nEnzkofen (94447 Plattling)\n\nDie Versorgung mit Strom ist derzeit unterbrochen.\nDie Störungsbehebung läuft.\nKabelschaden im Mittelspannungsnetz.\n\nSeit: 06:57 Uhr\nVoraussichtlich bis: 08:57 Uhr\nBetroffen: rund 310 Haushalte\n\nWas Sie jetzt tun können:\n- Empfindliche Geräte vom Netz trennen\n- Kühl- und Gefriergeräte geschlossen halten\n- Aufzüge nicht benutzen\n\nWir arbeiten daran und melden uns wieder.",
+          "short": "Störung Strom: Enzkofen. Voraussichtlich bis 08:57 Uhr."
+        },
+        "en": {
+          "title": "Outage: Electricity – Enzkofen",
+          "text": "Outage: Electricity\nEnzkofen (94447 Plattling)\n\nThe Electricity supply is currently interrupted.\nRepair work is under way.\nCable fault in the medium-voltage network.\n\nSince: 06:57 AM\nExpected until: 08:57 AM\nAffected: about 310 households\n\nWhat you can do now:\n- Unplug sensitive devices\n- Keep fridges and freezers closed\n- Do not use lifts\n\nWe are working on it and will report back.",
+          "short": "Outage Electricity: Enzkofen. Expected until 08:57 AM."
+        },
+        "fr": {
+          "title": "Panne: Électricité – Enzkofen",
+          "text": "Panne: Électricité\nEnzkofen (94447 Plattling)\n\nL’approvisionnement en Électricité est actuellement interrompu.\nLa réparation est en cours.\nDéfaut de câble sur le réseau moyenne tension.\n\nDepuis: 06:57\nPrévu jusqu’à: 08:57\nConcernés: environ 310 foyers\n\nCe que vous pouvez faire:\n- Débranchez les appareils sensibles\n- Gardez réfrigérateurs et congélateurs fermés\n- N’utilisez pas les ascenseurs\n\nNous y travaillons et reviendrons vers vous.",
+          "short": "Panne Électricité: Enzkofen. Prévu jusqu’à 08:57."
+        },
+        "es": {
+          "title": "Incidencia: Electricidad – Enzkofen",
+          "text": "Incidencia: Electricidad\nEnzkofen (94447 Plattling)\n\nEl suministro de Electricidad está interrumpido en este momento.\nLa reparación está en marcha.\nAvería de cable en la red de media tensión.\n\nDesde: 06:57\nPrevisto hasta: 08:57\nAfectados: unos 310 hogares\n\nQué puede hacer ahora:\n- Desconecte los aparatos sensibles\n- Mantenga cerrados frigoríficos y congeladores\n- No utilice los ascensores\n\nSeguimos trabajando y volveremos a informar.",
+          "short": "Incidencia Electricidad: Enzkofen. Previsto hasta 08:57."
+        }
+      },
+      "html": "<h3>Störung: Strom</h3>\n<p>Enzkofen (94447 Plattling)</p>\n<p>Die Versorgung mit Strom ist derzeit unterbrochen.</p>\n<p>Die Störungsbehebung läuft.</p>\n<p>Kabelschaden im Mittelspannungsnetz.</p>\n<p>Seit: 06:57 Uhr</p>\n<p>Voraussichtlich bis: 08:57 Uhr</p>\n<p>Betroffen: rund 310 Haushalte</p>\n<p>Was Sie jetzt tun können:</p>\n<ul><li>Empfindliche Geräte vom Netz trennen</li><li>Kühl- und Gefriergeräte geschlossen halten</li><li>Aufzüge nicht benutzen</li></ul>\n<p>Wir arbeiten daran und melden uns wieder.</p>",
+      "results": [
+        {
+          "channel": "statuspage",
+          "icon": "🌐",
+          "ms": 39,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_updated"
+        },
+        {
+          "channel": "rss",
+          "icon": "📡",
+          "ms": 39,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_regenerated"
+        },
+        {
+          "channel": "widget",
+          "icon": "🧩",
+          "ms": 39,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_updated"
+        },
+        {
+          "channel": "push",
+          "icon": "🔔",
+          "ms": 40,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_push_stored"
+        },
+        {
+          "channel": "heimatinfo",
+          "icon": "🏘️",
+          "ms": 490,
+          "params": {
+            "status": "Published",
+            "ms": 490,
+            "detail": ""
+          },
+          "ok": true,
+          "skipped": false,
+          "messageKey": "ch_msg_hi_created",
+          "postId": "0391fe32-7530-4157-9c64-fe6b5d86c22e"
+        },
+        {
+          "channel": "webhook",
+          "icon": "🔗",
+          "ms": 24,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_webhook_local"
+        },
+        {
+          "channel": "press",
+          "icon": "📰",
+          "ms": 13,
+          "params": {
+            "chars": 529
+          },
+          "ok": true,
+          "messageKey": "ch_msg_press_sent"
+        }
+      ],
+      "okCount": 7,
+      "totalCount": 7,
+      "kpiSeconds": 111
+    },
+    {
+      "id": "PUB-2BF735",
+      "incidentId": "INC-CA146F",
+      "draftId": "DRF-7A0B1F",
+      "kind": "update",
+      "at": "2026-10-09T05:00:19.901Z",
+      "auto": false,
+      "sentBy": {
+        "id": "swp-01",
+        "name": "Anna Huber"
+      },
+      "measure": "followup",
+      "measuredFrom": "2026-10-09T05:00:15.574Z",
+      "messages": {
+        "de": {
+          "title": "Update: Strom – Enzkofen",
+          "text": "Update: Strom\nEnzkofen (94447 Plattling)\n\nDie Arbeiten an der Strom-Versorgung dauern noch an.\nDie Störungsbehebung läuft.\nKabelschaden im Mittelspannungsnetz.\n\nSeit: 06:57 Uhr\nNeue Einschätzung: 08:57 Uhr\nBetroffen: rund 310 Haushalte\n\nWas Sie jetzt tun können:\n- Empfindliche Geräte vom Netz trennen\n- Kühl- und Gefriergeräte geschlossen halten\n- Aufzüge nicht benutzen\n\nWir arbeiten daran und melden uns wieder.",
+          "short": "Update Strom: Enzkofen. Voraussichtlich bis 08:57 Uhr."
+        },
+        "en": {
+          "title": "Update: Electricity – Enzkofen",
+          "text": "Update: Electricity\nEnzkofen (94447 Plattling)\n\nWork on the Electricity supply is still going on.\nRepair work is under way.\nCable fault in the medium-voltage network.\n\nSince: 06:57 AM\nNew estimate: 08:57 AM\nAffected: about 310 households\n\nWhat you can do now:\n- Unplug sensitive devices\n- Keep fridges and freezers closed\n- Do not use lifts\n\nWe are working on it and will report back.",
+          "short": "Update Electricity: Enzkofen. Expected until 08:57 AM."
+        },
+        "fr": {
+          "title": "Mise à jour: Électricité – Enzkofen",
+          "text": "Mise à jour: Électricité\nEnzkofen (94447 Plattling)\n\nLes travaux sur le réseau Électricité sont toujours en cours.\nLa réparation est en cours.\nDéfaut de câble sur le réseau moyenne tension.\n\nDepuis: 06:57\nNouvelle estimation: 08:57\nConcernés: environ 310 foyers\n\nCe que vous pouvez faire:\n- Débranchez les appareils sensibles\n- Gardez réfrigérateurs et congélateurs fermés\n- N’utilisez pas les ascenseurs\n\nNous y travaillons et reviendrons vers vous.",
+          "short": "Mise à jour Électricité: Enzkofen. Prévu jusqu’à 08:57."
+        },
+        "es": {
+          "title": "Actualización: Electricidad – Enzkofen",
+          "text": "Actualización: Electricidad\nEnzkofen (94447 Plattling)\n\nLos trabajos en la red de Electricidad continúan.\nLa reparación está en marcha.\nAvería de cable en la red de media tensión.\n\nDesde: 06:57\nNueva previsión: 08:57\nAfectados: unos 310 hogares\n\nQué puede hacer ahora:\n- Desconecte los aparatos sensibles\n- Mantenga cerrados frigoríficos y congeladores\n- No utilice los ascensores\n\nSeguimos trabajando y volveremos a informar.",
+          "short": "Actualización Electricidad: Enzkofen. Previsto hasta 08:57."
+        }
+      },
+      "html": "<h3>Update: Strom</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>Die Arbeiten an der Strom-Versorgung dauern noch an.<br>Die Störungsbehebung läuft.<br>Kabelschaden im Mittelspannungsnetz.</p>\n<p>Seit: 06:57 Uhr<br>Neue Einschätzung: 08:57 Uhr<br>Betroffen: rund 310 Haushalte</p>\n<p><strong>Was Sie jetzt tun können</strong></p>\n<ul><li>Empfindliche Geräte vom Netz trennen</li><li>Kühl- und Gefriergeräte geschlossen halten</li><li>Aufzüge nicht benutzen</li></ul>\n<p>Wir arbeiten daran und melden uns wieder.</p>",
+      "results": [
+        {
+          "channel": "statuspage",
+          "icon": "🌐",
+          "ms": 35,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_updated"
+        },
+        {
+          "channel": "rss",
+          "icon": "📡",
+          "ms": 35,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_regenerated"
+        },
+        {
+          "channel": "widget",
+          "icon": "🧩",
+          "ms": 35,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_updated"
+        },
+        {
+          "channel": "push",
+          "icon": "🔔",
+          "ms": 36,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_push_stored"
+        },
+        {
+          "channel": "heimatinfo",
+          "icon": "🏘️",
+          "ms": 294,
+          "params": {
+            "status": "Published",
+            "ms": 294,
+            "detail": ""
+          },
+          "ok": true,
+          "skipped": false,
+          "messageKey": "ch_msg_hi_created",
+          "postId": "73d3d114-9222-481b-9e7b-2b1297d4c340"
+        },
+        {
+          "channel": "webhook",
+          "icon": "🔗",
+          "ms": 23,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_webhook_local"
+        },
+        {
+          "channel": "press",
+          "icon": "📰",
+          "ms": 13,
+          "params": {
+            "chars": 528
+          },
+          "ok": true,
+          "messageKey": "ch_msg_press_sent"
+        }
+      ],
+      "okCount": 7,
+      "totalCount": 7,
+      "kpiSeconds": 4
+    },
+    {
+      "id": "PUB-AE9CD5",
+      "incidentId": "INC-CA146F",
+      "draftId": "DRF-59E66A",
+      "kind": "allclear",
+      "at": "2026-10-09T05:01:22.740Z",
+      "auto": false,
+      "sentBy": {
+        "id": "swp-01",
+        "name": "Anna Huber"
+      },
+      "measure": "followup",
+      "measuredFrom": "2026-10-09T05:01:22.429Z",
+      "messages": {
+        "de": {
+          "title": "Entwarnung: Strom – Enzkofen",
+          "text": "Entwarnung: Strom\nEnzkofen (94447 Plattling)\n\nDie Versorgung mit Strom läuft wieder normal.\n\nBehoben um: 07:01 Uhr\n\nDanke, dass Sie mitgedacht haben.",
+          "short": "Entwarnung Strom: Enzkofen. Die Versorgung mit Strom läuft wieder normal."
+        },
+        "en": {
+          "title": "All clear: Electricity – Enzkofen",
+          "text": "All clear: Electricity\nEnzkofen (94447 Plattling)\n\nThe Electricity supply is working normally again.\n\nFixed at: 07:01 AM\n\nThank you for bearing with us.",
+          "short": "All clear Electricity: Enzkofen. The Electricity supply is working normally again."
+        },
+        "fr": {
+          "title": "Fin d’alerte: Électricité – Enzkofen",
+          "text": "Fin d’alerte: Électricité\nEnzkofen (94447 Plattling)\n\nL’approvisionnement en Électricité fonctionne de nouveau normalement.\n\nRétabli à: 07:01\n\nMerci d’avoir patienté avec nous.",
+          "short": "Fin d’alerte Électricité: Enzkofen. L’approvisionnement en Électricité fonctionne de nouveau normalement."
+        },
+        "es": {
+          "title": "Todo resuelto: Electricidad – Enzkofen",
+          "text": "Todo resuelto: Electricidad\nEnzkofen (94447 Plattling)\n\nEl suministro de Electricidad vuelve a funcionar con normalidad.\n\nResuelto a las: 07:01\n\nGracias por su paciencia con nosotros.",
+          "short": "Todo resuelto Electricidad: Enzkofen. El suministro de Electricidad vuelve a funcionar con normalidad."
+        }
+      },
+      "html": "<h3>Entwarnung: Strom</h3>\n<p><strong>Enzkofen</strong> (94447 Plattling)</p>\n<p>Die Versorgung mit Strom läuft wieder normal.</p>\n<p>Behoben um: 07:01 Uhr</p>\n<p>Danke, dass Sie mitgedacht haben.</p>",
+      "results": [
+        {
+          "channel": "statuspage",
+          "icon": "🌐",
+          "ms": 33,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_updated"
+        },
+        {
+          "channel": "rss",
+          "icon": "📡",
+          "ms": 33,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_regenerated"
+        },
+        {
+          "channel": "widget",
+          "icon": "🧩",
+          "ms": 33,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_updated"
+        },
+        {
+          "channel": "push",
+          "icon": "🔔",
+          "ms": 34,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_push_stored"
+        },
+        {
+          "channel": "heimatinfo",
+          "icon": "🏘️",
+          "ms": 278,
+          "params": {
+            "status": "Published",
+            "ms": 278,
+            "detail": ""
+          },
+          "ok": true,
+          "skipped": false,
+          "messageKey": "ch_msg_hi_created",
+          "postId": "5380550f-5b2a-40ef-9fce-64ae33fbc8c0"
+        },
+        {
+          "channel": "webhook",
+          "icon": "🔗",
+          "ms": 23,
+          "params": {},
+          "ok": true,
+          "messageKey": "ch_msg_webhook_local"
+        },
+        {
+          "channel": "press",
+          "icon": "📰",
+          "ms": 12,
+          "params": {
+            "chars": 263
+          },
+          "ok": true,
+          "messageKey": "ch_msg_press_sent"
+        }
+      ],
+      "okCount": 7,
+      "totalCount": 7,
+      "kpiSeconds": 0
     }
   ],
   "outbox": [
@@ -29177,6 +30076,123 @@
       "at": "2026-10-08T22:21:14.781Z",
       "incidentId": "INC-DF89DE",
       "body": "PRESSEMITTEILUNG – Stadtwerke Plattling\nPlattling, 09.10.2026\n\nEntwarnung: Abwasser\nPankofen, Altenufer\n\nDie Versorgung mit Abwasser läuft wieder normal.\n\nBehoben um: 00:21 Uhr\n\nVielen Dank für Ihre Geduld.\n\nRückfragen: Pressestelle der Stadtwerke Plattling"
+    },
+    {
+      "id": "PUSH-9DE3B9",
+      "channel": "push",
+      "at": "2026-10-09T04:59:34.811Z",
+      "incidentId": "INC-CA146F",
+      "title": "Störung: Strom – Enzkofen",
+      "body": "Störung Strom: Enzkofen. Voraussichtlich bis 08:57 Uhr."
+    },
+    {
+      "id": "HOOK-26701A",
+      "channel": "webhook",
+      "at": "2026-10-09T04:59:34.827Z",
+      "incidentId": "INC-CA146F",
+      "payload": {
+        "event": "outage.published",
+        "incidentId": "INC-CA146F",
+        "service": "strom",
+        "districts": [
+          "enzkofen"
+        ],
+        "startedAt": "2026-10-09T04:57:44.183Z",
+        "etaAt": "2026-10-09T06:57:44.183Z",
+        "title": "Störung: Strom – Enzkofen",
+        "text": "Störung: Strom\nEnzkofen (94447 Plattling)\n\nDie Versorgung mit Strom ist derzeit unterbrochen.\nDie Störungsbehebung läuft.\nKabelschaden im Mittelspannungsnetz.\n\nSeit: 06:57 Uhr\nVoraussichtlich bis: 08:57 Uhr\nBetroffen: rund 310 Haushalte\n\nWas Sie jetzt tun können:\n- Empfindliche Geräte vom Netz trennen\n- Kühl- und Gefriergeräte geschlossen halten\n- Aufzüge nicht benutzen\n\nWir arbeiten daran und melden uns wieder.",
+        "translations": {
+          "de": "Störung: Strom\nEnzkofen (94447 Plattling)\n\nDie Versorgung mit Strom ist derzeit unterbrochen.\nDie Störungsbehebung läuft.\nKabelschaden im Mittelspannungsnetz.\n\nSeit: 06:57 Uhr\nVoraussichtlich bis: 08:57 Uhr\nBetroffen: rund 310 Haushalte\n\nWas Sie jetzt tun können:\n- Empfindliche Geräte vom Netz trennen\n- Kühl- und Gefriergeräte geschlossen halten\n- Aufzüge nicht benutzen\n\nWir arbeiten daran und melden uns wieder.",
+          "en": "Outage: Electricity\nEnzkofen (94447 Plattling)\n\nThe Electricity supply is currently interrupted.\nRepair work is under way.\nCable fault in the medium-voltage network.\n\nSince: 06:57 AM\nExpected until: 08:57 AM\nAffected: about 310 households\n\nWhat you can do now:\n- Unplug sensitive devices\n- Keep fridges and freezers closed\n- Do not use lifts\n\nWe are working on it and will report back.",
+          "fr": "Panne: Électricité\nEnzkofen (94447 Plattling)\n\nL’approvisionnement en Électricité est actuellement interrompu.\nLa réparation est en cours.\nDéfaut de câble sur le réseau moyenne tension.\n\nDepuis: 06:57\nPrévu jusqu’à: 08:57\nConcernés: environ 310 foyers\n\nCe que vous pouvez faire:\n- Débranchez les appareils sensibles\n- Gardez réfrigérateurs et congélateurs fermés\n- N’utilisez pas les ascenseurs\n\nNous y travaillons et reviendrons vers vous.",
+          "es": "Incidencia: Electricidad\nEnzkofen (94447 Plattling)\n\nEl suministro de Electricidad está interrumpido en este momento.\nLa reparación está en marcha.\nAvería de cable en la red de media tensión.\n\nDesde: 06:57\nPrevisto hasta: 08:57\nAfectados: unos 310 hogares\n\nQué puede hacer ahora:\n- Desconecte los aparatos sensibles\n- Mantenga cerrados frigoríficos y congeladores\n- No utilice los ascensores\n\nSeguimos trabajando y volveremos a informar."
+        }
+      }
+    },
+    {
+      "id": "PRESS-068E25",
+      "channel": "press",
+      "at": "2026-10-09T04:59:34.839Z",
+      "incidentId": "INC-CA146F",
+      "body": "PRESSEMITTEILUNG – Stadtwerke Plattling\nPlattling, 09.10.2026\n\nStörung: Strom\nEnzkofen (94447 Plattling)\n\nDie Versorgung mit Strom ist derzeit unterbrochen.\nDie Störungsbehebung läuft.\nKabelschaden im Mittelspannungsnetz.\n\nSeit: 06:57 Uhr\nVoraussichtlich bis: 08:57 Uhr\nBetroffen: rund 310 Haushalte\n\nWas Sie jetzt tun können:\n- Empfindliche Geräte vom Netz trennen\n- Kühl- und Gefriergeräte geschlossen halten\n- Aufzüge nicht benutzen\n\nWir arbeiten daran und melden uns wieder.\n\nRückfragen: Pressestelle der Stadtwerke Plattling"
+    },
+    {
+      "id": "PUSH-B0F090",
+      "channel": "push",
+      "at": "2026-10-09T05:00:19.596Z",
+      "incidentId": "INC-CA146F",
+      "title": "Update: Strom – Enzkofen",
+      "body": "Update Strom: Enzkofen. Voraussichtlich bis 08:57 Uhr."
+    },
+    {
+      "id": "HOOK-B2BD7C",
+      "channel": "webhook",
+      "at": "2026-10-09T05:00:19.609Z",
+      "incidentId": "INC-CA146F",
+      "payload": {
+        "event": "outage.published",
+        "incidentId": "INC-CA146F",
+        "service": "strom",
+        "districts": [
+          "enzkofen"
+        ],
+        "startedAt": "2026-10-09T04:57:44.183Z",
+        "etaAt": "2026-10-09T06:57:44.183Z",
+        "title": "Update: Strom – Enzkofen",
+        "text": "Update: Strom\nEnzkofen (94447 Plattling)\n\nDie Arbeiten an der Strom-Versorgung dauern noch an.\nDie Störungsbehebung läuft.\nKabelschaden im Mittelspannungsnetz.\n\nSeit: 06:57 Uhr\nNeue Einschätzung: 08:57 Uhr\nBetroffen: rund 310 Haushalte\n\nWas Sie jetzt tun können:\n- Empfindliche Geräte vom Netz trennen\n- Kühl- und Gefriergeräte geschlossen halten\n- Aufzüge nicht benutzen\n\nWir arbeiten daran und melden uns wieder.",
+        "translations": {
+          "de": "Update: Strom\nEnzkofen (94447 Plattling)\n\nDie Arbeiten an der Strom-Versorgung dauern noch an.\nDie Störungsbehebung läuft.\nKabelschaden im Mittelspannungsnetz.\n\nSeit: 06:57 Uhr\nNeue Einschätzung: 08:57 Uhr\nBetroffen: rund 310 Haushalte\n\nWas Sie jetzt tun können:\n- Empfindliche Geräte vom Netz trennen\n- Kühl- und Gefriergeräte geschlossen halten\n- Aufzüge nicht benutzen\n\nWir arbeiten daran und melden uns wieder.",
+          "en": "Update: Electricity\nEnzkofen (94447 Plattling)\n\nWork on the Electricity supply is still going on.\nRepair work is under way.\nCable fault in the medium-voltage network.\n\nSince: 06:57 AM\nNew estimate: 08:57 AM\nAffected: about 310 households\n\nWhat you can do now:\n- Unplug sensitive devices\n- Keep fridges and freezers closed\n- Do not use lifts\n\nWe are working on it and will report back.",
+          "fr": "Mise à jour: Électricité\nEnzkofen (94447 Plattling)\n\nLes travaux sur le réseau Électricité sont toujours en cours.\nLa réparation est en cours.\nDéfaut de câble sur le réseau moyenne tension.\n\nDepuis: 06:57\nNouvelle estimation: 08:57\nConcernés: environ 310 foyers\n\nCe que vous pouvez faire:\n- Débranchez les appareils sensibles\n- Gardez réfrigérateurs et congélateurs fermés\n- N’utilisez pas les ascenseurs\n\nNous y travaillons et reviendrons vers vous.",
+          "es": "Actualización: Electricidad\nEnzkofen (94447 Plattling)\n\nLos trabajos en la red de Electricidad continúan.\nLa reparación está en marcha.\nAvería de cable en la red de media tensión.\n\nDesde: 06:57\nNueva previsión: 08:57\nAfectados: unos 310 hogares\n\nQué puede hacer ahora:\n- Desconecte los aparatos sensibles\n- Mantenga cerrados frigoríficos y congeladores\n- No utilice los ascensores\n\nSeguimos trabajando y volveremos a informar."
+        }
+      }
+    },
+    {
+      "id": "PRESS-63754E",
+      "channel": "press",
+      "at": "2026-10-09T05:00:19.619Z",
+      "incidentId": "INC-CA146F",
+      "body": "PRESSEMITTEILUNG – Stadtwerke Plattling\nPlattling, 09.10.2026\n\nUpdate: Strom\nEnzkofen (94447 Plattling)\n\nDie Arbeiten an der Strom-Versorgung dauern noch an.\nDie Störungsbehebung läuft.\nKabelschaden im Mittelspannungsnetz.\n\nSeit: 06:57 Uhr\nNeue Einschätzung: 08:57 Uhr\nBetroffen: rund 310 Haushalte\n\nWas Sie jetzt tun können:\n- Empfindliche Geräte vom Netz trennen\n- Kühl- und Gefriergeräte geschlossen halten\n- Aufzüge nicht benutzen\n\nWir arbeiten daran und melden uns wieder.\n\nRückfragen: Pressestelle der Stadtwerke Plattling"
+    },
+    {
+      "id": "PUSH-893903",
+      "channel": "push",
+      "at": "2026-10-09T05:01:22.452Z",
+      "incidentId": "INC-CA146F",
+      "title": "Entwarnung: Strom – Enzkofen",
+      "body": "Entwarnung Strom: Enzkofen. Die Versorgung mit Strom läuft wieder normal."
+    },
+    {
+      "id": "HOOK-394817",
+      "channel": "webhook",
+      "at": "2026-10-09T05:01:22.463Z",
+      "incidentId": "INC-CA146F",
+      "payload": {
+        "event": "outage.published",
+        "incidentId": "INC-CA146F",
+        "service": "strom",
+        "districts": [
+          "enzkofen"
+        ],
+        "startedAt": "2026-10-09T04:57:44.183Z",
+        "etaAt": "2026-10-09T06:57:44.183Z",
+        "title": "Entwarnung: Strom – Enzkofen",
+        "text": "Entwarnung: Strom\nEnzkofen (94447 Plattling)\n\nDie Versorgung mit Strom läuft wieder normal.\n\nBehoben um: 07:01 Uhr\n\nDanke, dass Sie mitgedacht haben.",
+        "translations": {
+          "de": "Entwarnung: Strom\nEnzkofen (94447 Plattling)\n\nDie Versorgung mit Strom läuft wieder normal.\n\nBehoben um: 07:01 Uhr\n\nDanke, dass Sie mitgedacht haben.",
+          "en": "All clear: Electricity\nEnzkofen (94447 Plattling)\n\nThe Electricity supply is working normally again.\n\nFixed at: 07:01 AM\n\nThank you for bearing with us.",
+          "fr": "Fin d’alerte: Électricité\nEnzkofen (94447 Plattling)\n\nL’approvisionnement en Électricité fonctionne de nouveau normalement.\n\nRétabli à: 07:01\n\nMerci d’avoir patienté avec nous.",
+          "es": "Todo resuelto: Electricidad\nEnzkofen (94447 Plattling)\n\nEl suministro de Electricidad vuelve a funcionar con normalidad.\n\nResuelto a las: 07:01\n\nGracias por su paciencia con nosotros."
+        }
+      }
+    },
+    {
+      "id": "PRESS-0FF1F9",
+      "channel": "press",
+      "at": "2026-10-09T05:01:22.474Z",
+      "incidentId": "INC-CA146F",
+      "body": "PRESSEMITTEILUNG – Stadtwerke Plattling\nPlattling, 09.10.2026\n\nEntwarnung: Strom\nEnzkofen (94447 Plattling)\n\nDie Versorgung mit Strom läuft wieder normal.\n\nBehoben um: 07:01 Uhr\n\nDanke, dass Sie mitgedacht haben.\n\nRückfragen: Pressestelle der Stadtwerke Plattling"
     }
   ],
   "pushSubs": [],
