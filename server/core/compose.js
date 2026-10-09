@@ -644,6 +644,11 @@ function buildHtml({
               L.households.replace("{n}", households)
             )}`
           : "") +
+        (incident.radiusMeters
+          ? `<br>${esc(L.radius)}: ${esc(
+              (incident.radiusMeters / 1000).toFixed(1)
+            )} km`
+          : "") +
         "</p>"
     );
   }
