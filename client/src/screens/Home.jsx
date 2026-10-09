@@ -33,13 +33,13 @@ export default function Home({
   go,
 }) {
   const [busy, setBusy] = useState("");
-  const [showAllHistory, setShowAllHistory] = useState(false);
+  const [historyCount, setHistoryCount] = useState(4);
 
   const running = incidents.filter(
     (i) => i.status !== "resolved" && i.publishedAt
   );
   const resolved = incidents.filter((i) => i.status === "resolved");
-  const displayedResolved = showAllHistory ? resolved : resolved.slice(0, 10);
+  const displayedResolved = resolved.slice(0, historyCount);
   const waiting = drafts.filter((d) => d.status === "draft").length;
 
   /** One press: mark the outage as fixed, write the all-clear, send it. */
@@ -207,14 +207,27 @@ export default function Home({
               />
             ))}
           </div>
-          {resolved.length > 10 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowAllHistory(!showAllHistory)}
-            >
-              {showAllHistory ? t("c_show_less") : t("c_show_more")}
-            </Button>
+          {resolved.length > 4 && (
+            <div className="row" style={{ marginTop: 8 }}>
+              {historyCount < resolved.length && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setHistoryCount(historyCount + 4)}
+                >
+                  {t("c_show_more")}
+                </Button>
+              )}
+              {historyCount > 4 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setHistoryCount(historyCount - 4)}
+                >
+                  {t("c_show_less")}
+                </Button>
+              )}
+            </div>
           )}
         </Card>
       )}
