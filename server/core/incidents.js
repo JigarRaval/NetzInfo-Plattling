@@ -69,5 +69,6 @@ export function recalculate(incident, patch) {
     ...patch,
     etaMinutes: Number(merged.etaMinutes),
     etaAt: addMinutes(incident.capturedAt, Number(merged.etaMinutes)),
+    radiusMeters: merged.radiusMeters || incident.radiusMeters || null,
   };
 }
