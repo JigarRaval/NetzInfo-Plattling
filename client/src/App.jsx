@@ -241,6 +241,13 @@ export default function App() {
           </button>
 
           <div className="header-tools">
+            {/* Current user indicator */}
+            {worker && (
+              <span className="header-user" title={t("lg_out")}>
+                👤 {worker.name}
+              </span>
+            )}
+
             <select
               className="select"
               value={lang}
@@ -277,7 +284,7 @@ export default function App() {
               <button
                 className="iconbtn"
                 onClick={signOut}
-                title={`${worker ? worker.name + " · " : ""}${t("lg_out")}`}
+                title={t("lg_out")}
                 aria-label={t("lg_out")}
               >
                 🔒

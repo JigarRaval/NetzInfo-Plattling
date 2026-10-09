@@ -186,10 +186,22 @@ export default function Home({
                   incident.service,
                   lang
                 )} · ${districtNames(catalog, incident.districts)}`}
-                meta={`✅ ${relativeTime(
-                  incident.resolvedAt || incident.capturedAt,
-                  t
-                )}`}
+                meta={
+                  <>
+                    ✅ {relativeTime(
+                      incident.resolvedAt || incident.capturedAt,
+                      t
+                    )}
+                    {incident.reportedBy?.name && (
+                      <>
+                        {" · "}
+                        {t("hm_reported_by", {
+                          name: incident.reportedBy.name,
+                        })}
+                      </>
+                    )}
+                  </>
+                }
               />
             ))}
           </div>
