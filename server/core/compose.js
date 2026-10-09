@@ -497,6 +497,7 @@ export function compose(incident, kind = "first", lang = "de", variant = 0) {
   lines.push(opening);
   if (toneLead) lines.push(toneLead);
   if (cause && kind !== "allclear") lines.push(`${cause}.`);
+  if (incident.note && kind !== "allclear") lines.push(`${incident.note}.`);
   lines.push("");
 
   if (kind === "allclear") {
@@ -624,6 +625,7 @@ function buildHtml({
     opening,
     toneLead,
     cause && kind !== "allclear" ? `${cause}.` : "",
+    incident.note && kind !== "allclear" ? `${incident.note}.` : "",
   ].filter(Boolean);
   parts.push(`<p>${intro.map(esc).join("<br>")}</p>`);
 
