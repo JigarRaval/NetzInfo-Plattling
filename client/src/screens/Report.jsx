@@ -775,7 +775,7 @@ export default function Report({
             </Field>
 
             <Field
-              label={`�📝 ${t("rp_note")}`}
+              label={`📝 ${t("rp_note")}`}
               hint={t("rp_dictate_hint")}
               htmlFor="note"
             >

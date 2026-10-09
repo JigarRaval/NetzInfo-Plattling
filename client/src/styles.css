@@ -180,6 +180,9 @@ a { color: var(--brand-2); text-underline-offset: 2px; }
     background: transparent;
     opacity: 0.8;
   }
+  .header-user-avatar {
+    border: 2px solid var(--surface-3);
+  }
   .header-user-name {
     display: none;
   }
