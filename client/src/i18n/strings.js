@@ -70,6 +70,18 @@ export const STRINGS = {
     fr: "foyers",
     es: "hogares",
   },
+  c_show_more: {
+    de: "Mehr anzeigen",
+    en: "Show more",
+    fr: "Afficher plus",
+    es: "Mostrar más",
+  },
+  c_show_less: {
+    de: "Weniger anzeigen",
+    en: "Show less",
+    fr: "Afficher moins",
+    es: "Mostrar menos",
+  },
   c_just_now: {
     de: "gerade eben",
     en: "just now",

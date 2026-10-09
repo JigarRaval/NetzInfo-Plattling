@@ -33,11 +33,13 @@ export default function Home({
   go,
 }) {
   const [busy, setBusy] = useState("");
+  const [showAllHistory, setShowAllHistory] = useState(false);
 
   const running = incidents.filter(
     (i) => i.status !== "resolved" && i.publishedAt
   );
-  const resolved = incidents.filter((i) => i.status === "resolved").slice(0, 4);
+  const resolved = incidents.filter((i) => i.status === "resolved");
+  const displayedResolved = showAllHistory ? resolved : resolved.slice(0, 4);
   const waiting = drafts.filter((d) => d.status === "draft").length;
 
   /** One press: mark the outage as fixed, write the all-clear, send it. */
@@ -177,7 +179,7 @@ export default function Home({
       {resolved.length > 0 && (
         <Card icon="📜" title={t("hm_history")}>
           <div className="list">
-            {resolved.map((incident) => (
+            {displayedResolved.map((incident) => (
               <Item
                 key={incident.id}
                 icon={serviceIcon(catalog, incident.service)}
@@ -205,6 +207,15 @@ export default function Home({
               />
             ))}
           </div>
+          {resolved.length > 4 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAllHistory(!showAllHistory)}
+            >
+              {showAllHistory ? t("c_show_less") : t("c_show_more")}
+            </Button>
+          )}
         </Card>
       )}
 
