@@ -1,91 +1,106 @@
 /**
- * store.js — a tiny JSON-file database.
+ * store.js — data store abstraction layer
  *
- * The only file that knows how data is persisted. Replacing it with MongoDB
- * means re-implementing these six functions and nothing else.
+ * Switches between JSON file storage and MongoDB based on configuration.
+ * For MongoDB, all functions are async. For JSON, they are synchronous but wrapped in promises.
  */
 
-import fs from "node:fs";
-import path from "node:path";
 import { config } from "../config.js";
 
-const EMPTY = {
-  incidents: [],
-  drafts: [],
-  publications: [],
-  outbox: [],
-  pushSubs: [],
-  meta: {},
-  customDistricts: [],
-  customPresets: [],
-  customServices: [],
-};
+let storeImpl = null;
+let isMongo = false;
+let initPromise = null;
 
-let db = null;
+async function initStore() {
+  if (storeImpl) return;
 
-function load() {
-  if (db) return db;
-  try {
-    db = {
-      ...structuredClone(EMPTY),
-      ...JSON.parse(fs.readFileSync(config.dataFile, "utf8")),
+  if (config.mongoUri) {
+    // Use MongoDB
+    const { connectMongo } = await import("./mongodb.js");
+    const {
+      all,
+      insert,
+      findById,
+      update,
+      replace,
+      saveMeta,
+      addPushSubscription,
+    } = await import("./store-mongo.js");
+
+    // Connect to MongoDB
+    await connectMongo(config.mongoUri);
+
+    storeImpl = {
+      all,
+      insert,
+      findById,
+      update,
+      replace,
+      saveMeta,
+      addPushSubscription,
     };
-  } catch {
-    db = structuredClone(EMPTY);
+    isMongo = true;
+  } else {
+    // Use JSON file storage (wrap in promises for consistency)
+    const jsonStore = await import("./store-json.js");
+    storeImpl = {
+      all: () => Promise.resolve(jsonStore.all()),
+      insert: (c, d) => Promise.resolve(jsonStore.insert(c, d)),
+      findById: (c, id) => Promise.resolve(jsonStore.findById(c, id)),
+      update: (c, id, p) => Promise.resolve(jsonStore.update(c, id, p)),
+      replace: (c, r) => Promise.resolve(jsonStore.replace(c, r)),
+      saveMeta: (p) => Promise.resolve(jsonStore.saveMeta(p)),
+      addPushSubscription: (s) => Promise.resolve(jsonStore.addPushSubscription(s)),
+    };
+    isMongo = false;
   }
-  return db;
 }
 
-/** Atomic write: temp file + rename, so a crash cannot corrupt the database. */
-function persist() {
-  fs.mkdirSync(path.dirname(config.dataFile), { recursive: true });
-  const tmp = `${config.dataFile}.tmp`;
-  fs.writeFileSync(tmp, JSON.stringify(db, null, 2));
-  fs.renameSync(tmp, config.dataFile);
-}
-
-export function all() {
-  return load();
-}
-
-export function insert(collection, doc) {
-  load()[collection].push(doc);
-  persist();
-  return doc;
-}
-
-export function findById(collection, id) {
-  return load()[collection].find((d) => d.id === id) || null;
-}
-
-/** Patch a document; `patch` is an object to merge or a function to apply. */
-export function update(collection, id, patch) {
-  const doc = findById(collection, id);
-  if (!doc) return null;
-  if (typeof patch === "function") patch(doc);
-  else Object.assign(doc, patch);
-  persist();
-  return doc;
-}
-
-export function replace(collection, rows) {
-  load()[collection] = rows;
-  persist();
-}
-
-/** Small key/value area for things that are not documents (e.g. push keys). */
-export function saveMeta(patch) {
-  load().meta = { ...(load().meta || {}), ...patch };
-  persist();
-  return load().meta;
-}
-
-/** Store a push subscription once per endpoint. */
-export function addPushSubscription(subscription) {
-  const list = load().pushSubs;
-  if (!list.some((s) => s.endpoint === subscription.endpoint)) {
-    list.push(subscription);
-    persist();
+export async function initializeStore() {
+  if (!initPromise) {
+    initPromise = initStore();
   }
-  return list.length;
+  await initPromise;
+}
+
+async function getStore() {
+  if (!storeImpl) {
+    if (!initPromise) {
+      initPromise = initStore();
+    }
+    await initPromise;
+  }
+  return storeImpl;
+}
+
+export function useMongo() {
+  return isMongo;
+}
+
+export async function all() {
+  return (await getStore()).all();
+}
+
+export async function insert(collection, doc) {
+  return (await getStore()).insert(collection, doc);
+}
+
+export async function findById(collection, id) {
+  return (await getStore()).findById(collection, id);
+}
+
+export async function update(collection, id, patch) {
+  return (await getStore()).update(collection, id, patch);
+}
+
+export async function replace(collection, rows) {
+  return (await getStore()).replace(collection, rows);
+}
+
+export async function saveMeta(patch) {
+  return (await getStore()).saveMeta(patch);
+}
+
+export async function addPushSubscription(subscription) {
+  return (await getStore()).addPushSubscription(subscription);
 }

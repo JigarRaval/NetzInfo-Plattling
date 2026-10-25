@@ -11,19 +11,19 @@
 
 import { getPreset, countHouseholds, SEVERITIES } from '../data/catalog.js';
 
-export function computeSeverity(input) {
+export async function computeSeverity(input) {
   const reasons = [];
   let rank = 1;
 
   // Rule 1 — the preset carries a base level (a burst pipe is never "low").
-  const preset = getPreset(input.presetId);
+  const preset = await getPreset(input.presetId);
   if (preset) {
     rank = Math.max(rank, SEVERITIES[preset.baseSeverity].rank);
     reasons.push({ key: 'sev_preset', params: { preset: preset.id, level: preset.baseSeverity } });
   }
 
   // Rule 2 — the number of affected households.
-  const households = countHouseholds(input.districts);
+  const households = await countHouseholds(input.districts);
   if (households >= 2000) { rank = Math.max(rank, 4); reasons.push({ key: 'sev_households_critical', params: { count: households } }); }
   else if (households >= 800) { rank = Math.max(rank, 3); reasons.push({ key: 'sev_households_high', params: { count: households } }); }
   else if (households > 0) { reasons.push({ key: 'sev_households_info', params: { count: households } }); }

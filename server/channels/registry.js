@@ -9,7 +9,6 @@
 
 import { insert } from "../lib/store.js";
 import * as push from "../lib/push.js";
-import { config } from "../config.js";
 import { makeId, nowIso, secondsBetween } from "../lib/time.js";
 import { composeAll } from "../core/compose.js";
 import * as heimat from "./heimatinfo.js";
@@ -17,7 +16,7 @@ import * as heimat from "./heimatinfo.js";
 /** Channels served by this application itself. */
 const statusPage = {
   id: "statuspage",
-  icon: "🌐",
+  icon: "globe",
   // The public page reads the same records we store, so publishing is instant
   // and the page can never drift out of sync with the database.
   async send() {
@@ -27,7 +26,7 @@ const statusPage = {
 
 const rss = {
   id: "rss",
-  icon: "📡",
+  icon: "radio",
   async send() {
     return { ok: true, messageKey: "ch_msg_regenerated" };
   },
@@ -35,7 +34,7 @@ const rss = {
 
 const widget = {
   id: "widget",
-  icon: "🧩",
+  icon: "puzzle",
   async send() {
     return { ok: true, messageKey: "ch_msg_updated" };
   },
@@ -48,7 +47,7 @@ const widget = {
  */
 const pushChannel = {
   id: "push",
-  icon: "🔔",
+  icon: "bell",
   async send({ incident, message }) {
     insert("outbox", {
       id: makeId("PUSH"),
@@ -76,83 +75,10 @@ const pushChannel = {
   },
 };
 
-/** A genuine outgoing HTTP POST; falls back to a local sink when unconfigured. */
-const webhook = {
-  id: "webhook",
-  icon: "🔗",
-  async send({ incident, message, messages }) {
-    const url = config.webhookUrl;
-    const payload = {
-      event: "outage.published",
-      incidentId: incident.id,
-      service: incident.service,
-      severity: incident.severity,
-      districts: incident.districts,
-      startedAt: incident.startedAt,
-      etaAt: incident.etaAt,
-      title: message.title,
-      text: message.text,
-      translations: Object.fromEntries(
-        Object.entries(messages).map(([l, m]) => [l, m.text])
-      ),
-    };
-
-    if (!url) {
-      insert("outbox", {
-        id: makeId("HOOK"),
-        channel: "webhook",
-        at: nowIso(),
-        incidentId: incident.id,
-        payload,
-      });
-      return { ok: true, messageKey: "ch_msg_webhook_local" };
-    }
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(8000),
-      });
-      return {
-        ok: res.ok,
-        messageKey: "ch_msg_webhook_sent",
-        params: { status: res.status },
-      };
-    } catch (err) {
-      return {
-        ok: false,
-        messageKey: "ch_msg_webhook_failed",
-        params: { detail: err.message },
-      };
-    }
-  },
-};
-
-/** The editorial system receives a formal press release for every message. */
-const press = {
-  id: "press",
-  icon: "📰",
-  async send({ incident, pressRelease }) {
-    insert("outbox", {
-      id: makeId("PRESS"),
-      channel: "press",
-      at: nowIso(),
-      incidentId: incident.id,
-      body: pressRelease,
-    });
-    return {
-      ok: true,
-      messageKey: "ch_msg_press_sent",
-      params: { chars: pressRelease.length },
-    };
-  },
-};
-
 /** The external platform, wrapped in the same contract. */
 const heimatInfo = {
   id: "heimatinfo",
-  icon: "🏘️",
+  icon: "home",
   external: true,
   async send({ incident, message }) {
     return heimat.publishPost({
@@ -169,8 +95,6 @@ export const CHANNELS = [
   widget,
   pushChannel,
   heimatInfo,
-  webhook,
-  press,
 ];
 
 /** Channel metadata for the interface (names come from the translations). */
@@ -201,22 +125,8 @@ export async function publishEverywhere(incident, draft, options = {}) {
   // Send exactly what was on screen when the button was pressed, including
   // any manual edit. Re-composing here used to silently discard the edit.
   const messages =
-    draft.messages || composeAll(incident, kind, incident.variant);
+    draft.messages || await composeAll(incident, kind, incident.variant);
   const message = messages.de; // German is the lead version
-
-  const stamp = new Date().toLocaleDateString("de-DE", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-  const pressRelease = [
-    "PRESSEMITTEILUNG – Stadtwerke Plattling",
-    `Plattling, ${stamp}`,
-    "",
-    message.text,
-    "",
-    "Rückfragen: Pressestelle der Stadtwerke Plattling",
-  ].join("\n");
 
   const targets = CHANNELS; // every channel is served every time
 
@@ -228,7 +138,6 @@ export async function publishEverywhere(incident, draft, options = {}) {
           incident,
           message,
           messages,
-          pressRelease,
           kind,
         });
         return {
@@ -299,6 +208,7 @@ export function buildRss(items, baseUrl = "") {
       (i) => `    <item>
       <title>${esc(i.title)}</title>
       <description>${esc(i.text)}</description>
+      <link>${baseUrl}/feed.xml</link>
       <guid isPermaLink="false">${esc(i.id)}</guid>
       <pubDate>${new Date(i.at).toUTCString()}</pubDate>
     </item>`
@@ -306,10 +216,11 @@ export function buildRss(items, baseUrl = "") {
     .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Stadtwerke Plattling – Störungsmeldungen</title>
     <link>${baseUrl}/</link>
+    <atom:link rel="self" href="${baseUrl}/feed.xml" type="application/rss+xml" />
     <description>Aktuelle Störungen bei Strom, Wasser, Abwasser und Fernwärme</description>
     <language>de-de</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>

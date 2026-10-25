@@ -12,7 +12,19 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 const proxy = {
-  '/api': { target: 'http://localhost:4000', changeOrigin: true },
+  '/api': { 
+    target: 'http://localhost:4000', 
+    changeOrigin: true,
+    secure: false,
+    configure: (proxy, options) => {
+      proxy.on('error', (err, req, res) => {
+        console.log('proxy error', err);
+      });
+      proxy.on('proxyReq', (proxyReq, req, res) => {
+        console.log('proxying:', req.method, req.url, 'to', options.target);
+      });
+    }
+  },
   '/feed.xml': { target: 'http://localhost:4000', changeOrigin: true },
   '/widget': { target: 'http://localhost:4000', changeOrigin: true }
 };

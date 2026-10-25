@@ -8,7 +8,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { api } from "../lib/api.js";
-import { Badge, Button, Card, Empty, Field, Item } from "../ui/kit.jsx";
+import { Badge, Button, Card, Empty, Field, Item, renderIcon } from "../ui/kit.jsx";
 // Note: RSS / widget / JSON links deliberately do NOT appear here. They are
 // outputs for other systems, not something a citizen should be offered; they
 // live in the staff area under "Developer tools".
@@ -64,14 +64,14 @@ export default function Public({ t, lang, now, catalog }) {
   return (
     <div className="stack">
       <div>
-        <h1>👥 {t("pb_title")}</h1>
+        <h1>{t("pb_title")}</h1>
         <p className="muted small">{t("pb_sub")}</p>
       </div>
 
       {/* ------------------------------------------- active incidents --- */}
       {data.active.length === 0 && (
         <Card>
-          <Empty icon="✅">{t("pb_all_ok")}</Empty>
+          <Empty icon="check">{t("pb_all_ok")}</Empty>
         </Card>
       )}
 
@@ -80,7 +80,7 @@ export default function Public({ t, lang, now, catalog }) {
         return (
           <Card
             key={item.id}
-            icon={serviceIcon(catalog, item.service)}
+            icon={renderIcon(serviceIcon(catalog, item.service), 20)}
             title={`${serviceName(catalog, item.service, lang)} · ${presetName(
               catalog,
               item.presetId,
@@ -88,27 +88,26 @@ export default function Public({ t, lang, now, catalog }) {
             )}`}
             tail={
               <Badge tone={level.tone}>
-                {level.icon} {level.label}
+                {renderIcon(level.icon, 16)} {level.label}
               </Badge>
             }
           >
             <p className="small muted" style={{ marginTop: -6 }}>
-              📍 {item.districts.map((d) => d.name).join(", ")} · 🕒{" "}
-              {t("pb_since")} {clockTime(item.startedAt, lang)}
-              {" · "}⏳ {t("pb_until")} {clockTime(item.etaAt, lang)}
+              {item.districts.map((d) => d.name).join(", ")} · {t("pb_since")} {clockTime(item.startedAt, lang)}
+              {" · "}{t("pb_until")} {clockTime(item.etaAt, lang)}
               {item.updateCount > 1 &&
-                ` · 🔄 ${t("pb_updates", { n: item.updateCount })}`}
+                ` · ${t("pb_updates", { n: item.updateCount })}`}
             </p>
             <pre className="message">{item.text}</pre>
             <p className="xs muted" style={{ marginTop: 10, marginBottom: 0 }}>
-              📤 {t("pb_published")} {relativeTime(item.publishedAt, now, t)}
+              {t("pb_published")} {relativeTime(item.publishedAt, now, t)}
             </p>
           </Card>
         );
       })}
 
       {/* ------------------------------------------------------- map ---- */}
-      <Card icon="🗺️" title={t("pb_map_title")} subtitle={t("pb_map_hint")}>
+      <Card icon="map" title={t("pb_map_title")} subtitle={t("pb_map_hint")}>
         <DistrictMap
           districts={catalog.districts}
           affected={affected}
@@ -117,7 +116,7 @@ export default function Public({ t, lang, now, catalog }) {
       </Card>
 
       {/* --------------------------------------------- ask a question --- */}
-      <Card icon="💬" title={t("pb_ask_title")} subtitle={t("pb_scope")}>
+      <Card icon="chat" title={t("pb_ask_title")} subtitle={t("pb_scope")}>
         <form onSubmit={ask}>
           <Field htmlFor="question">
             <input
@@ -128,7 +127,7 @@ export default function Public({ t, lang, now, catalog }) {
               onChange={(event) => setQuestion(event.target.value)}
             />
           </Field>
-          <Button icon="❓" type="submit" disabled={asking}>
+          <Button icon="help" type="submit" disabled={asking}>
             {asking ? t("c_loading") : t("pb_ask_btn")}
           </Button>
         </form>
@@ -138,7 +137,7 @@ export default function Public({ t, lang, now, catalog }) {
             <pre className="message">{answer.answer}</pre>
             {answer.sources.length > 0 && (
               <p className="xs muted" style={{ marginTop: 8, marginBottom: 0 }}>
-                📎 {t("pb_source")}:{" "}
+                {t("pb_source")}:{" "}
                 {answer.sources
                   .map(
                     (s) =>
@@ -155,18 +154,18 @@ export default function Public({ t, lang, now, catalog }) {
 
       {/* ------------------------------------------ resolved incidents -- */}
       {data.resolved.length > 0 && (
-        <Card icon="📜" title={t("pb_resolved")}>
+        <Card icon="scroll" title={t("pb_resolved")}>
           <div className="list">
             {data.resolved.map((item) => (
               <Item
                 key={item.id}
-                icon={serviceIcon(catalog, item.service)}
+                icon={renderIcon(serviceIcon(catalog, item.service), 23)}
                 title={`${serviceName(
                   catalog,
                   item.service,
                   lang
                 )} · ${item.districts.map((d) => d.name).join(", ")}`}
-                meta={`✅ ${relativeTime(
+                meta={`${relativeTime(
                   item.resolvedAt || item.publishedAt,
                   now,
                   t

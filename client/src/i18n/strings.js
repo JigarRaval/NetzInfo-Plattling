@@ -26,6 +26,7 @@ export const STRINGS = {
   nav_report: { de: "Melden", en: "Report", fr: "Signaler", es: "Notificar" },
   nav_send: { de: "Senden", en: "Send", fr: "Envoyer", es: "Enviar" },
   nav_manual: { de: "Hilfe", en: "Help", fr: "Aide", es: "Ayuda" },
+  nav_profile: { de: "Profil", en: "Profile", fr: "Profil", es: "Perfil" },
 
   /* -------------------------------------------------------------- common */
   c_loading: {
@@ -43,6 +44,7 @@ export const STRINGS = {
   },
   c_save: { de: "Speichern", en: "Save", fr: "Enregistrer", es: "Guardar" },
   c_cancel: { de: "Abbrechen", en: "Cancel", fr: "Annuler", es: "Cancelar" },
+  c_back: { de: "Zurück", en: "Back", fr: "Retour", es: "Volver" },
   c_refresh: {
     de: "Aktualisieren",
     en: "Refresh",
@@ -82,6 +84,8 @@ export const STRINGS = {
     fr: "Afficher moins",
     es: "Mostrar menos",
   },
+  c_yes: { de: "Ja", en: "Yes", fr: "Oui", es: "Sí" },
+  c_no: { de: "Nein", en: "No", fr: "Non", es: "No" },
   c_just_now: {
     de: "gerade eben",
     en: "just now",
@@ -233,6 +237,158 @@ export const STRINGS = {
     en: "until {time}",
     fr: "jusqu’à {time}",
     es: "hasta {time}",
+  },
+
+  /* ---------------------------------------------------------- incident detail */
+  id_not_found: {
+    de: "Störung nicht gefunden",
+    en: "Incident not found",
+    fr: "Incident non trouvé",
+    es: "Incidente no encontrado",
+  },
+  id_status_resolved: {
+    de: "Behoben",
+    en: "Resolved",
+    fr: "Résolu",
+    es: "Resuelto",
+  },
+  id_status_running: {
+    de: "Laufend",
+    en: "Running",
+    fr: "En cours",
+    es: "En curso",
+  },
+  id_status_draft: {
+    de: "Entwurf",
+    en: "Draft",
+    fr: "Brouillon",
+    es: "Borrador",
+  },
+  id_location: {
+    de: "Standort",
+    en: "Location",
+    fr: "Emplacement",
+    es: "Ubicación",
+  },
+  id_districts: {
+    de: "Stadtteile",
+    en: "Districts",
+    fr: "Quartiers",
+    es: "Distritos",
+  },
+  id_street: {
+    de: "Straße",
+    en: "Street",
+    fr: "Rue",
+    es: "Calle",
+  },
+  id_coords: {
+    de: "Koordinaten",
+    en: "Coordinates",
+    fr: "Coordonnées",
+    es: "Coordenadas",
+  },
+  id_radius: {
+    de: "Radius",
+    en: "Radius",
+    fr: "Rayon",
+    es: "Radio",
+  },
+  id_timing: {
+    de: "Zeitangaben",
+    en: "Timing",
+    fr: "Horaires",
+    es: "Horarios",
+  },
+  id_started: {
+    de: "Beginn",
+    en: "Started",
+    fr: "Commencé",
+    es: "Iniciado",
+  },
+  id_captured: {
+    de: "Erfasst",
+    en: "Captured",
+    fr: "Capturé",
+    es: "Capturado",
+  },
+  id_eta: {
+    de: "Voraussichtliches Ende",
+    en: "ETA",
+    fr: "Prévision",
+    es: "Previsión",
+  },
+  id_eta_minutes: {
+    de: "Dauer in Minuten",
+    en: "Duration (minutes)",
+    fr: "Durée (minutes)",
+    es: "Duración (minutos)",
+  },
+  id_resolved: {
+    de: "Behoben am",
+    en: "Resolved at",
+    fr: "Résolu à",
+    es: "Resuelto a las",
+  },
+  id_published: {
+    de: "Veröffentlicht am",
+    en: "Published at",
+    fr: "Publié à",
+    es: "Publicado a las",
+  },
+  id_metadata: {
+    de: "Metadaten",
+    en: "Metadata",
+    fr: "Métadonnées",
+    es: "Metadatos",
+  },
+  id_id: {
+    de: "ID",
+    en: "ID",
+    fr: "ID",
+    es: "ID",
+  },
+  id_status: {
+    de: "Status",
+    en: "Status",
+    fr: "Statut",
+    es: "Estado",
+  },
+  id_source: {
+    de: "Quelle",
+    en: "Source",
+    fr: "Source",
+    es: "Fuente",
+  },
+  id_reported_by: {
+    de: "Gemeldet von",
+    en: "Reported by",
+    fr: "Signalé par",
+    es: "Informado por",
+  },
+  id_note: {
+    de: "Notiz",
+    en: "Note",
+    fr: "Note",
+    es: "Nota",
+  },
+  id_critical: {
+    de: "Kritisch",
+    en: "Critical",
+    fr: "Critique",
+    es: "Crítico",
+  },
+  id_planned: {
+    de: "Geplant",
+    en: "Planned",
+    fr: "Planifié",
+    es: "Planificado",
+  },
+  id_boil_notice: {
+    de: "Abkochwarnung",
+    en: "Boil notice",
+    fr: "Avis d'ébullition",
+    es: "Aviso de ebullición",
   },
 
   /* --------------------------------------------------------------- report */
@@ -525,13 +681,6 @@ export const STRINGS = {
     fr: "Heimat-Info",
     es: "Heimat-Info",
   },
-  ch_webhook: {
-    de: "REST-Webhook",
-    en: "REST webhook",
-    fr: "Webhook REST",
-    es: "Webhook REST",
-  },
-  ch_press: { de: "Presse", en: "Press", fr: "Presse", es: "Prensa" },
 
   ch_msg_updated: {
     de: "Aktualisiert",
@@ -544,30 +693,6 @@ export const STRINGS = {
     en: "Regenerated",
     fr: "Régénéré",
     es: "Regenerado",
-  },
-  ch_msg_webhook_local: {
-    de: "Kein Ziel hinterlegt – lokal abgelegt",
-    en: "No target set – stored locally",
-    fr: "Aucune cible – stocké localement",
-    es: "Sin destino: guardado localmente",
-  },
-  ch_msg_webhook_sent: {
-    de: "Gesendet (HTTP {status})",
-    en: "Sent (HTTP {status})",
-    fr: "Envoyé (HTTP {status})",
-    es: "Enviado (HTTP {status})",
-  },
-  ch_msg_webhook_failed: {
-    de: "Fehlgeschlagen: {detail}",
-    en: "Failed: {detail}",
-    fr: "Échec : {detail}",
-    es: "Error: {detail}",
-  },
-  ch_msg_press_sent: {
-    de: "Pressetext übergeben",
-    en: "Press text handed over",
-    fr: "Texte de presse transmis",
-    es: "Texto de prensa entregado",
   },
   ch_msg_hi_created: {
     de: "Beitrag angelegt ({status})",
@@ -615,6 +740,529 @@ export const STRINGS = {
     es: "Entrar",
   },
   lg_out: { de: "Abmelden", en: "Sign out", fr: "Se déconnecter", es: "Salir" },
+  lg_username: {
+    de: "Benutzername",
+    en: "Username",
+    fr: "Nom d'utilisateur",
+    es: "Nombre de usuario",
+  },
+  lg_pin: { de: "PIN", en: "PIN", fr: "Code", es: "PIN" },
+  lg_remember: {
+    de: "Angemeldet bleiben",
+    en: "Remember me",
+    fr: "Se souvenir de moi",
+    es: "Recordarme",
+  },
+  lg_show_pin: {
+    de: "PIN anzeigen",
+    en: "Show PIN",
+    fr: "Afficher le code",
+    es: "Mostrar PIN",
+  },
+  lg_hide_pin: {
+    de: "PIN ausblenden",
+    en: "Hide PIN",
+    fr: "Masquer le code",
+    es: "Ocultar PIN",
+  },
+  lg_verifying: {
+    de: "Wird überprüft...",
+    en: "Verifying...",
+    fr: "Vérification...",
+    es: "Verificando...",
+  },
+  lg_error_required: {
+    de: "Bitte geben Sie Benutzername und PIN ein",
+    en: "Please enter username and PIN",
+    fr: "Veuillez entrer votre nom et votre code",
+    es: "Por favor ingrese nombre de usuario y PIN",
+  },
+  lg_error_invalid: {
+    de: "Ungültiger Benutzername oder PIN",
+    en: "Invalid username or PIN",
+    fr: "Nom d'utilisateur ou code invalide",
+    es: "Nombre de usuario o PIN inválido",
+  },
+  lg_error_locked: {
+    de: "Zu viele Versuche. Versuchen Sie es erneut in {n} Sekunden.",
+    en: "Too many attempts. Try again in {n} seconds.",
+    fr: "Trop de tentatives. Réessayez dans {n} secondes.",
+    es: "Demasiados intentos. Inténtelo de nuevo en {n} segundos.",
+  },
+  lg_forgot_pin: {
+    de: "PIN vergessen?",
+    en: "Forgot PIN?",
+    fr: "Code oublié ?",
+    es: "¿Olvidó su PIN?",
+  },
+  lg_contact_admin: {
+    de: "Wenden Sie sich an Ihren Administrator, um Ihr PIN zurückzusetzen.",
+    en: "Contact your administrator to reset your PIN.",
+    fr: "Contactez votre administrateur pour réinitialiser votre code.",
+    es: "Contacte a su administrador para restablecer su PIN.",
+  },
+
+  /* ---------------------------------------------------------------- user menu */
+  um_menu: {
+    de: "Benutzermenü",
+    en: "User menu",
+    fr: "Menu utilisateur",
+    es: "Menú de usuario",
+  },
+  um_profile: { de: "Profil", en: "Profile", fr: "Profil", es: "Perfil" },
+  um_settings: {
+    de: "Einstellungen",
+    en: "Settings",
+    fr: "Paramètres",
+    es: "Configuración",
+  },
+  um_logout: {
+    de: "Abmelden",
+    en: "Logout",
+    fr: "Déconnexion",
+    es: "Cerrar sesión",
+  },
+
+  /* ---------------------------------------------------------------- empty states */
+  es_no_incidents: {
+    de: "Keine aktiven Störungen",
+    en: "No active incidents",
+    fr: "Aucun incident actif",
+    es: "No hay incidentes activos",
+  },
+  es_no_history: {
+    de: "Keine behobenen Störungen",
+    en: "No resolved incidents",
+    fr: "Aucun incident résolu",
+    es: "No hay incidentes resueltos",
+  },
+  es_no_drafts: {
+    de: "Keine Entwürfe",
+    en: "No drafts",
+    fr: "Aucun brouillon",
+    es: "Sin borradores",
+  },
+  es_no_services: {
+    de: "Keine Dienste verfügbar",
+    en: "No services available",
+    fr: "Aucun service disponible",
+    es: "No hay servicios disponibles",
+  },
+  es_no_districts: {
+    de: "Keine Gebiete verfügbar",
+    en: "No districts available",
+    fr: "Aucun district disponible",
+    es: "No hay distritos disponibles",
+  },
+  es_add_first: {
+    de: "Ersten Eintrag hinzufügen",
+    en: "Add first entry",
+    fr: "Ajouter la première entrée",
+    es: "Agregar primera entrada",
+  },
+
+  /* ---------------------------------------------------------------- loading states */
+  ls_loading: {
+    de: "Wird geladen...",
+    en: "Loading...",
+    fr: "Chargement...",
+    es: "Cargando...",
+  },
+  ls_fetching: {
+    de: "Daten werden abgerufen...",
+    en: "Fetching data...",
+    fr: "Récupération des données...",
+    es: "Obteniendo datos...",
+  },
+  ls_processing: {
+    de: "Wird verarbeitet...",
+    en: "Processing...",
+    fr: "Traitement...",
+    es: "Procesando...",
+  },
+
+  /* ---------------------------------------------------------------- error states */
+  er_network: {
+    de: "Netzwerkfehler",
+    en: "Network error",
+    fr: "Erreur réseau",
+    es: "Error de red",
+  },
+  er_network_desc: {
+    de: "Verbindung zum Server fehlgeschlagen. Bitte überprüfen Sie Ihre Internetverbindung.",
+    en: "Failed to connect to server. Please check your internet connection.",
+    fr: "Échec de la connexion au serveur. Veuillez vérifier votre connexion Internet.",
+    es: "Error al conectar con el servidor. Verifique su conexión a Internet.",
+  },
+  er_server: {
+    de: "Serverfehler",
+    en: "Server error",
+    fr: "Erreur serveur",
+    es: "Error del servidor",
+  },
+  er_server_desc: {
+    de: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
+    en: "An error occurred. Please try again later.",
+    fr: "Une erreur s'est produite. Veuillez réessayer plus tard.",
+    es: "Ocurrió un error. Inténtelo de nuevo más tarde.",
+  },
+  er_retry: {
+    de: "Erneut versuchen",
+    en: "Retry",
+    fr: "Réessayer",
+    es: "Reintentar",
+  },
+  er_offline: {
+    de: "Offline-Modus",
+    en: "Offline mode",
+    fr: "Mode hors ligne",
+    es: "Modo sin conexión",
+  },
+  er_offline_desc: {
+    de: "Sie sind offline. Einige Funktionen sind möglicherweise nicht verfügbar.",
+    en: "You are offline. Some features may not be available.",
+    fr: "Vous êtes hors ligne. Certaines fonctionnalités peuvent ne pas être disponibles.",
+    es: "Está sin conexión. Es posible que algunas funciones no estén disponibles.",
+  },
+
+  /* ---------------------------------------------------------------- legal pages */
+  nav_impressum: {
+    de: "Impressum",
+    en: "Legal Notice",
+    fr: "Mentions légales",
+    es: "Aviso legal",
+  },
+  nav_datenschutz: {
+    de: "Datenschutz",
+    en: "Privacy Policy",
+    fr: "Politique de confidentialité",
+    es: "Política de privacidad",
+  },
+  nav_barrierefreiheit: {
+    de: "Barrierefreiheit",
+    en: "Accessibility",
+    fr: "Accessibilité",
+    es: "Accesibilidad",
+  },
+
+  /* Impressum */
+  im_title: {
+    de: "Impressum",
+    en: "Legal Notice",
+    fr: "Mentions légales",
+    es: "Aviso legal",
+  },
+  im_provider: {
+    de: "Anbieter",
+    en: "Provider",
+    fr: "Fournisseur",
+    es: "Proveedor",
+  },
+  im_provider_placeholder: {
+    de: "[Firmenname einfügen]",
+    en: "[Insert company name]",
+    fr: "[Insérer le nom de l'entreprise]",
+    es: "[Insertar nombre de la empresa]",
+  },
+  im_address_placeholder: {
+    de: "[Adresse einfügen]",
+    en: "[Insert address]",
+    fr: "[Insérer l'adresse]",
+    es: "[Insertar dirección]",
+  },
+  im_contact: { de: "Kontakt", en: "Contact", fr: "Contact", es: "Contacto" },
+  im_contact_placeholder: {
+    de: "[Kontaktinformationen einfügen]",
+    en: "[Insert contact information]",
+    fr: "[Insérer les informations de contact]",
+    es: "[Insertar información de contacto]",
+  },
+  im_representative: {
+    de: "Vertretungsberechtigte Person",
+    en: "Authorized Representative",
+    fr: "Représentant autorisé",
+    es: "Representante autorizado",
+  },
+  im_representative_placeholder: {
+    de: "[Name einfügen]",
+    en: "[Insert name]",
+    fr: "[Insérer le nom]",
+    es: "[Insertar nombre]",
+  },
+  im_register: {
+    de: "Register",
+    en: "Register",
+    fr: "Registre",
+    es: "Registro",
+  },
+  im_register_placeholder: {
+    de: "[Registernummer einfügen]",
+    en: "[Insert register number]",
+    fr: "[Insérer le numéro de registre]",
+    es: "[Insertar número de registro]",
+  },
+  im_vat: {
+    de: "Umsatzsteuer-ID",
+    en: "VAT ID",
+    fr: "Numéro TVA",
+    es: "Número IVA",
+  },
+  im_vat_placeholder: {
+    de: "[USt-IdNr. einfügen]",
+    en: "[Insert VAT ID]",
+    fr: "[Insérer le numéro TVA]",
+    es: "[Insertar número IVA]",
+  },
+  im_responsible: {
+    de: "Verantwortlich für den Inhalt",
+    en: "Responsible for content",
+    fr: "Responsable du contenu",
+    es: "Responsable del contenido",
+  },
+  im_responsible_placeholder: {
+    de: "[Name einfügen]",
+    en: "[Insert name]",
+    fr: "[Insérer le nom]",
+    es: "[Insertar nombre]",
+  },
+
+  /* Datenschutz */
+  ds_title: {
+    de: "Datenschutzerklärung",
+    en: "Privacy Policy",
+    fr: "Politique de confidentialité",
+    es: "Política de privacidad",
+  },
+  ds_intro: {
+    de: "Einleitung",
+    en: "Introduction",
+    fr: "Introduction",
+    es: "Introducción",
+  },
+  ds_intro_text: {
+    de: "Diese Datenschutzerklärung informiert über die Verarbeitung personenbezogener Daten durch die Stadtwerke Plattling.",
+    en: "This privacy policy informs about the processing of personal data by Stadtwerke Plattling.",
+    fr: "Cette politique de confidentialité informe sur le traitement des données personnelles par Stadtwerke Plattling.",
+    es: "Esta política de privacidad informa sobre el procesamiento de datos personales por Stadtwerke Plattling.",
+  },
+  ds_data_collection: {
+    de: "Datenerhebung",
+    en: "Data Collection",
+    fr: "Collecte de données",
+    es: "Recopilación de datos",
+  },
+  ds_data_collection_text: {
+    de: "Wir erheben folgende Daten:",
+    en: "We collect the following data:",
+    fr: "Nous collectons les données suivantes:",
+    es: "Recopilamos los siguientes datos:",
+  },
+  ds_data_1: {
+    de: "Anmeldedaten (Benutzername, PIN)",
+    en: "Login data (username, PIN)",
+    fr: "Données de connexion (nom d'utilisateur, code)",
+    es: "Datos de inicio de sesión (nombre de usuario, PIN)",
+  },
+  ds_data_2: {
+    de: "Inhaltsdaten (Störungsmeldungen)",
+    en: "Content data (outage reports)",
+    fr: "Données de contenu (rapports de panne)",
+    es: "Datos de contenido (informes de incidencia)",
+  },
+  ds_data_3: {
+    de: "Nutzungsdaten (Zeitstempel, IP-Adresse)",
+    en: "Usage data (timestamps, IP address)",
+    fr: "Données d'utilisation (horodatage, adresse IP)",
+    es: "Datos de uso (marcas de tiempo, dirección IP)",
+  },
+  ds_purpose: {
+    de: "Verarbeitungszweck",
+    en: "Processing Purpose",
+    fr: "Objectif du traitement",
+    es: "Propósito del procesamiento",
+  },
+  ds_purpose_text: {
+    de: "Die Daten werden zur Bereitstellung des Störungsmeldungsservices verarbeitet.",
+    en: "The data is processed to provide the outage reporting service.",
+    fr: "Les données sont traitées pour fournir le service de signalement de panne.",
+    es: "Los datos se procesan para proporcionar el servicio de informe de incidencias.",
+  },
+  ds_retention: {
+    de: "Speicherdauer",
+    en: "Data Retention",
+    fr: "Durée de conservation",
+    es: "Retención de datos",
+  },
+  ds_retention_text: {
+    de: "Daten werden nur so lange gespeichert, wie für den Zweck erforderlich.",
+    en: "Data is retained only as long as necessary for the purpose.",
+    fr: "Les données ne sont conservées que tant que nécessaire pour l'objectif.",
+    es: "Los datos se conservan solo mientras sea necesario para el propósito.",
+  },
+  ds_rights: {
+    de: "Ihre Rechte",
+    en: "Your Rights",
+    fr: "Vos droits",
+    es: "Sus derechos",
+  },
+  ds_rights_text: {
+    de: "Sie haben folgende Rechte:",
+    en: "You have the following rights:",
+    fr: "Vous avez les droits suivants:",
+    es: "Tiene los siguientes derechos:",
+  },
+  ds_right_1: {
+    de: "Auskunft über Ihre Daten",
+    en: "Access to your data",
+    fr: "Accès à vos données",
+    es: "Acceso a sus datos",
+  },
+  ds_right_2: {
+    de: "Berichtigung falscher Daten",
+    en: "Correction of incorrect data",
+    fr: "Correction de données incorrectes",
+    es: "Corrección de datos incorrectos",
+  },
+  ds_right_3: {
+    de: "Löschung Ihrer Daten",
+    en: "Deletion of your data",
+    fr: "Suppression de vos données",
+    es: "Eliminación de sus datos",
+  },
+  ds_right_4: {
+    de: "Widerspruch gegen die Verarbeitung",
+    en: "Objection to processing",
+    fr: "Opposition au traitement",
+    es: "Oposición al procesamiento",
+  },
+  ds_contact: {
+    de: "Kontakt bei Datenschutzfragen",
+    en: "Contact for privacy questions",
+    fr: "Contact pour les questions de confidentialité",
+    es: "Contacto para preguntas de privacidad",
+  },
+  ds_contact_placeholder: {
+    de: "[Datenschutzbeauftragten einfügen]",
+    en: "[Insert data protection officer]",
+    fr: "[Insérer le délégué à la protection des données]",
+    es: "[Insertar delegado de protección de datos]",
+  },
+
+  /* Barrierefreiheit */
+  bf_title: {
+    de: "Barrierefreiheitserklärung",
+    en: "Accessibility Statement",
+    fr: "Déclaration d'accessibilité",
+    es: "Declaración de accesibilidad",
+  },
+  bf_intro: {
+    de: "Einleitung",
+    en: "Introduction",
+    fr: "Introduction",
+    es: "Introducción",
+  },
+  bf_intro_text: {
+    de: "Diese Erklärung beschreibt die Barrierefreiheit des Stadtwerke Plattling Portals.",
+    en: "This statement describes the accessibility of the Stadtwerke Plattling portal.",
+    fr: "Cette déclaration décrit l'accessibilité du portail Stadtwerke Plattling.",
+    es: "Esta declaración describe la accesibilidad del portal Stadtwerke Plattling.",
+  },
+  bf_compliance: {
+    de: "Einhaltung der Standards",
+    en: "Compliance with Standards",
+    fr: "Conformité aux normes",
+    es: "Cumplimiento de normas",
+  },
+  bf_compliance_text: {
+    de: "Dieses Portal entspricht den Anforderungen der BITV 2.0 (Barrierefreie-Informationstechnik-Verordnung).",
+    en: "This portal complies with BITV 2.0 requirements (Accessible Information Technology Ordinance).",
+    fr: "Ce portail respecte les exigences de la BITV 2.0 (Ordonnance sur les technologies de l'information accessibles).",
+    es: "Este portal cumple con los requisitos de BITV 2.0 (Ordenanza sobre tecnologías de la información accesibles).",
+  },
+  bf_compliance_placeholder: {
+    de: "[Datum der Konformitätserklärung einfügen]",
+    en: "[Insert date of compliance statement]",
+    fr: "[Insérer la date de la déclaration de conformité]",
+    es: "[Insertar fecha de la declaración de conformidad]",
+  },
+  bf_limitations: {
+    de: "Bekannte Einschränkungen",
+    en: "Known Limitations",
+    fr: "Limitations connues",
+    es: "Limitaciones conocidas",
+  },
+  bf_limitations_text: {
+    de: "Folgende Bereiche sind noch nicht vollständig barrierefrei:",
+    en: "The following areas are not yet fully accessible:",
+    fr: "Les zones suivantes ne sont pas encore entièrement accessibles:",
+    es: "Las siguientes áreas aún no son completamente accesibles:",
+  },
+  bf_limitation_1: {
+    de: "Einige historische Inhalte",
+    en: "Some historical content",
+    fr: "Certains contenus historiques",
+    es: "Algunos contenidos históricos",
+  },
+  bf_limitation_2: {
+    de: "Externe verlinkte Inhalte",
+    en: "External linked content",
+    fr: "Contenu externe lié",
+    es: "Contenido externo vinculado",
+  },
+  bf_created: {
+    de: "Erstellungsdatum",
+    en: "Date of Creation",
+    fr: "Date de création",
+    es: "Fecha de creación",
+  },
+  bf_created_placeholder: {
+    de: "[Datum einfügen]",
+    en: "[Insert date]",
+    fr: "[Insérer la date]",
+    es: "[Insertar fecha]",
+  },
+  bf_reviewed: {
+    de: "Überprüfungsdatum",
+    en: "Date of Review",
+    fr: "Date de révision",
+    es: "Fecha de revisión",
+  },
+  bf_reviewed_placeholder: {
+    de: "[Datum einfügen]",
+    en: "[Insert date]",
+    fr: "[Insérer la date]",
+    es: "[Insertar fecha]",
+  },
+  bf_feedback: {
+    de: "Feedback zur Barrierefreiheit",
+    en: "Accessibility Feedback",
+    fr: "Commentaires sur l'accessibilité",
+    es: "Comentarios sobre accesibilidad",
+  },
+  bf_feedback_text: {
+    de: "Wenn Sie Barrieren bei der Nutzung dieses Portals feststellen, bitten wir um Feedback.",
+    en: "If you encounter barriers while using this portal, we welcome your feedback.",
+    fr: "Si vous rencontrez des obstacles lors de l'utilisation de ce portail, nous apprécions vos commentaires.",
+    es: "Si encuentra barreras al usar este portal, agradecemos sus comentarios.",
+  },
+  bf_feedback_placeholder: {
+    de: "[Kontaktinformationen einfügen]",
+    en: "[Insert contact information]",
+    fr: "[Insérer les informations de contact]",
+    es: "[Insertar información de contacto]",
+  },
+  bf_enforcement: {
+    de: "Durchsetzungsstelle",
+    en: "Enforcement Body",
+    fr: "Autorité de contrôle",
+    es: "Autoridad de control",
+  },
+  bf_enforcement_text: {
+    de: "Bei Beschwerden können Sie sich an die zuständige Durchsetzungsstelle wenden.",
+    en: "For complaints, you can contact the responsible enforcement body.",
+    fr: "Pour les plaintes, vous pouvez contacter l'autorité de contrôle compétente.",
+    es: "Para quejas, puede contactar con la autoridad de control competente.",
+  },
 
   /* --------------------------------------------------- push notifications */
   ps_enable: {
@@ -987,5 +1635,85 @@ export const STRINGS = {
     en: "For problems that belong to none of the existing utilities.",
     fr: "Pour les problèmes qui ne relèvent d’aucun réseau existant.",
     es: "Para problemas que no pertenecen a ningún servicio existente.",
+  },
+  /* -------------------------------------------------- Missing UI Keys */
+  c_unknown: {
+    de: "Nicht angegeben",
+    en: "Not set",
+    fr: "Non spécifié",
+    es: "No especificado",
+  },
+  c_open_details: {
+    de: "Details anzeigen",
+    en: "View Details",
+    fr: "Voir les détails",
+    es: "Ver detalles",
+  },
+  profile_subtitle: {
+    de: "Verwalten Sie Ihre Kontoinformationen",
+    en: "Manage your account information",
+    fr: "Gérez les informations de votre compte",
+    es: "Administre la información de su cuenta",
+  },
+  profile_edit: {
+    de: "Profil bearbeiten",
+    en: "Edit Profile",
+    fr: "Modifier le profil",
+    es: "Editar perfil",
+  },
+  profile_updated: {
+    de: "Profil erfolgreich aktualisiert",
+    en: "Profile updated successfully",
+    fr: "Profil mis à jour avec succès",
+    es: "Perfil actualizado con éxito",
+  },
+  /* -------------------------------------------------- Change PIN */
+  profile_change_pin: {
+    de: "PIN ändern",
+    en: "Change PIN",
+    fr: "Changer le code",
+    es: "Cambiar PIN",
+  },
+  profile_current_pin: {
+    de: "Aktuelle PIN",
+    en: "Current PIN",
+    fr: "Code actuel",
+    es: "PIN actual",
+  },
+  profile_new_pin: {
+    de: "Neue PIN (min. 6 Ziffern)",
+    en: "New PIN (min. 6 digits)",
+    fr: "Nouveau code (min. 6 chiffres)",
+    es: "Nuevo PIN (mín. 6 dígitos)",
+  },
+  profile_confirm_pin: {
+    de: "Neue PIN bestätigen",
+    en: "Confirm new PIN",
+    fr: "Confirmer le nouveau code",
+    es: "Confirmar nuevo PIN",
+  },
+  profile_pin_mismatch: {
+    de: "Die neuen PINs stimmen nicht überein.",
+    en: "The new PINs do not match.",
+    fr: "Les nouveaux codes ne correspondent pas.",
+    es: "Los nuevos PIN no coinciden.",
+  },
+  profile_pin_success: {
+    de: "PIN erfolgreich geändert.",
+    en: "PIN successfully changed.",
+    fr: "Code modifié avec succès.",
+    es: "PIN cambiado con éxito.",
+  },
+  profile_pin_error: {
+    de: "Aktuelle PIN ist falsch.",
+    en: "Current PIN is incorrect.",
+    fr: "Le code actuel est incorrect.",
+    es: "El PIN actual es incorrecto.",
+  },
+  profile_pin_length: {
+    de: "Die neue PIN muss mindestens 6 Ziffern haben.",
+    en: "The new PIN must be at least 6 digits.",
+    fr: "Le nouveau code doit comporter au moins 6 chiffres.",
+    es: "El nuevo PIN debe tener al menos 6 dígitos.",
   },
 };

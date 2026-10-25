@@ -14,6 +14,8 @@
     "audit": "node scripts/audit-render.mjs",
     "slides": "cd scripts && python3 make_slides.py",
     "heimat:list": "node scripts/heimat-posts.mjs list",
-    "heimat:clean": "node scripts/heimat-posts.mjs delete"
+    "heimat:clean": "node scripts/heimat-posts.mjs delete",
+    "seed:demo": "cd server && node seed/demo.js",
+    "reset:production": "cd server && node scripts/reset-production.js"
   }
 }

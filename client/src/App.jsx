@@ -15,29 +15,101 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { api, enablePush, getToken, setToken } from "./lib/api.js";
 import { useI18n, LANGUAGES } from "./i18n/index.jsx";
-import { Toast } from "./ui/kit.jsx";
+import { Toast, renderIcon } from "./ui/kit.jsx";
 import { LogoMark } from "./ui/Logo.jsx";
+import {
+  IconBell,
+  IconBellOff,
+  IconSun,
+  IconMoon,
+  IconLock,
+  IconMegaphone,
+  IconHelp,
+  IconHome,
+  IconEdit,
+  IconArrowRight,
+  IconUser,
+  IconSettings,
+  IconLogout,
+  IconBuilding,
+  IconShield,
+  IconCheck,
+} from "./ui/Icons.jsx";
 
 import Home from "./screens/Home.jsx";
 import Report from "./screens/Report.jsx";
 import Send from "./screens/Send.jsx";
 import Manual from "./screens/Manual.jsx";
 import Login from "./screens/Login.jsx";
+import Profile from "./screens/Profile.jsx";
+import IncidentDetail from "./screens/IncidentDetail.jsx";
+import Impressum from "./screens/Impressum.jsx";
+import Datenschutz from "./screens/Datenschutz.jsx";
+import Barrierefreiheit from "./screens/Barrierefreiheit.jsx";
+import Footer from "./ui/Footer.jsx";
 
 const TABS = [
-  { id: "home", icon: "🏠", labelKey: "nav_home", Screen: Home },
-  { id: "report", icon: "📝", labelKey: "nav_report", Screen: Report },
-  { id: "send", icon: "📤", labelKey: "nav_send", Screen: Send },
+  {
+    id: "home",
+    icon: <IconHome size={20} />,
+    labelKey: "nav_home",
+    Screen: Home,
+  },
+  {
+    id: "report",
+    icon: <IconEdit size={20} />,
+    labelKey: "nav_report",
+    Screen: Report,
+  },
+  {
+    id: "send",
+    icon: <IconArrowRight size={20} />,
+    labelKey: "nav_send",
+    Screen: Send,
+  },
 ];
 
 const SCREENS = [
   ...TABS,
-  { id: "manual", icon: "❓", labelKey: "nav_manual", Screen: Manual },
+  {
+    id: "profile",
+    icon: <IconUser size={20} />,
+    labelKey: "nav_profile",
+    Screen: Profile,
+  },
+  {
+    id: "manual",
+    icon: <IconHelp size={20} />,
+    labelKey: "nav_manual",
+    Screen: Manual,
+  },
+  {
+    id: "impressum",
+    icon: <IconBuilding size={20} />,
+    labelKey: "nav_impressum",
+    Screen: Impressum,
+  },
+  {
+    id: "datenschutz",
+    icon: <IconShield size={20} />,
+    labelKey: "nav_datenschutz",
+    Screen: Datenschutz,
+  },
+  {
+    id: "barrierefreiheit",
+    icon: <IconCheck size={20} />,
+    labelKey: "nav_barrierefreiheit",
+    Screen: Barrierefreiheit,
+  },
 ];
 
 const routeFromHash = () => {
-  const id = window.location.hash.replace(/^#\/?/, "");
-  return SCREENS.some((s) => s.id === id) ? id : "home";
+  const hash = window.location.hash.replace(/^#\/?/, "");
+  // Handle incident detail routes: #/incident/:id
+  if (hash.startsWith("incident/")) {
+    return "incident";
+  }
+  return SCREENS.some((s) => s.id === hash) ? hash : "home";
 };
 
 export default function App() {
@@ -63,12 +135,27 @@ export default function App() {
   const [workers, setWorkers] = useState([]); // who can be on shift
   const [worker, setWorker] = useState(null); // who is on shift now
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   useEffect(() => {
     const onHash = () => setRoute(routeFromHash());
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (showUserMenu && !event.target.closest(".user-menu-wrapper")) {
+        setShowUserMenu(false);
+      }
+      if (showNotifications && !event.target.closest(".notification-wrapper")) {
+        setShowNotifications(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showUserMenu, showNotifications]);
 
   /** Unknown ids fall back to the home screen, so a bad link cannot blank the app. */
   const go = useCallback((id) => {
@@ -97,7 +184,7 @@ export default function App() {
       setIncidents(incidentRows);
       setDrafts(draftRows);
     } catch {
-      notify(`⚠️ ${t("c_offline")}`);
+      notify(t("c_offline"));
     }
   }, [notify, t]);
 
@@ -144,7 +231,7 @@ export default function App() {
           }
         }
       } catch {
-        notify(`⚠️ ${t("c_offline")}`);
+        notify(t("c_offline"));
       } finally {
         setAuthReady(true);
       }
@@ -157,7 +244,7 @@ export default function App() {
     api
       .catalog()
       .then(setCatalog)
-      .catch(() => notify(`⚠️ ${t("c_offline")}`));
+      .catch(() => notify(t("c_offline")));
     refresh();
   }, [authReady, authRequired, signedIn, refresh, notify, t]);
 
@@ -167,15 +254,18 @@ export default function App() {
     if (result.ok) {
       localStorage.setItem("stadtwerke-push", "on");
       setPushOn(true);
-      notify(`🔔 ${t("ps_on")}`);
+      notify(t("ps_on"));
     } else {
-      notify(
-        `🔕 ${t(result.reason === "denied" ? "ps_denied" : "ps_unsupported")}`
-      );
+      notify(t(result.reason === "denied" ? "ps_denied" : "ps_unsupported"));
     }
   }
 
-  function signOut() {
+  async function signOut() {
+    try {
+      await api.updateLastLogin();
+    } catch (err) {
+      console.error("Failed to update last login:", err);
+    }
     api.logout().catch(() => {});
     setToken("");
     setSignedIn(false);
@@ -219,8 +309,12 @@ export default function App() {
     reloadCatalog,
     notify,
     go,
+    signOut,
   };
-  const Current = (SCREENS.find((s) => s.id === route) || SCREENS[0]).Screen;
+  const Current =
+    route === "incident"
+      ? IncidentDetail
+      : (SCREENS.find((s) => s.id === route) || SCREENS[0]).Screen;
 
   return (
     <div className="app">
@@ -234,36 +328,27 @@ export default function App() {
           >
             <LogoMark />
             <span className="logo-text">
-              <span className="logo-name">
-                Stadtwerke Plattling
-              </span>
-              <span className="logo-sub">{t("app_tagline")}</span>
+              <span className="logo-name">Stadtwerke Plattling</span>
+              {/* <span className="logo-tagline">{t("app_tagline")}</span> */}
             </span>
           </button>
 
           <div className="header-tools">
-            {/* Current user indicator */}
-            {worker && (
-              <div className="header-user" title={t("lg_out")}>
-                <div className="header-user-avatar">
-                  {worker.name.charAt(0).toUpperCase()}
-                </div>
-                <span className="header-user-name">{worker.name}</span>
-              </div>
-            )}
-
-            <select
-              className="select"
-              value={lang}
-              onChange={(event) => setLang(event.target.value)}
-              aria-label={t("c_language")}
-            >
-              {LANGUAGES.map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.flag} {l.label}
-                </option>
-              ))}
-            </select>
+            {/* Compact language selector */}
+            <div className="lang-selector-compact">
+              <select
+                className="select-compact"
+                value={lang}
+                onChange={(event) => setLang(event.target.value)}
+                aria-label={t("c_language")}
+              >
+                {LANGUAGES.map((l) => (
+                  <option key={l.id} value={l.id}>
+                    {l.flag} {l.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             {/* System notifications for this device, one tap. */}
             <div className="notification-wrapper">
@@ -279,40 +364,93 @@ export default function App() {
                 title={t(pushOn ? "ps_on" : "ps_enable")}
                 aria-label={t(pushOn ? "ps_on" : "ps_enable")}
               >
-                {pushOn ? "🔔" : "🔕"}
+                {pushOn ? <IconBell size={18} /> : <IconBellOff size={18} />}
               </button>
               {showNotifications && pushOn && (
                 <div className="notification-dropdown">
                   <div className="notification-header">{t("ps_recent")}</div>
                   <div className="notification-list">
                     <div className="notification-item">
-                      <span className="notification-icon">📢</span>
-                      <span className="notification-text">{t("ps_no_notifications")}</span>
+                      <span className="notification-icon">
+                        <IconMegaphone size={16} />
+                      </span>
+                      <span className="notification-text">
+                        {t("ps_no_notifications")}
+                      </span>
                     </div>
                   </div>
                 </div>
               )}
             </div>
 
+            {/* Theme toggle */}
             <button
               className="iconbtn"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               title={theme === "dark" ? t("c_light") : t("c_dark")}
               aria-label={theme === "dark" ? t("c_light") : t("c_dark")}
             >
-              {theme === "dark" ? "☀️" : "🌙"}
+              {theme === "dark" ? (
+                <IconSun size={18} />
+              ) : (
+                <IconMoon size={18} />
+              )}
             </button>
 
-            {authRequired && (
+            {/* User menu */}
+            <div className="user-menu-wrapper">
               <button
-                className="iconbtn"
-                onClick={signOut}
-                title={t("lg_out")}
-                aria-label={t("lg_out")}
+                className="iconbtn user-menu-trigger"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                title={t("um_menu")}
+                aria-label={t("um_menu")}
+                aria-expanded={showUserMenu}
               >
-                🔒
+                <IconUser size={18} />
               </button>
-            )}
+              {showUserMenu && (
+                <div className="user-menu-dropdown">
+                  <div className="user-menu-header">
+                    <span className="user-menu-name">
+                      {worker?.name || t("um_menu")}
+                    </span>
+                  </div>
+                  <div className="user-menu-items">
+                    <button
+                      className="user-menu-item"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        go("profile");
+                      }}
+                    >
+                      <IconUser size={16} />
+                      <span>{t("um_profile")}</span>
+                    </button>
+                    {/* <button
+                      className="user-menu-item"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        // Settings could go here in future
+                      }}
+                    >
+                      <IconSettings size={16} />
+                      <span>{t("um_settings")}</span>
+                    </button> */}
+                    <div className="user-menu-divider" />
+                    <button
+                      className="user-menu-item user-menu-logout"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        signOut();
+                      }}
+                    >
+                      <IconLogout size={16} />
+                      <span>{t("um_logout")}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -324,9 +462,12 @@ export default function App() {
             <button
               key={tab.id}
               aria-current={route === tab.id ? "page" : undefined}
+              aria-label={t(tab.labelKey)}
               onClick={() => go(tab.id)}
             >
-              <span aria-hidden="true">{tab.icon}</span>
+              <span aria-hidden="true" className="ico">
+                {tab.icon}
+              </span>
               {t(tab.labelKey)}
               {tab.id === "send" && waiting > 0 && (
                 <span className="dot">{waiting}</span>
@@ -354,7 +495,9 @@ export default function App() {
           onClick={() => go("manual")}
           aria-label={t("nav_manual")}
         >
-          <span aria-hidden="true">❓</span>
+          <span aria-hidden="true">
+            <IconHelp size={20} />
+          </span>
           <span className="fab-text">{t("nav_manual")}</span>
         </button>
       )}
@@ -365,6 +508,7 @@ export default function App() {
           <button
             key={tab.id}
             aria-current={route === tab.id ? "page" : undefined}
+            aria-label={t(tab.labelKey)}
             onClick={() => go(tab.id)}
           >
             <span className="ico" aria-hidden="true">
@@ -378,6 +522,7 @@ export default function App() {
         ))}
       </nav>
 
+      <Footer t={t} go={go} />
       <Toast message={toast} />
     </div>
   );

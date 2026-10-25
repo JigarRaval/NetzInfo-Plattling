@@ -21,11 +21,18 @@ const here = path.dirname(fileURLToPath(import.meta.url));
  * never changed them.
  */
 function developmentWorkers() {
-  const names = ["Anna Huber", "Max Bauer", "Sabine Reiter", "Josef Wimmer"];
+  const names = [
+    "Anna Huber",
+    "Max Bauer",
+    "Sabine Reiter",
+    "Josef Wimmer",
+    "Thomas Müller",
+    "Lisa Schmidt",
+  ];
   return names.map((name, index) => ({
     id: `swp-0${index + 1}`,
     name,
-    pin: String(Math.floor(1000 + Math.random() * 9000)),
+    pin: "123456",
   }));
 }
 
@@ -64,11 +71,16 @@ function loadEnvFile(file) {
   if (!fs.existsSync(file)) return false;
 
   for (const line of fs.readFileSync(file, "utf8").split("\n")) {
-    const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
-    if (!match) continue; // comment or blank line
+    // Skip comments and empty lines
+    if (line.trim().startsWith("#") || line.trim() === "") continue;
 
-    const key = match[1];
-    let value = match[2].trim();
+    // Split on first = sign
+    const eqIndex = line.indexOf("=");
+    if (eqIndex === -1) continue;
+
+    const key = line.slice(0, eqIndex).trim();
+    let value = line.slice(eqIndex + 1).trim();
+
     // allow quoted values, e.g. KEY="a b c"
     if (
       (value.startsWith('"') && value.endsWith('"')) ||
@@ -87,10 +99,18 @@ export const envFileLoaded = loadEnvFile(path.join(here, ".env"));
 export const config = {
   port: Number(process.env.PORT || 4000),
 
+  // Public base URL for RSS feed and other public-facing links (HTTPS only)
+  publicBaseUrl: process.env.PUBLIC_BASE_URL || "",
+
   // One JSON file is the whole database: no install, works offline.
+  // Use MongoDB if MONGODB_URI is set, otherwise fall back to JSON file.
   dataFile: process.env.DATA_FILE
     ? path.resolve(process.env.DATA_FILE)
     : path.join(here, "data", "db.json"),
+
+  // MongoDB connection string (e.g., mongodb://localhost:27017/Stadtwerke)
+  // If set, MongoDB is used instead of JSON file storage
+  mongoUri: process.env.MONGODB_URI || "",
 
   // --- Heimat-Info ---------------------------------------------------------
   heimatInfo: {
@@ -120,17 +140,20 @@ export const config = {
     enabled: process.env.AUTH_DISABLED !== "true",
     teamName: process.env.AUTH_TEAM || "Stadtwerke Plattling",
     sessionHours: 12,
+    minPinLength: 6, // Minimum PIN length (increased from 4 for security)
 
     /**
      * Who is on shift. The PIN proves that somebody belongs to the team; the
      * name says who it was, which is what ends up in the record of a report.
      *
-     * Set them with WORKERS="swp-01:Anna Huber;swp-02:Max Bauer" or edit the
-     * list here. Keep the ids stable - they are stored with every incident.
+     * Set them with WORKERS="swp-01:Anna Huber:123456;swp-02:Max Bauer:654321"
+     * or edit the list here. Keep the ids stable - they are stored with every incident.
+     *
+     * IMPORTANT: PINs must be at least 6 digits. Avoid trivial PINs like 111111, 123456.
      */
     workers: parseWorkers(process.env.WORKERS) || developmentWorkers(),
 
-    // Brute force protection: a four digit pin is only 10,000 guesses.
+    // Brute force protection
     maxAttempts: Number(process.env.AUTH_MAX_ATTEMPTS || 5),
     lockMinutes: Number(process.env.AUTH_LOCK_MINUTES || 10),
   },
@@ -152,15 +175,13 @@ export const config = {
   },
 
   // --- Automatic updates for long outages ---------------------------------
-  // If an outage is still running, citizens get a short status message every
-  // N minutes without anybody having to remember it.
+  // Automatic updates start AFTER the estimated time (ETA) has passed.
+  // After that, citizens get a short status message every N minutes without
+  // anybody having to remember it.
   autoUpdate: {
     enabled: process.env.AUTO_UPDATE_DISABLED !== "true",
     everyMinutes: Number(process.env.AUTO_UPDATE_MINUTES || 30),
     maxPerIncident: 8, // stop eventually, never spam
     extendByMinutes: 30, // push the estimate back when it has expired
   },
-
-  // Optional extra REST target that receives every publication as JSON.
-  webhookUrl: process.env.WEBHOOK_URL || "",
 };

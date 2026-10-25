@@ -22,14 +22,15 @@ try {
 }
 
 /** Create the VAPID key pair once and remember it. */
-function keys() {
+async function keys() {
   if (!webpush) return null;
-  const meta = all().meta || {};
+  const db = await all();
+  const meta = db.meta || {};
   if (meta.vapidPublic && meta.vapidPrivate) {
     return { publicKey: meta.vapidPublic, privateKey: meta.vapidPrivate };
   }
   const generated = webpush.generateVAPIDKeys();
-  saveMeta({
+  await saveMeta({
     vapidPublic: generated.publicKey,
     vapidPrivate: generated.privateKey,
   });
@@ -37,8 +38,8 @@ function keys() {
 }
 
 /** The public key the browser needs in order to subscribe. */
-export function publicKey() {
-  const pair = keys();
+export async function publicKey() {
+  const pair = await keys();
   return pair ? pair.publicKey : null;
 }
 
@@ -48,7 +49,8 @@ export function available() {
 
 /** Send one notification to every stored subscription. */
 export async function sendToAll({ title, body, url = "/" }) {
-  const subscriptions = all().pushSubs || [];
+  const db = await all();
+  const subscriptions = db.pushSubs || [];
   if (!webpush || subscriptions.length === 0) {
     return {
       delivered: 0,
@@ -57,7 +59,7 @@ export async function sendToAll({ title, body, url = "/" }) {
     };
   }
 
-  const pair = keys();
+  const pair = await keys();
   webpush.setVapidDetails(
     "mailto:info@stadtwerke-plattling.de",
     pair.publicKey,

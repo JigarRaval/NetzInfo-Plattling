@@ -7,8 +7,38 @@
  */
 
 import React from "react";
+import { IconLookup } from "./Icons.jsx";
 
 export const cx = (...parts) => parts.filter(Boolean).join(" ");
+
+/* Helper to render icon from name or SVG component */
+export function renderIcon(icon, size = 20) {
+  if (!icon) return null;
+
+  // If icon is a string, look it up in IconLookup
+  if (typeof icon === "string") {
+    const IconComponent = IconLookup[icon];
+    if (IconComponent) {
+      return <IconComponent size={size} />;
+    }
+    // If not found in IconLookup, return empty (remove emojis)
+    return null;
+  }
+
+  // If icon is already a React component, render it
+  if (React.isValidElement(icon)) {
+    return icon;
+  }
+
+  return null;
+}
+
+/* Helper to clean emojis from labels */
+export function cleanLabel(label) {
+  if (!label) return label;
+  // Remove emoji characters
+  return label.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
+}
 
 /* ------------------------------------------------------------------ button */
 export function Button({
@@ -40,11 +70,7 @@ export function Button({
       )}
       {...rest}
     >
-      {icon && (
-        <span className="ico" aria-hidden="true">
-          {icon}
-        </span>
-      )}
+      {icon && <span className="ico" aria-hidden="true">{renderIcon(icon, 19)}</span>}
       {children}
     </button>
   );
@@ -56,11 +82,7 @@ export function Card({ icon, title, subtitle, tail, children, className }) {
     <section className={cx("card", className)}>
       {(title || tail) && (
         <header className="card-head">
-          {icon && (
-            <span className="ico" aria-hidden="true">
-              {icon}
-            </span>
-          )}
+          {icon && <span className="ico" aria-hidden="true">{renderIcon(icon, 20)}</span>}
           {title && <h2>{title}</h2>}
           {tail && <div className="tail">{tail}</div>}
         </header>
@@ -85,7 +107,7 @@ export function Hero({ tone, icon, title, text }) {
   return (
     <div className={cx("hero", tone && `hero--${tone}`)}>
       <span className="hero-ico" aria-hidden="true">
-        {icon}
+        {renderIcon(icon, 34)}
       </span>
       <div>
         <h2>{title}</h2>
@@ -101,7 +123,7 @@ export function Field({ label, hint, htmlFor, children }) {
     <div className="field">
       {label && (
         <label className="field-label" htmlFor={htmlFor}>
-          {label}
+          {cleanLabel(label)}
         </label>
       )}
       {children}
@@ -111,14 +133,10 @@ export function Field({ label, hint, htmlFor, children }) {
 }
 
 /* ---------------------------------------------------------------- list row */
-export function Item({ icon, title, meta, tail, children }) {
+export function Item({ icon, title, meta, tail, children, onClick }) {
   return (
-    <div className="item">
-      {icon && (
-        <span className="ico" aria-hidden="true">
-          {icon}
-        </span>
-      )}
+    <div className="item" onClick={onClick} style={onClick ? { cursor: 'pointer' } : {}}>
+      {icon && <span className="ico" aria-hidden="true">{renderIcon(icon, 23)}</span>}
       <div className="item-body">
         <div className="between">
           <span className="item-title">{title}</span>
@@ -132,13 +150,41 @@ export function Item({ icon, title, meta, tail, children }) {
 }
 
 /* ------------------------------------------------------------ empty state */
-export function Empty({ icon = "📭", children }) {
+export function Empty({ icon = "emptyMailbox", children }) {
   return (
     <div className="empty">
       <span className="ico" aria-hidden="true">
-        {icon}
+        {renderIcon(icon, 48)}
       </span>
       {children}
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------- loading state */
+export function Loading({ message }) {
+  return (
+    <div className="loading-state">
+      <div className="loading-spinner" aria-hidden="true" />
+      {message && <p className="loading-message">{message}</p>}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------ error state */
+export function ErrorState({ title, message, onRetry }) {
+  return (
+    <div className="error-state">
+      <span className="ico" aria-hidden="true">
+        {renderIcon("warning", 48)}
+      </span>
+      <h3 className="error-title">{title}</h3>
+      {message && <p className="error-message">{message}</p>}
+      {onRetry && (
+        <button className="btn-retry" onClick={onRetry}>
+          {onRetry}
+        </button>
+      )}
     </div>
   );
 }

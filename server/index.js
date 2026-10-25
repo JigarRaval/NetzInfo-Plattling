@@ -41,10 +41,29 @@ app.use((req, res, next) => {
     res.setHeader("Vary", "Origin");
   }
 
+  // Security headers
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+
+  // Content-Security-Policy - allow scripts from self and inline scripts (for React)
+  // In production, replace 'unsafe-inline' with nonce-based CSP
+  const csp = process.env.NODE_ENV === "production"
+    ? "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self' https://heimatinfo-api-platform-dev.azurewebsites.net https://*.stadtwerke-plattling.de; form-action 'self';"
+    : "default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; img-src 'self' data: *; font-src 'self' data: *; connect-src 'self' *; frame-ancestors *; form-action 'self';";
+  res.setHeader("Content-Security-Policy", csp);
+
+  // Permissions-Policy - control browser features
+  res.setHeader("Permissions-Policy", "geolocation=(), microphone=(self), camera=()");
+
   // X-Frame-Options is deliberately NOT set: the city widget is meant to be
-  // embedded in an iframe on the municipal website.
+  // embedded in an iframe on the municipal website. Controlled via CSP frame-ancestors.
+
+  // Strict-Transport-Security (only for HTTPS in production)
+  if (req.secure) {
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  }
+
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET,POST,PUT,PATCH,DELETE,OPTIONS"
@@ -90,7 +109,11 @@ app.listen(config.port, "0.0.0.0", () => {
           : ""
       }`
   );
-  console.log(`[stadtwerke] data: ${config.dataFile}`);
+  console.log(
+    `[stadtwerke] data: ${
+      config.mongoUri ? `MongoDB (${config.mongoUri})` : config.dataFile
+    }`
+  );
 
   // Without a WORKERS setting the pins are random, so they have to be shown
   // once - otherwise nobody could sign in on a fresh checkout.

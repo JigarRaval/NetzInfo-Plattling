@@ -7,7 +7,8 @@
 
 import React from "react";
 import { useI18n } from "../i18n/index.jsx";
-import { Button, Card } from "../ui/kit.jsx";
+import { Button, Card, renderIcon } from "../ui/kit.jsx";
+import { IconHelp } from "../ui/Icons.jsx";
 
 export default function Manual({ t, go }) {
   const { manual } = useI18n();
@@ -15,8 +16,8 @@ export default function Manual({ t, go }) {
   return (
     <div className="stack">
       <div className="between">
-        <h1>❓ {t("nav_manual")}</h1>
-        <Button size="sm" variant="ghost" icon="🏠" onClick={() => go("home")}>
+        <h1><IconHelp size={24} /> {t("nav_manual")}</h1>
+        <Button size="sm" variant="ghost" icon="home" onClick={() => go("home")}>
           {t("nav_home")}
         </Button>
       </div>

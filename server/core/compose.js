@@ -107,8 +107,8 @@ const WORDS = {
 const OPENING = {
   de: {
     first: [
-      "Die Versorgung mit {s} ist derzeit unterbrochen.",
-      "Es liegt eine Störung in der Versorgung mit {s} vor.",
+      "Die {s}-Versorgung ist derzeit unterbrochen.",
+      "Es liegt eine Störung bei {s} vor.",
       "Aktuell kommt es zu einer Störung bei {s}.",
     ],
     update: [
@@ -117,7 +117,7 @@ const OPENING = {
       "Wir arbeiten weiterhin an der Störung bei {s}.",
     ],
     allclear: [
-      "Die Versorgung mit {s} läuft wieder normal.",
+      "Die {s}-Versorgung läuft wieder normal.",
       "Die Störung bei {s} ist behoben.",
       "Alle Anschlüsse werden wieder mit {s} versorgt.",
     ],
@@ -446,20 +446,20 @@ const esc = (s) =>
  * @param {'de'|'en'|'fr'|'es'} lang
  * @param {number} variant which phrasing to use; the facts never change
  */
-export function compose(incident, kind = "first", lang = "de", variant = 0) {
+export async function compose(incident, kind = "first", lang = "de", variant = 0) {
   const L = WORDS[lang] || WORDS.de;
   const states = STATE[lang] || STATE.de;
   const v = Number(variant) || 0;
 
-  const service = getService(incident.service);
+  const service = await getService(incident.service);
   const serviceName = service
     ? service.name[lang] || service.name.de
     : incident.service;
-  const preset = getPreset(incident.presetId);
+  const preset = await getPreset(incident.presetId);
 
-  const districts = getDistricts(incident.districts);
+  const districts = await getDistricts(incident.districts);
   const districtList = districts.map((d) => d.name).join(", ");
-  const households = countHouseholds(incident.districts);
+  const households = await countHouseholds(incident.districts);
 
   const stateKey = kind === "first" && incident.planned ? "planned" : kind;
   const stateWord = states[stateKey] || states.first;
@@ -509,12 +509,14 @@ export function compose(incident, kind = "first", lang = "de", variant = 0) {
     );
   } else {
     lines.push(`${L.since}: ${localTime(incident.startedAt, lang)}`);
-    lines.push(
-      `${kind === "update" ? L.newEstimate : L.until}: ${localTime(
-        incident.etaAt,
-        lang
-      )}`
-    );
+    if (incident.etaAt) {
+      lines.push(
+        `${kind === "update" ? L.newEstimate : L.until}: ${localTime(
+          incident.etaAt,
+          lang
+        )}`
+      );
+    }
     if (households > 0)
       lines.push(`${L.affected}: ${L.households.replace("{n}", households)}`);
     if (incident.radiusMeters) {
@@ -544,10 +546,12 @@ export function compose(incident, kind = "first", lang = "de", variant = 0) {
   const short =
     kind === "allclear"
       ? `${stateWord} ${serviceName}: ${districtList}. ${opening}`
-      : `${stateWord} ${serviceName}: ${districtList}. ${L.until} ${localTime(
+      : incident.etaAt
+      ? `${stateWord} ${serviceName}: ${districtList}. ${L.until} ${localTime(
           incident.etaAt,
           lang
-        )}.`;
+        )}.`
+      : `${stateWord} ${serviceName}: ${districtList}. ${opening}`;
 
   const html = buildHtml({
     headline,
@@ -575,10 +579,12 @@ export function compose(incident, kind = "first", lang = "de", variant = 0) {
       body:
         kind === "allclear"
           ? localTime(incident.resolvedAt || new Date().toISOString(), lang)
-          : `${localTime(incident.startedAt, lang)} ${localTime(
+          : incident.etaAt
+          ? `${localTime(incident.startedAt, lang)} ${localTime(
               incident.etaAt,
               lang
-            )}`,
+            )}`
+          : localTime(incident.startedAt, lang),
     },
     { key: "advice", body: tips.join(" ") },
     { key: "closing", body: closing },
@@ -636,23 +642,24 @@ function buildHtml({
       )}</p>`
     );
   } else {
-    parts.push(
-      `<p>${esc(L.since)}: ${esc(localTime(incident.startedAt, lang))}<br>` +
-        `${esc(kind === "update" ? L.newEstimate : L.until)}: ${esc(
-          localTime(incident.etaAt, lang)
-        )}` +
-        (households > 0
-          ? `<br>${esc(L.affected)}: ${esc(
-              L.households.replace("{n}", households)
-            )}`
-          : "") +
-        (incident.radiusMeters
-          ? `<br>${esc(L.radius)}: ${esc(
-              (incident.radiusMeters / 1000).toFixed(1)
-            )} km`
-          : "") +
-        "</p>"
-    );
+    let timeLine = `<p>${esc(L.since)}: ${esc(localTime(incident.startedAt, lang))}`;
+    if (incident.etaAt) {
+      timeLine += `<br>${esc(kind === "update" ? L.newEstimate : L.until)}: ${esc(
+        localTime(incident.etaAt, lang)
+      )}`;
+    }
+    if (households > 0) {
+      timeLine += `<br>${esc(L.affected)}: ${esc(
+        L.households.replace("{n}", households)
+      )}`;
+    }
+    if (incident.radiusMeters) {
+      timeLine += `<br>${esc(L.radius)}: ${esc(
+        (incident.radiusMeters / 1000).toFixed(1)
+      )} km`;
+    }
+    timeLine += "</p>";
+    parts.push(timeLine);
   }
 
   if (tips.length > 0) {
@@ -708,15 +715,17 @@ export function textToHtml(text) {
 }
 
 /** Compose the message in all four languages at once. */
-export function composeAll(incident, kind, variant = 0) {
+export async function composeAll(incident, kind, variant = 0) {
   return Object.fromEntries(
-    LANGUAGES.map((lang) => [lang, compose(incident, kind, lang, variant)])
+    await Promise.all(
+      LANGUAGES.map(async (lang) => [lang, await compose(incident, kind, lang, variant)])
+    )
   );
 }
 
 /** A formal press release for the editorial system. */
-export function composePressRelease(incident, kind, variant = 0) {
-  const message = compose(incident, kind, "de", variant);
+export async function composePressRelease(incident, kind, variant = 0) {
+  const message = await compose(incident, kind, "de", variant);
   const stamp = new Date().toLocaleDateString("de-DE", {
     day: "2-digit",
     month: "2-digit",

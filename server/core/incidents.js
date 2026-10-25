@@ -14,13 +14,15 @@ import { all } from "../lib/store.js";
  * within 90 minutes is almost certainly the same event, so the interface can
  * offer an update instead of creating a second incident.
  */
-export function findDuplicate(input) {
-  const service = input.service || getPreset(input.presetId)?.service;
+export async function findDuplicate(input) {
+  const preset = await getPreset(input.presetId);
+  const service = input.service || preset?.service;
   const districts = input.districts?.length ? input.districts : [];
   const cutoff = Date.now() - 90 * 60 * 1000;
 
+  const data = await all();
   return (
-    all().incidents.find(
+    data.incidents.find(
       (inc) =>
         inc.status !== "resolved" &&
         inc.service === service &&
@@ -31,11 +33,11 @@ export function findDuplicate(input) {
 }
 
 /** Create a complete incident from a possibly very sparse report. */
-export function buildIncident(input) {
-  const preset = getPreset(input.presetId);
+export async function buildIncident(input) {
+  const preset = await getPreset(input.presetId);
   const districts = input.districts?.length ? input.districts : ["stadtmitte"];
   const capturedAt = input.capturedAt || nowIso();
-  const etaMinutes = Number(input.etaMinutes || preset?.etaMinutes || 120);
+  const etaMinutes = input.etaMinutes ? Number(input.etaMinutes) : null;
 
   return {
     id: makeId("INC"),
@@ -47,9 +49,10 @@ export function buildIncident(input) {
     radiusMeters: input.radiusMeters || null, // affected area radius in meters
     boilNotice: Boolean(preset?.boilNotice),
     planned: Boolean(preset?.planned),
+    critical: Boolean(preset?.critical),
     startedAt: input.startedAt || capturedAt,
     etaMinutes,
-    etaAt: addMinutes(capturedAt, etaMinutes),
+    etaAt: etaMinutes ? addMinutes(capturedAt, etaMinutes) : null,
     note: input.note || "",
     toneOverride: null, // set when the tone is changed by hand
     variant: 0, // which phrasing; raised by "write it again"
@@ -65,10 +68,11 @@ export function buildIncident(input) {
 /** Recalculate the derived fields after an edit. */
 export function recalculate(incident, patch) {
   const merged = { ...incident, ...patch };
+  const etaMinutes = merged.etaMinutes ? Number(merged.etaMinutes) : null;
   return {
     ...patch,
-    etaMinutes: Number(merged.etaMinutes),
-    etaAt: addMinutes(incident.capturedAt, Number(merged.etaMinutes)),
+    etaMinutes,
+    etaAt: etaMinutes ? addMinutes(incident.capturedAt, etaMinutes) : null,
     radiusMeters: merged.radiusMeters || incident.radiusMeters || null,
   };
 }

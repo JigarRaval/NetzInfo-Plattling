@@ -28,7 +28,7 @@ export function serviceName(catalog, serviceId, lang) {
 }
 
 export function serviceIcon(catalog, serviceId) {
-  return catalog.services[serviceId]?.icon || "📄";
+  return catalog.services[serviceId]?.icon || "document";
 }
 
 export function presetName(catalog, presetId, lang) {
@@ -53,8 +53,19 @@ export function channelMessage(t, result) {
 
 /** Icon for one channel row in the result list. */
 export function channelIcon(result) {
-  if (result.skipped) return "⏭️";
-  return result.ok ? "✅" : "❌";
+  if (result.skipped) return "skip";
+  return result.ok ? "check" : "x";
+}
+
+/** State object for a channel result (icon and style for UI). */
+export function channelState(result) {
+  if (result.skipped) {
+    return { icon: "skip", ok: true, variant: "skipped" };
+  }
+  if (result.ok) {
+    return { icon: "check", ok: true, variant: "success" };
+  }
+  return { icon: "x", ok: false, variant: "error" };
 }
 
 /**
@@ -74,4 +85,21 @@ export function blockingProblems(t, checks = []) {
         .join(", ");
       return t("chk_facts", { list });
     });
+}
+
+/** Severity level display for dashboard and public pages */
+export function severity(t, level) {
+  if (!level) {
+    return { icon: "circleGreen", label: t("sev_low"), tone: "ok" };
+  }
+  if (level === "critical") {
+    return { icon: "alert", label: t("sev_critical"), tone: "danger" };
+  }
+  if (level === "high") {
+    return { icon: "alert", label: t("sev_high"), tone: "warn" };
+  }
+  if (level === "medium") {
+    return { icon: "circleRed", label: t("sev_medium"), tone: "warn" };
+  }
+  return { icon: "circleGreen", label: t("sev_low"), tone: "ok" };
 }

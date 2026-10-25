@@ -1,77 +1,64 @@
 /**
- * scheduler.js - automatic status updates for long outages.
+ * scheduler.js - Flags overdue incidents and prepares delay drafts.
  *
- * The most common complaint about outage communication is silence: the first
- * notice goes out, and then nothing happens for hours. This timer closes that
- * gap. While an outage is still running, a short update is published every
- * N minutes (30 by default) without anybody having to remember it.
- *
- * Guard rails:
- *   - only for incidents that were already published and are not resolved
- *   - at most `maxPerIncident` automatic messages, so it can never spam
- *   - if the estimate has already passed, it is moved back honestly instead
- *     of repeating a time that is obviously wrong
+ * Instead of auto-publishing (which can send wrong info), this timer checks
+ * for incidents that have passed their ETA. If found, it silently creates a
+ * "draft" with the delay message and flags it. The worker will see this on
+ * the Home screen, adjust the time, edit the text, and send it manually.
  */
 
 import { all, insert, findById, update } from "../lib/store.js";
 import { config } from "../config.js";
 import { composeAll } from "./compose.js";
 import { runChecks } from "./quality.js";
-import { publishEverywhere } from "../channels/registry.js";
-import { makeId, nowIso, addMinutes } from "../lib/time.js";
+import { makeId, nowIso } from "../lib/time.js";
 
 /** Which incidents are due for an automatic update right now? */
-function dueIncidents() {
-  const db = all();
-  const gap = config.autoUpdate.everyMinutes * 60 * 1000;
+async function dueIncidents() {
+  const db = await all();
 
   return db.incidents.filter((incident) => {
+    // Only check published, unresolved incidents
     if (incident.status === "resolved" || !incident.publishedAt) return false;
 
-    const publications = db.publications.filter(
-      (p) => p.incidentId === incident.id
+    // Only check if the ETA has actually passed
+    const etaPassed = new Date(incident.etaAt).getTime() < Date.now();
+    if (!etaPassed) return false;
+
+    // Check if we ALREADY created a draft for this delay
+    // (We don't want to create a new draft every minute)
+    const hasPendingDraft = db.drafts.some(
+      (d) => d.incidentId === incident.id && d.status === "draft" && d.auto
     );
-    if (publications.length === 0) return false;
 
-    const automatic = publications.filter((p) => p.auto).length;
-    if (automatic >= config.autoUpdate.maxPerIncident) return false;
-
-    const last = publications[publications.length - 1];
-    return Date.now() - new Date(last.at).getTime() >= gap;
+    return !hasPendingDraft;
   });
 }
 
-/** Publish one automatic update for a single incident. */
-async function sendUpdate(incident) {
-  // An estimate in the past helps nobody - move it on before writing the text.
-  let current = incident;
-  if (new Date(current.etaAt).getTime() < Date.now()) {
-    current = update("incidents", current.id, {
-      etaAt: addMinutes(nowIso(), config.autoUpdate.extendByMinutes),
-    });
-  }
+/** Prepare a draft for the worker to review. */
+async function prepareDelayDraft(incident) {
+  // Generate the text using the current ETA
+  const messages = await composeAll(incident, "update", incident.variant || 0);
+  const { checks, allOk } = await runChecks(messages.de, incident);
 
-  const messages = composeAll(current, "update", current.variant || 0);
-  const { checks, allOk } = runChecks(messages.de, current);
-
-  const draft = insert("drafts", {
+  // Create the draft (status = "draft", NOT "published")
+  await insert("drafts", {
     id: makeId("DRF"),
-    incidentId: current.id,
+    incidentId: incident.id,
     kind: "update",
-    status: "published",
+    status: "draft", // <--- Changed from "published"
     createdAt: nowIso(),
-    publishedAt: nowIso(),
+    publishedAt: null,
     messages,
     checks,
     allOk,
     edited: false,
-    auto: true,
+    auto: true, // Flag so we don't create infinite drafts
   });
 
-  await publishEverywhere(current, findById("drafts", draft.id), {
-    auto: true,
-  });
-  console.log(`[stadtwerke] automatic update sent for ${current.id}`);
+  console.log(
+    `[stadtwerke] Prepared delay draft for overdue incident ${incident.id}`
+  );
 }
 
 /** Start the timer. Called once when the server boots. */
@@ -81,17 +68,17 @@ export function startScheduler() {
     return;
   }
 
-  console.log(
-    `[stadtwerke] automatic updates every ${config.autoUpdate.everyMinutes} minutes`
-  );
+  console.log(`[stadtwerke] checking for overdue incidents every minute`);
 
-  // Checking once a minute is accurate enough and costs nothing.
   setInterval(async () => {
-    for (const incident of dueIncidents()) {
+    for (const incident of await dueIncidents()) {
       try {
-        await sendUpdate(incident);
+        await prepareDelayDraft(incident);
       } catch (error) {
-        console.error("[stadtwerke] automatic update failed:", error.message);
+        console.error(
+          "[stadtwerke] failed to prepare delay draft:",
+          error.message
+        );
       }
     }
   }, 60 * 1000);

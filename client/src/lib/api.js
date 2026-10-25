@@ -94,11 +94,15 @@ export const api = {
     request("/api/catalog/presets", { method: "POST", body: payload }),
   removePreset: (id) =>
     request(`/api/catalog/presets/${id}`, { method: "DELETE" }),
+
+  //incidents
   incidents: () => request("/api/incidents"),
   capture: (payload) =>
     request("/api/incidents", { method: "POST", body: payload }),
   close: (id) => request(`/api/incidents/${id}/close`, { method: "POST" }),
   deleteIncident: (id) => request(`/api/incidents/${id}`, { method: "DELETE" }),
+  updateIncident: (id, data) =>
+    request(`/api/incidents/${id}`, { method: "PATCH", body: data }),
 
   drafts: () => request("/api/drafts"),
   createDraft: (incidentId, kind) =>
@@ -135,6 +139,15 @@ export const api = {
   pushKey: () => request("/api/push/key"),
   pushSubscribe: (subscription) =>
     request("/api/push/subscribe", { method: "POST", body: subscription }),
+
+  // --- user profile ---
+  getUserProfile: () => request("/api/user/profile"),
+  updateUserProfile: (data) =>
+    request("/api/user/profile", { method: "PUT", body: data }),
+  updateLastLogin: () => request("/api/user/last-login", { method: "POST" }),
+
+  updatePin: (currentPin, newPin) =>
+    request("/api/user/pin", { method: "PUT", body: { currentPin, newPin } }),
 };
 
 /* ---------------------------------------------------------------- push ----

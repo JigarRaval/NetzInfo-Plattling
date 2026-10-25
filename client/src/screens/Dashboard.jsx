@@ -19,6 +19,7 @@ import {
   Item,
   Kpi,
   Stat,
+  renderIcon,
 } from "../ui/kit.jsx";
 import {
   clockTime,
@@ -96,14 +97,14 @@ export default function Dashboard({
       {active.length === 0 ? (
         <Hero
           tone="ok"
-          icon="✅"
+          icon="check"
           title={t("db_ok_title")}
           text={t("db_ok_text")}
         />
       ) : (
         <Hero
           tone="alert"
-          icon="🚨"
+          icon="alert"
           title={t("db_alert_title", { n: active.length })}
           text={t("db_alert_text")}
         />
@@ -123,10 +124,10 @@ export default function Dashboard({
       {/* Only the two staff actions. The citizen page is reached through the
           view switch in the header, so a third button here was redundant. */}
       <div className="grid cols-2e">
-        <Button icon="📝" onClick={() => go("report")}>
+        <Button icon="edit" onClick={() => go("report")}>
           {t("db_cta_report")}
         </Button>
-        <Button icon="✅" variant="ghost" onClick={() => go("approve")}>
+        <Button icon="check" variant="ghost" onClick={() => go("approve")}>
           {t("db_cta_approve")}
           {openDrafts.length > 0 ? ` (${openDrafts.length})` : ""}
         </Button>
@@ -134,7 +135,7 @@ export default function Dashboard({
 
       {openDrafts.length > 0 && (
         <p className="small muted" style={{ margin: 0 }}>
-          ⏳ {t("db_pending", { n: openDrafts.length })}
+          {t("db_pending", { n: openDrafts.length })}
         </p>
       )}
 
@@ -153,22 +154,22 @@ export default function Dashboard({
 
       {/* ------------------------------------------------- incidents ----- */}
       <Card
-        icon="📋"
+        icon="document"
         title={t("db_active_title")}
         tail={
           <Button
             size="sm"
             variant="ghost"
-            icon="🔄"
+            icon="refresh"
             onClick={() =>
-              refresh().then(() => notify(`🔄 ${t("c_refreshed")}`))
+              refresh().then(() => notify(`${t("c_refreshed")}`))
             }
           >
             {t("c_refresh")}
           </Button>
         }
       >
-        {incidents.length === 0 && <Empty icon="📭">{t("db_empty")}</Empty>}
+        {incidents.length === 0 && <Empty icon="emptyMailbox">{t("db_empty")}</Empty>}
 
         <div className="list">
           {incidents.slice(0, 8).map((incident) => {
@@ -194,20 +195,19 @@ export default function Dashboard({
                 }
                 meta={
                   <>
-                    📍 {districts} · 🕒{" "}
-                    {relativeTime(incident.capturedAt, now, t)}
+                    {districts} · {relativeTime(incident.capturedAt, now, t)}
                     {" · "}
                     {incident.status === "resolved" ? (
                       <span style={{ color: "var(--ok)" }}>
-                        ✅ {t("st_resolved")}
+                        {t("st_resolved")}
                       </span>
                     ) : incident.publishedAt ? (
                       <span style={{ color: "var(--ok)" }}>
-                        📤 {t("st_published")}
+                        {t("st_published")}
                       </span>
                     ) : (
                       <span style={{ color: "var(--warn)" }}>
-                        ⏳ {t("st_unpublished")}
+                        {t("st_unpublished")}
                       </span>
                     )}
                   </>

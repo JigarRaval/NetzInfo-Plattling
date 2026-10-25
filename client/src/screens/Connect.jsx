@@ -9,7 +9,7 @@
 
 import React, { useEffect, useState } from "react";
 import { api } from "../lib/api.js";
-import { Badge, Button, Card, Field, Item } from "../ui/kit.jsx";
+import { Badge, Button, Card, Field, Item, renderIcon } from "../ui/kit.jsx";
 import { channelName } from "../lib/format.js";
 
 const SWAGGER_URL =
@@ -59,9 +59,9 @@ export default function Connect({ t, catalog, notify, refresh }) {
         heimatInfo: { ...current.heimatInfo, ...saved.heimatInfo },
       }));
       setApiKey(""); // never keep the secret in the form
-      notify(`💾 ${t("cn_saved")}`);
+      notify(`${t("cn_saved")}`);
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -75,11 +75,11 @@ export default function Connect({ t, catalog, notify, refresh }) {
       setResult(response);
       notify(
         response.ok
-          ? `✅ ${t(response.resultKey, response.params)}`
-          : `⚠️ ${t(response.resultKey, response.params)}`
+          ? `${t(response.resultKey, response.params)}`
+          : `${t(response.resultKey, response.params)}`
       );
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -98,11 +98,11 @@ export default function Connect({ t, catalog, notify, refresh }) {
       });
       notify(
         response.ok
-          ? `✅ ${t("cn_test_post_ok")}`
-          : `⚠️ ${t(response.messageKey, response.params)}`
+          ? `${t("cn_test_post_ok")}`
+          : `${t(response.messageKey, response.params)}`
       );
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -113,13 +113,13 @@ export default function Connect({ t, catalog, notify, refresh }) {
   return (
     <div className="stack">
       <div>
-        <h1>🔌 {t("cn_title")}</h1>
+        <h1>{t("cn_title")}</h1>
         <p className="muted small">{t("cn_sub")}</p>
       </div>
 
       {/* --------------------------------------------- credentials ------ */}
-      <Card icon="🔑" title={t("cn_cred")}>
-        <Field label={`🏢 ${t("cn_org")}`} htmlFor="org">
+      <Card icon="key" title={t("cn_cred")}>
+        <Field label={`${t("cn_org")}`} htmlFor="org">
           <input
             id="org"
             className="mono"
@@ -131,7 +131,7 @@ export default function Connect({ t, catalog, notify, refresh }) {
         </Field>
 
         <Field
-          label={`🔐 ${t("cn_key")}`}
+          label={`${t("cn_key")}`}
           hint={
             settings.heimatInfo.hasApiKey
               ? t("cn_key_stored", { masked: settings.heimatInfo.apiKeyMasked })
@@ -148,7 +148,7 @@ export default function Connect({ t, catalog, notify, refresh }) {
           />
         </Field>
 
-        <Field label={`📤 ${t("cn_status")}`} htmlFor="status">
+        <Field label={`${t("cn_status")}`} htmlFor="status">
           <select
             id="status"
             className="control"
@@ -161,15 +161,15 @@ export default function Connect({ t, catalog, notify, refresh }) {
         </Field>
 
         <div className="row">
-          <Button icon="💾" onClick={save} disabled={busy}>
+          <Button icon="save" onClick={save} disabled={busy}>
             {t("c_save")}
           </Button>
-          <Button variant="ghost" icon="🔍" onClick={test} disabled={busy}>
+          <Button variant="ghost" icon="search" onClick={test} disabled={busy}>
             {t("cn_test")}
           </Button>
           <Button
             variant="ghost"
-            icon="📨"
+            icon="inbox"
             onClick={ping}
             disabled={busy || !settings.heimatInfo.hasApiKey}
           >
@@ -181,7 +181,6 @@ export default function Connect({ t, catalog, notify, refresh }) {
         {result && (
           <div style={{ marginTop: 16 }}>
             <Badge tone={result.ok ? "ok" : "danger"}>
-              {result.ok ? "✅" : "⚠️"}{" "}
               {t(result.resultKey, result.params || {})}
             </Badge>
 
@@ -194,7 +193,7 @@ export default function Connect({ t, catalog, notify, refresh }) {
                   {result.organizations.map((organization) => (
                     <Item
                       key={organization.id}
-                      icon="🏢"
+                      icon="building"
                       title={organization.name}
                       meta={<span className="mono">{organization.id}</span>}
                       tail={
@@ -203,7 +202,7 @@ export default function Connect({ t, catalog, notify, refresh }) {
                           variant="ghost"
                           onClick={() => {
                             setOrgId(organization.id);
-                            notify(`📋 ${t("cn_id_taken")}`);
+                            notify(`${t("cn_id_taken")}`);
                           }}
                         >
                           {t("cn_use_this")}
@@ -218,7 +217,7 @@ export default function Connect({ t, catalog, notify, refresh }) {
             {result.ok && (
               <p className="small" style={{ marginTop: 10, marginBottom: 0 }}>
                 <a href={REVIEW_URL} target="_blank" rel="noreferrer">
-                  🔗 {t("cn_review")}
+                  {t("cn_review")}
                 </a>
               </p>
             )}
@@ -227,7 +226,7 @@ export default function Connect({ t, catalog, notify, refresh }) {
       </Card>
 
       {/* ------------------------------------------ how it works -------- */}
-      <Card icon="📘" title={t("cn_how")}>
+      <Card icon="book" title={t("cn_how")}>
         <ul className="bullets small">
           <li>
             {t("cn_how_endpoint")}
@@ -243,13 +242,13 @@ export default function Connect({ t, catalog, notify, refresh }) {
         </ul>
         <p className="small" style={{ marginTop: 12, marginBottom: 0 }}>
           <a href={SWAGGER_URL} target="_blank" rel="noreferrer">
-            🔗 {t("cn_swagger")}
+            {t("cn_swagger")}
           </a>
         </p>
       </Card>
 
       {/* -------------------------------------------------- channels ---- */}
-      <Card icon="📡" title={t("cn_channels")}>
+      <Card icon="signal" title={t("cn_channels")}>
         <div className="list">
           {catalog.channels.map((channel) => (
             <Item
@@ -262,8 +261,8 @@ export default function Connect({ t, catalog, notify, refresh }) {
                     tone={settings.heimatInfo.hasApiKey ? "ok" : undefined}
                   >
                     {settings.heimatInfo.hasApiKey
-                      ? `🔑 ${t("cn_configured")}`
-                      : `⚪ ${t("cn_unconfigured")}`}
+                      ? `${t("cn_configured")}`
+                      : `${t("cn_unconfigured")}`}
                   </Badge>
                 ) : undefined
               }
@@ -277,7 +276,7 @@ export default function Connect({ t, catalog, notify, refresh }) {
       {/* Collapsed by default. Everything in here is for testing or for
           showing a juror the raw output - never needed in daily operation. */}
       <Card
-        icon="🧰"
+        icon="toolbox"
         title={t("dev_tools")}
         subtitle={showDev ? t("dev_hint") : undefined}
         tail={
@@ -306,7 +305,7 @@ export default function Connect({ t, catalog, notify, refresh }) {
                 target="_blank"
                 rel="noreferrer"
               >
-                📡 RSS
+                RSS
               </a>
               <a
                 className="btn btn--ghost btn--sm"
@@ -314,7 +313,7 @@ export default function Connect({ t, catalog, notify, refresh }) {
                 target="_blank"
                 rel="noreferrer"
               >
-                🧩 Widget
+                Widget
               </a>
               <a
                 className="btn btn--ghost btn--sm"
@@ -322,7 +321,7 @@ export default function Connect({ t, catalog, notify, refresh }) {
                 target="_blank"
                 rel="noreferrer"
               >
-                🧾 JSON
+                JSON
               </a>
             </div>
 
@@ -333,13 +332,13 @@ export default function Connect({ t, catalog, notify, refresh }) {
               <Button
                 size="sm"
                 variant="ghost"
-                icon="🌱"
+                icon="sprout"
                 disabled={busy}
                 onClick={async () => {
                   await api.seed();
                   await refresh();
                   setOutbox(await api.outbox());
-                  notify(`🌱 ${t("cn_seeded")}`);
+                  notify(`${t("cn_seeded")}`);
                 }}
               >
                 {t("cn_seed")}
@@ -347,13 +346,13 @@ export default function Connect({ t, catalog, notify, refresh }) {
               <Button
                 size="sm"
                 variant="ghost"
-                icon="🗑️"
+                icon="trash"
                 disabled={busy}
                 onClick={async () => {
                   await api.reset();
                   await refresh();
                   setOutbox([]);
-                  notify(`🗑️ ${t("cn_reset_done")}`);
+                  notify(`${t("cn_reset_done")}`);
                 }}
               >
                 {t("cn_reset")}
@@ -362,7 +361,7 @@ export default function Connect({ t, catalog, notify, refresh }) {
 
             <hr className="divider" />
 
-            {/* local sink for push / webhook / press */}
+            {/* local sink for push notifications */}
             <p
               className="xs muted"
               style={{ fontWeight: 700, marginBottom: 8 }}
@@ -379,8 +378,8 @@ export default function Connect({ t, catalog, notify, refresh }) {
                 <Item
                   key={entry.id}
                   icon={
-                    { push: "🔔", webhook: "🔗", press: "📰" }[entry.channel] ||
-                    "📄"
+                    { push: "bell" }[entry.channel] ||
+                    "document"
                   }
                   title={channelName(t, entry.channel)}
                   meta={

@@ -11,7 +11,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { api } from "../lib/api.js";
-import { Badge, Button, Card, Field } from "../ui/kit.jsx";
+import { Badge, Button, Card, Field, renderIcon } from "../ui/kit.jsx";
 import { LocationPicker } from "../ui/LocationPicker.jsx";
 import { presetName, serviceName } from "../lib/format.js";
 
@@ -26,7 +26,7 @@ export default function Report({
 }) {
   const [presetId, setPresetId] = useState(null);
   const [districts, setDistricts] = useState([]);
-  const [etaMinutes, setEtaMinutes] = useState(120);
+  const [etaMinutes, setEtaMinutes] = useState(null);
   const [street, setStreet] = useState("");
   const [note, setNote] = useState("");
   const [coords, setCoords] = useState(null); // { lat, lng, accuracy }
@@ -80,13 +80,13 @@ export default function Report({
    */
   async function saveProblem() {
     if (!newProblem.name.trim()) {
-      notify(`⚠️ ${t("cat_need_name")}`);
+      notify(`${t("cat_need_name")}`);
       return;
     }
 
     const needsCategory = newProblem.service === "__new";
     if (needsCategory && !newProblem.serviceName?.trim()) {
-      notify(`⚠️ ${t("cat_need_name")}`);
+      notify(`${t("cat_need_name")}`);
       return;
     }
 
@@ -103,10 +103,10 @@ export default function Report({
       await reloadCatalog();
       setNewProblem(null);
       setPresetId(preset.id);
-      setEtaMinutes(preset.etaMinutes);
-      notify(`✅ ${t("cat_added")}`);
+      // Don't auto-set etaMinutes - user must explicitly set it
+      notify(`${t("cat_added")}`);
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -115,7 +115,7 @@ export default function Report({
   /** Add a place that is missing from the list. */
   async function savePlace() {
     if (!newPlace.name.trim()) {
-      notify(`⚠️ ${t("cat_need_name")}`);
+      notify(`${t("cat_need_name")}`);
       return;
     }
     setBusy(true);
@@ -124,9 +124,9 @@ export default function Report({
       await reloadCatalog();
       setNewPlace(null);
       setDistricts((current) => [...current, district.id]);
-      notify(`✅ ${t("cat_added")}`);
+      notify(`${t("cat_added")}`);
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -143,9 +143,9 @@ export default function Report({
         setDistricts((c) => c.filter((d) => d !== id));
       }
       await reloadCatalog();
-      notify(`🗑️ ${t("cat_removed")}`);
+      notify(`${t("cat_removed")}`);
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -153,7 +153,14 @@ export default function Report({
 
   function choosePreset(preset) {
     setPresetId(preset.id);
-    setEtaMinutes(preset.etaMinutes); // a sensible duration without asking
+    // Auto-set etaMinutes from preset if available, otherwise default to 120 minutes
+    if (preset.etaMinutes) {
+      setEtaMinutes(preset.etaMinutes);
+    } else {
+      setEtaMinutes(120);
+    }
+    // Show details so user can adjust if needed
+    setShowDetails(true);
   }
 
   /* --- dictation --------------------------------------------------------
@@ -172,11 +179,11 @@ export default function Report({
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!window.isSecureContext) {
-      notify(`🎤 ${t("rp_insecure")}`);
+      notify(`${t("rp_insecure")}`);
       return;
     }
     if (!Recognition) {
-      notify(`🎤 ${t("rp_dictate_no")}`);
+      notify(`${t("rp_dictate_no")}`);
       return;
     }
     if (listening) {
@@ -216,7 +223,7 @@ export default function Report({
         network: "rp_mic_network",
       };
       if (event.error !== "aborted")
-        notify(`🎤 ${t(reasons[event.error] || "rp_dictate_err")}`);
+        notify(`${t(reasons[event.error] || "rp_dictate_err")}`);
     };
 
     recognition.onend = () => {
@@ -230,7 +237,7 @@ export default function Report({
       setListening(true);
       setShowDetails(true);
     } catch {
-      notify(`🎤 ${t("rp_dictate_err")}`);
+      notify(`${t("rp_dictate_err")}`);
     }
   }
 
@@ -247,11 +254,11 @@ export default function Report({
    */
   function useLocation() {
     if (!window.isSecureContext) {
-      notify(`📍 ${t("rp_insecure")}`);
+      notify(`${t("rp_insecure")}`);
       return;
     }
     if (!navigator.geolocation) {
-      notify(`📍 ${t("rp_location_no")}`);
+      notify(`${t("rp_location_no")}`);
       return;
     }
     if (locating) return;
@@ -267,7 +274,7 @@ export default function Report({
       }
       if (timer) clearTimeout(timer);
       setLocating(false);
-      if (ok && best) notify(`📍 ${t("rp_location_ok")}`);
+      if (ok && best) notify(`${t("rp_location_ok")}`);
     };
 
     timer = setTimeout(() => finish(true), 12000); // keep the best fix so far
@@ -293,7 +300,7 @@ export default function Report({
           2: "rp_loc_unavailable",
           3: "rp_loc_timeout",
         };
-        notify(`📍 ${t(reasons[error.code] || "rp_location_no")}`);
+        notify(`${t(reasons[error.code] || "rp_location_no")}`);
       },
       { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
     );
@@ -334,11 +341,15 @@ export default function Report({
   /* --- submit ----------------------------------------------------------- */
   async function submit() {
     if (!presetId) {
-      notify(`⚠️ ${t("rp_need_preset")}`);
+      notify(`${t("rp_need_preset")}`);
       return;
     }
     if (districts.length === 0) {
-      notify(`⚠️ ${t("rp_need_district")}`);
+      notify(`${t("rp_need_district")}`);
+      return;
+    }
+    if (!etaMinutes) {
+      notify(`${t("rp_need_duration")}`);
       return;
     }
 
@@ -363,7 +374,7 @@ export default function Report({
       // the only sensible action is an update on the existing incident.
       if (error.status === 409 && error.data?.incident)
         setDuplicate(error.data.incident);
-      else notify(`⚠️ ${t("c_error")}`);
+      else notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -378,7 +389,7 @@ export default function Report({
       setDuplicate(null);
       go("send");
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -387,16 +398,16 @@ export default function Report({
   return (
     <div className="stack">
       <div>
-        <h1>📝 {t("rp_title")}</h1>
+        <h1>{t("rp_title")}</h1>
         <p className="muted small">{t("rp_sub")}</p>
       </div>
 
       {/* --------------------------------------------- already reported -- */}
       {duplicate && (
-        <Card icon="♻️" title={t("rp_dup_title")}>
+        <Card title={t("rp_dup_title")}>
           <p className="small">{t("rp_dup_text")}</p>
           <div className="row">
-            <Button icon="✏️" onClick={updateInstead} disabled={busy}>
+            <Button icon="edit" onClick={updateInstead} disabled={busy}>
               {t("rp_dup_update")}
             </Button>
             <Button
@@ -411,7 +422,7 @@ export default function Report({
       )}
 
       {/* ---------------------------------------------------- what ------- */}
-      <Card icon="1️⃣" title={t("rp_s1_title")} subtitle={t("rp_s1_hint")}>
+      <Card title={t("rp_s1_title")} subtitle={t("rp_s1_hint")}>
         <div className="choices">
           {catalog.presets.map((preset) => (
             <button
@@ -420,9 +431,6 @@ export default function Report({
               aria-pressed={presetId === preset.id}
               onClick={() => choosePreset(preset)}
             >
-              <span className="ico" aria-hidden="true">
-                {preset.icon}
-              </span>
               <span className="name">
                 {presetName(catalog, preset.id, lang)}
               </span>
@@ -462,12 +470,12 @@ export default function Report({
                 name: "",
                 service: "strom",
                 tone: "steady",
-                etaMinutes: 120,
+                etaMinutes: null,
               })
             }
           >
             <span className="ico" aria-hidden="true">
-              ➕
+              +
             </span>
             <span className="name">{t("cat_add_problem")}</span>
           </button>
@@ -541,7 +549,11 @@ export default function Report({
               </select>
             </Field>
             <Field
-              label={`${t("cat_duration")}: ${newProblem.etaMinutes}`}
+              label={`${t("cat_duration")}: ${
+                newProblem.etaMinutes
+                  ? `${newProblem.etaMinutes} ${t("c_minutes")}`
+                  : "120 " + t("c_minutes")
+              }`}
               htmlFor="np-eta"
             >
               <input
@@ -550,7 +562,7 @@ export default function Report({
                 min="30"
                 max="720"
                 step="30"
-                value={newProblem.etaMinutes}
+                value={newProblem.etaMinutes || 120}
                 onChange={(e) =>
                   setNewProblem({
                     ...newProblem,
@@ -560,7 +572,12 @@ export default function Report({
               />
             </Field>
             <div className="row">
-              <Button size="sm" icon="➕" onClick={saveProblem} disabled={busy}>
+              <Button
+                size="sm"
+                icon="plus"
+                onClick={saveProblem}
+                disabled={busy}
+              >
                 {t("cat_save")}
               </Button>
               <Button
@@ -576,7 +593,7 @@ export default function Report({
       </Card>
 
       {/* ---------------------------------------------------- where ------ */}
-      <Card icon="2️⃣" title={t("rp_s2_title")} subtitle={t("rp_s2_hint")}>
+      <Card title={t("rp_s2_title")} subtitle={t("rp_s2_hint")}>
         <div className="chips">
           {catalog.districts.map((district) => (
             <button
@@ -585,7 +602,7 @@ export default function Report({
               aria-pressed={districts.includes(district.id)}
               onClick={() => toggleDistrict(district.id)}
             >
-              {districts.includes(district.id) ? "✅ " : ""}
+              {districts.includes(district.id) ? "✓ " : ""}
               {district.name}
               {district.custom && (
                 <span
@@ -604,7 +621,7 @@ export default function Report({
                     }
                   }}
                 >
-                  ✕
+                  ×
                 </span>
               )}
             </button>
@@ -613,9 +630,28 @@ export default function Report({
             className="chip chip--add"
             onClick={() => setNewPlace({ name: "", households: 100 })}
           >
-            ➕ {t("cat_add_district")}
+            + {t("cat_add_district")}
           </button>
         </div>
+
+        {/* Duration field - always visible since it's now required */}
+        <Field
+          label={`⏳ ${t("rp_duration")}: ${
+            etaMinutes ? `${etaMinutes} ${t("c_minutes")}` : t("rp_need_preset")
+          }`}
+          htmlFor="eta"
+          style={{ marginTop: 14 }}
+        >
+          <input
+            id="eta"
+            type="range"
+            min="30"
+            max="720"
+            step="30"
+            value={etaMinutes || 120}
+            onChange={(event) => setEtaMinutes(Number(event.target.value))}
+          />
+        </Field>
 
         {newPlace && (
           <div className="addform">
@@ -645,7 +681,7 @@ export default function Report({
               />
             </Field>
             <div className="row">
-              <Button size="sm" icon="➕" onClick={savePlace} disabled={busy}>
+              <Button size="sm" icon="plus" onClick={savePlace} disabled={busy}>
                 {t("cat_save")}
               </Button>
               <Button
@@ -663,7 +699,7 @@ export default function Report({
           <Button
             size="sm"
             variant="ghost"
-            icon="📍"
+            icon="mapPin"
             onClick={useLocation}
             disabled={locating}
           >
@@ -671,7 +707,7 @@ export default function Report({
           </Button>
           {households > 0 && (
             <Badge>
-              👪 {households} {t("c_households")}
+              {households} {t("c_households")}
             </Badge>
           )}
         </div>
@@ -719,7 +755,6 @@ export default function Report({
 
       {/* --------------------------------------------------- details ----- */}
       <Card
-        icon="3️⃣"
         title={t("rp_s3_title")}
         subtitle={t("rp_s3_hint")}
         tail={
@@ -734,22 +769,7 @@ export default function Report({
       >
         {showDetails ? (
           <>
-            <Field
-              label={`⏳ ${t("rp_duration")}: ${etaMinutes} ${t("c_minutes")}`}
-              htmlFor="eta"
-            >
-              <input
-                id="eta"
-                type="range"
-                min="30"
-                max="720"
-                step="30"
-                value={etaMinutes}
-                onChange={(event) => setEtaMinutes(Number(event.target.value))}
-              />
-            </Field>
-
-            <Field label={`🏠 ${t("rp_street")}`} htmlFor="street">
+            <Field label={`${t("rp_street")}`} htmlFor="street">
               <input
                 id="street"
                 type="text"
@@ -760,7 +780,9 @@ export default function Report({
             </Field>
 
             <Field
-              label={`📏 ${t("rp_radius")}: ${(radiusMeters / 1000).toFixed(1)} km`}
+              label={`${t("rp_radius")}: ${(radiusMeters / 1000).toFixed(
+                1
+              )} km`}
               htmlFor="radius"
             >
               <input
@@ -770,12 +792,14 @@ export default function Report({
                 max="5000"
                 step="100"
                 value={radiusMeters}
-                onChange={(event) => setRadiusMeters(Number(event.target.value))}
+                onChange={(event) =>
+                  setRadiusMeters(Number(event.target.value))
+                }
               />
             </Field>
 
             <Field
-              label={`📝 ${t("rp_note")}`}
+              label={`${t("rp_note")}`}
               hint={t("rp_dictate_hint")}
               htmlFor="note"
             >
@@ -790,7 +814,7 @@ export default function Report({
                 <Button
                   size="sm"
                   variant={listening ? "recording" : "ghost"}
-                  icon={listening ? "⏹️" : "🎤"}
+                  icon={listening ? "stop" : "mic"}
                   onClick={toggleDictation}
                 >
                   {listening ? t("rp_dictate_stop") : t("rp_dictate")}
@@ -806,17 +830,19 @@ export default function Report({
           </>
         ) : (
           <p className="small muted" style={{ margin: 0 }}>
-            ⏳ {etaMinutes} {t("c_minutes")} · 🏠 {t("rp_street")} · 🎤{" "}
-            {t("rp_note")}
+            {etaMinutes
+              ? `${etaMinutes} ${t("c_minutes")}`
+              : t("rp_need_preset")}{" "}
+            · {t("rp_street")} · {t("rp_note")}
           </p>
         )}
       </Card>
 
       <Button
         block
-        icon="➡️"
+        icon="arrowRight"
         onClick={() => submit()}
-        disabled={busy || !presetId || districts.length === 0}
+        disabled={busy || !presetId || districts.length === 0 || !etaMinutes}
       >
         {busy ? t("rp_submitting") : t("rp_submit")}
       </Button>

@@ -23,7 +23,7 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../lib/api.js";
 import { duration, secondsSince } from "../lib/clock.js";
-import { Badge, Button, Card, CheckLine, Empty, Item } from "../ui/kit.jsx";
+import { Badge, Button, Card, CheckLine, Empty, Item, renderIcon } from "../ui/kit.jsx";
 import { LANGUAGES } from "../i18n/index.jsx";
 import {
   channelMessage,
@@ -94,12 +94,12 @@ export default function Approve({
       setSelectedId(null);
       await refresh(); // the approved draft leaves the list
       notify(
-        `🚀 ${t("ap_published_in", {
+        `${t("ap_published_in", {
           time: duration(response.publication.kpiSeconds),
         })}`
       );
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -129,11 +129,11 @@ export default function Approve({
       }
       setResult(publication);
       await refresh();
-      notify(`✅ ${t("ap_close_done")}`);
+      notify(`${t("ap_close_done")}`);
     } catch (error) {
       // Show what actually went wrong instead of a generic message.
       notify(
-        `⚠️ ${t("c_error")}: ${error.status || ""} ${
+        `${t("c_error")}: ${error.status || ""} ${
           error.message || ""
         }`.trim()
       );
@@ -150,9 +150,9 @@ export default function Approve({
       await refresh();
       setResult(null);
       setSelectedId(draft.id);
-      notify(`✏️ ${t("ap_update_made")}`);
+      notify(`${t("ap_update_made")}`);
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -164,9 +164,9 @@ export default function Approve({
       await api.editDraft(selected.id, draftText);
       await refresh();
       setEditing(false);
-      notify(`💾 ${t("ap_saved")}`);
+      notify(`${t("ap_saved")}`);
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -177,7 +177,7 @@ export default function Approve({
   return (
     <div className="stack">
       <div>
-        <h1>✅ {t("ap_title")}</h1>
+        <h1>{t("ap_title")}</h1>
         <p className="muted small">{t("ap_sub")}</p>
       </div>
 
@@ -187,11 +187,16 @@ export default function Approve({
           <Card className="result">
             <div className="result-head">
               <span className="result-ico" aria-hidden="true">
-                ✅
+                {renderIcon("check", 32)}
               </span>
               <div>
                 <h2>
                   {t("ap_done_title")} · {duration(result.kpiSeconds)}
+                  {result.auto && (
+                    <span className="badge badge--auto">
+                      {t("ap_auto")}
+                    </span>
+                  )}
                 </h2>
                 <p className="small muted">
                   {t("ap_done_text")} ·{" "}
@@ -209,8 +214,8 @@ export default function Approve({
                 return (
                   <Item
                     key={channelResult.channel}
-                    icon={state.icon}
-                    title={`${channelResult.icon} ${channelName(
+                    icon={renderIcon(state.icon, 23)}
+                    title={channelName(
                       t,
                       channelResult.channel
                     )}`}
@@ -229,7 +234,7 @@ export default function Approve({
       {/* ========== RUNNING OUTAGES: always reachable, comes from data ==== */}
       {/* Everything published that is not finished yet. This is the permanent
           home of the all-clear, independent of what happened in this session. */}
-      <Card icon="🔆" title={t("ap_running")} subtitle={t("ap_running_hint")}>
+      <Card icon="sunBright" title={t("ap_running")} subtitle={t("ap_running_hint")}>
         {runningIncidents.length === 0 && (
           <p className="small muted" style={{ margin: 0 }}>
             {t("ap_running_none")}
@@ -241,15 +246,14 @@ export default function Approve({
             <div key={runningIncident.id} className="running">
               <div className="between">
                 <div className="row">
-                  <span aria-hidden="true" style={{ fontSize: 22 }}>
-                    {serviceIcon(catalog, runningIncident.service)}
+                  <span className="ico" aria-hidden="true">
+                    {renderIcon(serviceIcon(catalog, runningIncident.service), 22)}
                   </span>
                   <div>
                     <div className="item-title">
                       {presetName(catalog, runningIncident.presetId, lang)}
                     </div>
                     <div className="item-meta">
-                      📍{" "}
                       {runningIncident.districts
                         .map(
                           (id) =>
@@ -273,7 +277,7 @@ export default function Approve({
               <div className="row" style={{ marginTop: 12 }}>
                 <Button
                   variant="ok"
-                  icon="✅"
+                  icon="check"
                   disabled={busy}
                   onClick={() => closeIncident(runningIncident.id)}
                 >
@@ -282,7 +286,7 @@ export default function Approve({
                 <Button
                   size="sm"
                   variant="ghost"
-                  icon="🔄"
+                  icon="refresh"
                   disabled={busy}
                   onClick={() => writeUpdate(runningIncident.id)}
                 >
@@ -312,8 +316,8 @@ export default function Approve({
                     onClick={() => setSelectedId(draft.id)}
                   >
                     {draftIncident
-                      ? serviceIcon(catalog, draftIncident.service)
-                      : "📄"}{" "}
+                      ? renderIcon(serviceIcon(catalog, draftIncident.service), 18)
+                      : renderIcon("document", 18)}{" "}
                     {draftIncident
                       ? presetName(catalog, draftIncident.presetId, lang)
                       : draft.incidentId}
@@ -324,12 +328,22 @@ export default function Approve({
           )}
 
           <Card>
+            {/* Critical incident warning */}
+            {incident.critical && (
+              <div className="warnbox" style={{ marginBottom: 14 }}>
+                <strong>{t("ap_critical_warning")}</strong>
+                <p className="small" style={{ margin: "4px 0 0" }}>
+                  {t("ap_critical_hint")}
+                </p>
+              </div>
+            )}
+
             {/* ---- what this is, in one line -------------------------- */}
             <div className="between" style={{ marginBottom: 14 }}>
               <div className="row">
-                <Badge tone="warn">⏳ {t("ap_waiting")}</Badge>
+                <Badge tone="warn">{t("ap_waiting")}</Badge>
                 <Badge>
-                  {{ first: "🆕", update: "🔄", allclear: "✅" }[selected.kind]}{" "}
+                  {{ first: "new", update: "refresh", allclear: "check" }[selected.kind]}{" "}
                   {t(`kind_${selected.kind}`)}
                 </Badge>
                 <Badge tone={severity(t, incident.severity).tone}>
@@ -379,7 +393,7 @@ export default function Approve({
                 <div className="row" style={{ marginTop: 10 }}>
                   <Button
                     size="sm"
-                    icon="💾"
+                    icon="save"
                     onClick={saveEdit}
                     disabled={busy}
                   >
@@ -403,7 +417,7 @@ export default function Approve({
             {/* ---- checks: one line, details on request ---------------- */}
             <div className="checkbar">
               <span className={selected.allOk ? "checkbar-ok" : "checkbar-bad"}>
-                {selected.allOk ? "✅" : "⚠️"}{" "}
+                {selected.allOk ? "✓ " : "⚠ "}
                 {t("ap_checks_passed", {
                   ok: passed,
                   total: selected.checks.length,
@@ -449,7 +463,7 @@ export default function Approve({
                   <Button
                     size="sm"
                     variant="ghost"
-                    icon="✏️"
+                    icon="edit"
                     className="editbtn"
                     onClick={() => {
                       setDraftText(selected.messages.de.text);
@@ -462,7 +476,7 @@ export default function Approve({
                 )}
                 {selected.edited && (
                   <p className="xs muted" style={{ marginTop: 10 }}>
-                    ✏️ {t("ap_edited_note")}
+                    {t("ap_edited_note")}
                   </p>
                 )}
               </div>
@@ -472,7 +486,7 @@ export default function Approve({
             <Button
               block
               variant="ok"
-              icon="🚀"
+              icon="rocket"
               className="approvebtn"
               onClick={approve}
               disabled={busy || !selected.allOk}
@@ -488,7 +502,7 @@ export default function Approve({
                   marginBottom: 0,
                 }}
               >
-                ⚠️ {t("ap_blocked")}
+                {t("ap_blocked")}
               </p>
             )}
           </Card>
@@ -496,20 +510,20 @@ export default function Approve({
       ) : (
         !result && (
           <Card>
-            <Empty icon="🎉">{t("ap_open_empty")}</Empty>
+            <Empty icon="celebration">{t("ap_open_empty")}</Empty>
           </Card>
         )
       )}
 
       {/* ================= small history, read-only ======================= */}
       {recent.length > 0 && (
-        <Card icon="🗒️" title={t("ap_recent")}>
+        <Card icon="notebook" title={t("ap_recent")}>
           <div className="list">
             {recent.map((publication) => (
               <Item
                 key={publication.id}
                 icon={
-                  { first: "🆕", update: "🔄", allclear: "✅" }[
+                  { first: "new", update: "refresh", allclear: "check" }[
                     publication.kind
                   ]
                 }

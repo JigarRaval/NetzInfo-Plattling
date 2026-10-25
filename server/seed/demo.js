@@ -13,14 +13,14 @@ import { runChecks } from "../core/quality.js";
 import { makeId, nowIso } from "../lib/time.js";
 
 /** A publication record built without calling any external channel. */
-function fakePublication(incident, kind, seconds) {
+async function fakePublication(incident, kind, seconds) {
   // The seeded publications carry the same measurement fields as real ones,
   // so the dashboard can label them exactly like live data.
-  const messages = composeAll(incident, kind);
+  const messages = await composeAll(incident, kind);
   const results = [
     {
       channel: "statuspage",
-      icon: "🌐",
+      icon: "globe",
       ok: true,
       ms: 4,
       messageKey: "ch_msg_updated",
@@ -28,7 +28,7 @@ function fakePublication(incident, kind, seconds) {
     },
     {
       channel: "rss",
-      icon: "📡",
+      icon: "radio",
       ok: true,
       ms: 3,
       messageKey: "ch_msg_regenerated",
@@ -36,7 +36,7 @@ function fakePublication(incident, kind, seconds) {
     },
     {
       channel: "widget",
-      icon: "🧩",
+      icon: "puzzle",
       ok: true,
       ms: 2,
       messageKey: "ch_msg_updated",
@@ -44,7 +44,7 @@ function fakePublication(incident, kind, seconds) {
     },
     {
       channel: "push",
-      icon: "🔔",
+      icon: "bell",
       ok: true,
       ms: 5,
       messageKey: "ch_msg_push_created",
@@ -52,19 +52,11 @@ function fakePublication(incident, kind, seconds) {
     },
     {
       channel: "heimatinfo",
-      icon: "🏘️",
+      icon: "home",
       ok: false,
       skipped: true,
       ms: 0,
       messageKey: "ch_msg_hi_not_configured",
-      params: {},
-    },
-    {
-      channel: "webhook",
-      icon: "🔗",
-      ok: true,
-      ms: 7,
-      messageKey: "ch_msg_webhook_local",
       params: {},
     },
   ];
@@ -90,9 +82,9 @@ function fakePublication(incident, kind, seconds) {
 }
 
 /** An already approved draft belonging to a seeded publication. */
-function approvedDraft(incident, kind) {
-  const messages = composeAll(incident, kind);
-  const { checks, allOk } = runChecks(messages.de, incident);
+async function approvedDraft(incident, kind) {
+  const messages = await composeAll(incident, kind);
+  const { checks, allOk } = await runChecks(messages.de, incident);
   return {
     id: makeId("DRF"),
     incidentId: incident.id,
@@ -108,13 +100,13 @@ function approvedDraft(incident, kind) {
   };
 }
 
-export function seedDemo() {
+export async function seedDemo() {
   for (const c of ["incidents", "drafts", "publications", "outbox"])
-    replace(c, []);
+    await replace(c, []);
   const minutesAgo = (m) => new Date(Date.now() - m * 60000).toISOString();
 
   // 1. Active water incident — published in 1:47, the pitch number.
-  const water = buildIncident({
+  const water = await buildIncident({
     presetId: "wasser_rohrbruch",
     districts: ["stadtmitte", "pankofen"],
     street: "Bahnhofstraße / Ecke Preysingplatz",
@@ -123,12 +115,12 @@ export function seedDemo() {
     capturedAt: minutesAgo(42),
     startedAt: minutesAgo(55),
   });
-  insert("incidents", { ...water, publishedAt: minutesAgo(40) });
-  insert("drafts", approvedDraft(water, "first"));
-  insert("publications", fakePublication(water, "first", 107));
+  await insert("incidents", { ...water, publishedAt: minutesAgo(40) });
+  await insert("drafts", await approvedDraft(water, "first"));
+  await insert("publications", await fakePublication(water, "first", 107));
 
   // 2. Resolved electricity incident — shows the all-clear in the history.
-  const power = buildIncident({
+  const power = await buildIncident({
     presetId: "strom_ausfall",
     districts: ["enzkofen"],
     etaMinutes: 90,
@@ -142,18 +134,18 @@ export function seedDemo() {
     resolvedAt: minutesAgo(180),
     publishedAt: minutesAgo(295),
   };
-  insert("incidents", resolved);
-  insert("drafts", approvedDraft(resolved, "allclear"));
-  insert("publications", fakePublication(resolved, "first", 94));
-  insert("publications", fakePublication(resolved, "allclear", 61));
+  await insert("incidents", resolved);
+  await insert("drafts", await approvedDraft(resolved, "allclear"));
+  await insert("publications", await fakePublication(resolved, "first", 94));
+  await insert("publications", await fakePublication(resolved, "allclear", 61));
 
   // 3. One press release in the outbox so the Connect screen is not empty.
-  insert("outbox", {
+  await insert("outbox", {
     id: makeId("PRESS"),
     channel: "press",
     at: minutesAgo(39),
     incidentId: water.id,
-    body: composePressRelease(water, "first"),
+    body: await composePressRelease(water, "first"),
   });
 
   return { incidents: 2, drafts: 2, publications: 3 };

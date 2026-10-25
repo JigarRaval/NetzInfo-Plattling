@@ -14,7 +14,7 @@
 export const SERVICES = {
   strom: {
     id: "strom",
-    icon: "⚡",
+    icon: "zap",
     name: {
       de: "Strom",
       en: "Electricity",
@@ -24,12 +24,12 @@ export const SERVICES = {
   },
   wasser: {
     id: "wasser",
-    icon: "💧",
+    icon: "droplet",
     name: { de: "Wasser", en: "Water", fr: "Eau", es: "Agua" },
   },
   abwasser: {
     id: "abwasser",
-    icon: "🚿",
+    icon: "waves",
     name: {
       de: "Abwasser",
       en: "Wastewater",
@@ -39,7 +39,7 @@ export const SERVICES = {
   },
   fernwaerme: {
     id: "fernwaerme",
-    icon: "🔥",
+    icon: "flame",
     name: {
       de: "Fernwärme",
       en: "District heating",
@@ -64,6 +64,7 @@ export const DISTRICTS = [
  * One-tap presets - the fastest way from "something broke" to a report.
  * planned    : the wording becomes "planned work" instead of "disruption"
  * boilNotice : adds the drinking-water warning to the advice section
+ * critical   : marks incidents that require special attention/dual approval
  * tone       : how the message should sound, so people stay calm
  *              reassuring - nothing to worry about (planned work)
  *              steady     - factual, the team is already working on it
@@ -75,7 +76,7 @@ export const PRESETS = [
     id: "strom_ausfall",
     tone: "steady",
     service: "strom",
-    icon: "⚡",
+    icon: "alert",
     etaMinutes: 120,
     name: {
       de: "Stromausfall",
@@ -95,7 +96,7 @@ export const PRESETS = [
     id: "strom_wartung",
     tone: "reassuring",
     service: "strom",
-    icon: "🔧",
+    icon: "toolbox",
     etaMinutes: 180,
     planned: true,
     name: {
@@ -116,7 +117,7 @@ export const PRESETS = [
     id: "wasser_rohrbruch",
     tone: "steady",
     service: "wasser",
-    icon: "💥",
+    icon: "stop",
     etaMinutes: 240,
     name: {
       de: "Rohrbruch",
@@ -136,9 +137,10 @@ export const PRESETS = [
     id: "wasser_truebung",
     tone: "careful",
     service: "wasser",
-    icon: "🧪",
+    icon: "megaphone",
     etaMinutes: 720,
     boilNotice: true,
+    critical: true,
     name: {
       de: "Trübung / Abkochgebot",
       en: "Turbidity / boil notice",
@@ -157,7 +159,7 @@ export const PRESETS = [
     id: "abwasser_rueckstau",
     tone: "light",
     service: "abwasser",
-    icon: "🌧️",
+    icon: "refreshCw",
     etaMinutes: 180,
     name: {
       de: "Rückstau / Überlastung",
@@ -177,7 +179,7 @@ export const PRESETS = [
     id: "waerme_ausfall",
     tone: "steady",
     service: "fernwaerme",
-    icon: "🔥",
+    icon: "sunBright",
     etaMinutes: 150,
     name: {
       de: "Wärmeausfall",
@@ -206,33 +208,36 @@ export const PRESETS = [
 import { all } from "../lib/store.js";
 
 /** Every category: the four built-in utilities plus the added ones. */
-export function allServices() {
-  const custom = all().customServices || [];
+export async function allServices() {
+  const db = await all();
+  const custom = db.customServices || [];
   const merged = { ...SERVICES };
   for (const service of custom) merged[service.id] = service;
   return merged;
 }
 
 /** One category by id, whether built in or added. */
-export function getService(id) {
-  return allServices()[id] || null;
+export async function getService(id) {
+  return (await allServices())[id] || null;
 }
 
 /** Every district: the built-in list first, then the added ones. */
-export function allDistricts() {
-  return [...DISTRICTS, ...(all().customDistricts || [])];
+export async function allDistricts() {
+  const db = await all();
+  return [...DISTRICTS, ...(db.customDistricts || [])];
 }
 
 /** Every problem type: the built-in presets first, then the added ones. */
-export function allPresets() {
-  return [...PRESETS, ...(all().customPresets || [])];
+export async function allPresets() {
+  const db = await all();
+  return [...PRESETS, ...(db.customPresets || [])];
 }
 
-export const getPreset = (id) => allPresets().find((p) => p.id === id);
-export const getDistricts = (ids = []) =>
-  ids.map((id) => allDistricts().find((d) => d.id === id)).filter(Boolean);
-export const countHouseholds = (ids = []) =>
-  getDistricts(ids).reduce((sum, d) => sum + d.households, 0);
+export const getPreset = async (id) => (await allPresets()).find((p) => p.id === id);
+export const getDistricts = async (ids = []) =>
+  (await allDistricts()).filter((d) => ids.includes(d.id));
+export const countHouseholds = async (ids = []) =>
+  (await getDistricts(ids)).reduce((sum, d) => sum + d.households, 0);
 
 /** Turn a name typed by a user into a stable id. */
 export function slugify(name) {

@@ -71,11 +71,11 @@ function readability(text) {
  * an optional LLM polish safe — any altered number fails here and the
  * deterministic template is used instead.
  */
-function facts(message, incident) {
+async function facts(message, incident) {
   const problems = [];
   const text = message.text;
 
-  for (const d of getDistricts(incident.districts)) {
+  for (const d of await getDistricts(incident.districts)) {
     if (!text.includes(d.name))
       problems.push({ key: "fact_district_missing", params: { name: d.name } });
   }
@@ -116,11 +116,11 @@ function facts(message, incident) {
  * Structure and readability are advice - a slightly long sentence must never
  * stand between a burst pipe and the people affected by it.
  */
-export function runChecks(message, incident) {
+export async function runChecks(message, incident) {
   const checks = [
     structure(message),
     readability(message.text),
-    facts(message, incident),
+    await facts(message, incident),
   ].map((check) => ({ ...check, blocking: check.id === "facts" }));
 
   return {

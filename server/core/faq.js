@@ -107,13 +107,13 @@ export function answerQuestion(question, incidents, lang = 'de') {
   const inc = [...active].sort((a, b) =>
     (RANK[b.severity] || 0) - (RANK[a.severity] || 0) || b.startedAt.localeCompare(a.startedAt))[0];
 
-  const preset = getPreset(inc.presetId);
+  const preset = await getPreset(inc.presetId);
   const service = SERVICES[inc.service];
   const values = {
     title: `${service.name[lang] || service.name.de} – ${preset ? (preset.name[lang] || preset.name.de) : ''}`.trim(),
     cause: preset ? (preset.cause[lang] || preset.cause.de) : '',
-    districts: getDistricts(inc.districts).map((d) => d.name).join(', '),
-    households: String(countHouseholds(inc.districts)),
+    districts: (await getDistricts(inc.districts)).map((d) => d.name).join(', '),
+    households: String(await countHouseholds(inc.districts)),
     since: localTime(inc.startedAt, lang),
     eta: localTime(inc.etaAt, lang),
     advice: (ADVICE_SHORT[lang] || ADVICE_SHORT.de)[inc.service] || (ADVICE_SHORT[lang] || ADVICE_SHORT.de).default,

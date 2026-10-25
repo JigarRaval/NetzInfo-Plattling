@@ -9,7 +9,7 @@
 
 import React, { useState } from "react";
 import { api } from "../lib/api.js";
-import { Button, Card, Empty, Item } from "../ui/kit.jsx";
+import { Button, Card, Empty, Item, renderIcon } from "../ui/kit.jsx";
 import { LANGUAGES } from "../i18n/index.jsx";
 import {
   channelIcon,
@@ -62,10 +62,10 @@ export default function Send({
       setResult(response.publication);
       setSelectedId(null);
       await refresh();
-      notify(`📤 ${t("sd_done_title")}`);
+      notify(`${t("sd_done_title")}`);
     } catch (error) {
       notify(
-        `⚠️ ${t("c_error")}: ${error.status || ""} ${
+        `${t("c_error")}: ${error.status || ""} ${
           error.message || ""
         }`.trim()
       );
@@ -82,10 +82,10 @@ export default function Send({
       setConfirmDelete(false);
       setSelectedId(null);
       await refresh();
-      notify(`🗑️ ${t("sd_deleted")}`);
+      notify(`${t("sd_deleted")}`);
     } catch (error) {
       notify(
-        `⚠️ ${t("c_error")}: ${error.status || ""} ${
+        `${t("c_error")}: ${error.status || ""} ${
           error.message || ""
         }`.trim()
       );
@@ -105,9 +105,9 @@ export default function Send({
       await api.regenerate(selected.id, options);
       await refresh();
       setEditing(false);
-      notify(`♻️ ${t("sd_regenerated")}`);
+      notify(`${t("sd_regenerated")}`);
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -119,9 +119,9 @@ export default function Send({
       await api.editDraft(selected.id, draftText);
       await refresh();
       setEditing(false);
-      notify(`💾 ${t("sd_saved")}`);
+      notify(`${t("sd_saved")}`);
     } catch {
-      notify(`⚠️ ${t("c_error")}`);
+      notify(`${t("c_error")}`);
     } finally {
       setBusy(false);
     }
@@ -132,7 +132,7 @@ export default function Send({
   return (
     <div className="stack">
       <div>
-        <h1>📤 {t("sd_title")}</h1>
+        <h1>{t("sd_title")}</h1>
         <p className="muted small">{t("sd_sub")}</p>
       </div>
 
@@ -141,7 +141,7 @@ export default function Send({
         <Card className="result">
           <div className="result-head">
             <span className="result-ico" aria-hidden="true">
-              ✅
+              {renderIcon("check", 32)}
             </span>
             <div>
               <h2>{t("sd_done_title")}</h2>
@@ -159,15 +159,15 @@ export default function Send({
             {result.results.map((channel) => (
               <Item
                 key={channel.channel}
-                icon={channelIcon(channel)}
-                title={`${channel.icon} ${channelName(t, channel.channel)}`}
+                icon={renderIcon(channelIcon(channel), 23)}
+                title={channelName(t, channel.channel)}
                 meta={channelMessage(t, channel)}
               />
             ))}
           </div>
 
           <div style={{ marginTop: 14 }}>
-            <Button variant="ghost" icon="🏠" onClick={() => go("home")}>
+            <Button variant="ghost" icon="home" onClick={() => go("home")}>
               {t("nav_home")}
             </Button>
           </div>
@@ -191,8 +191,8 @@ export default function Send({
                     onClick={() => setSelectedId(draft.id)}
                   >
                     {relatedIncident
-                      ? serviceIcon(catalog, relatedIncident.service)
-                      : "📄"}{" "}
+                      ? renderIcon(serviceIcon(catalog, relatedIncident.service), 18)
+                      : renderIcon("document", 18)}{" "}
                     {relatedIncident
                       ? presetName(catalog, relatedIncident.presetId, lang)
                       : draft.incidentId}
@@ -208,7 +208,7 @@ export default function Send({
                 tick for the all-clear. Colour, icon and wording agree. */}
             <div className="between" style={{ marginBottom: 10 }}>
               <span className={`statechip statechip--${selected.kind}`}>
-                {{ first: "🔴", update: "🔄", allclear: "✅" }[selected.kind]}{" "}
+                {{ first: "circleRed", update: "refresh", allclear: "check" }[selected.kind]}{" "}
                 {t(`kind_${selected.kind}`)}
               </span>
               <strong className="small">
@@ -243,7 +243,7 @@ export default function Send({
                 <div className="row" style={{ marginTop: 10 }}>
                   <Button
                     size="sm"
-                    icon="💾"
+                    icon="save"
                     onClick={saveEdit}
                     disabled={busy}
                   >
@@ -287,14 +287,14 @@ export default function Send({
                 </pre>
                 {selected.edited && (
                   <p className="xs muted" style={{ marginTop: 10 }}>
-                    ✏️ {t("sd_edited")}
+                    {t("sd_edited")}
                   </p>
                 )}
                 <div className="row" style={{ marginTop: 12 }}>
                   <Button
                     size="sm"
                     variant="ghost"
-                    icon="✏️"
+                    icon="edit"
                     onClick={() => {
                       setDraftText(selected.messages.de.text);
                       setPreviewLang("de");
@@ -309,7 +309,7 @@ export default function Send({
                   <Button
                     size="sm"
                     variant="ghost"
-                    icon="♻️"
+                    icon="refreshCw"
                     disabled={busy}
                     onClick={() => regenerate({ shuffle: true })}
                   >
@@ -344,7 +344,7 @@ export default function Send({
             {/* a warning appears only when something is actually wrong */}
             {problems.length > 0 && (
               <div className="warnbox">
-                <strong>⚠️ {t("sd_problem")}</strong>
+                <strong>{t("sd_problem")}</strong>
                 <ul className="bullets small" style={{ marginTop: 6 }}>
                   {problems.map((p, i) => (
                     <li key={i}>{p}</li>
@@ -356,7 +356,7 @@ export default function Send({
             <Button
               block
               variant="ok"
-              icon="📤"
+              icon="send"
               className="sendbtn"
               onClick={send}
               disabled={busy || problems.length > 0}
@@ -373,7 +373,7 @@ export default function Send({
                   <Button
                     size="sm"
                     variant="danger"
-                    icon="🗑️"
+                    icon="trash"
                     onClick={remove}
                     disabled={busy}
                   >
@@ -401,7 +401,7 @@ export default function Send({
       ) : (
         !result && (
           <Card>
-            <Empty icon="🎉">{t("sd_empty")}</Empty>
+            <Empty icon="celebration">{t("sd_empty")}</Empty>
           </Card>
         )
       )}
