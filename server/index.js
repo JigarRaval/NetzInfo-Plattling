@@ -27,6 +27,14 @@ app.use(express.json({ limit: "1mb" }));
  * production set ALLOWED_ORIGINS to the real address - a wide-open API plus
  * a bearer token is an unnecessary invitation.
  */
+
+const cors = require("cors");
+
+app.use(
+  cors({
+    origin: "https://stadtwerke-plattling.netlify.app/", // Use your exact Netlify URL
+  })
+);
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || "*")
   .split(",")
   .map((value) => value.trim())
