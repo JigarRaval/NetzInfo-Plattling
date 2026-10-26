@@ -16,7 +16,7 @@ const WORKERS_CACHE_TTL = 5 * 60 * 1000;
 
 const MAX_AGE = () => config.auth.sessionHours * 60 * 60 * 1000;
 
-/** Load workers from MongoDB */
+/** Load workers from MongoDB or use config as fallback */
 async function loadWorkersFromMongo() {
   try {
     const { User } = await import("./mongodb.js");
@@ -25,11 +25,11 @@ async function loadWorkersFromMongo() {
     return users.map((u) => ({
       id: u.workerId,
       name: u.name,
-      pin: u.pin, // This is the hashed PIN
+      pin: u.pin,
       role: u.role || "worker",
     }));
   } catch (error) {
-    console.error("Failed to load workers from MongoDB:", error);
+    console.error("Failed to load workers from MongoDB:", error.message);
     return null;
   }
 }
@@ -64,6 +64,12 @@ export async function workerList() {
   return workers.map((w) => ({ id: w.id, name: w.name }));
 }
 
+/** Clear the workers cache so the next login fetches fresh PINs from MongoDB */
+export function invalidateWorkersCache() {
+  cachedWorkers = null;
+  workersLastRefresh = 0;
+}
+
 function lockedFor(workerId) {
   const record = attempts.get(workerId);
   if (!record?.lockedUntil) return 0;
@@ -73,6 +79,47 @@ function lockedFor(workerId) {
     return 0;
   }
   return Math.ceil(left / 1000);
+}
+
+/**
+ * Securely verify a PIN.
+ * If the stored PIN is plain text (legacy), it will allow the login
+ * and automatically hash it in the database for future use.
+ */
+async function verifyPin(enteredPin, storedPin, workerId) {
+  if (!storedPin) return false;
+
+  // Check if the stored PIN is a bcrypt hash (starts with $2a$, $2b$, or $2y$)
+  const isHashed = /^\$2[aby]\$/.test(storedPin);
+
+  if (isHashed) {
+    return await bcrypt.compare(enteredPin, storedPin);
+  }
+
+  // Fallback for plain-text PINs (config workers or un-migrated DB)
+  if (enteredPin === storedPin) {
+    // If this came from the DB, hash it now
+    if (config.mongoUri) {
+      try {
+        const { User } = await import("./mongodb.js");
+        const dbUser = await User.findOne({ workerId });
+        if (dbUser) {
+          dbUser.pin = enteredPin; // Pre-save hook will hash this
+          await dbUser.save();
+          invalidateWorkersCache(); // Reload cache
+          console.log(`[auth] Auto-migrated plain-text PIN for ${workerId}`);
+        }
+      } catch (err) {
+        console.error(
+          `[auth] Auto-migration failed for ${workerId}:`,
+          err.message
+        );
+      }
+    }
+    return true;
+  }
+
+  return false;
 }
 
 export async function login(workerId, pin, ip = null) {
@@ -112,8 +159,7 @@ export async function login(workerId, pin, ip = null) {
   let isMatch = false;
 
   if (account) {
-    // Securely compare the plain-text PIN with the stored hash
-    isMatch = await bcrypt.compare(pin || "", account.pin);
+    isMatch = await verifyPin(pin || "", account.pin, account.id);
   } else {
     // Dummy comparison to prevent timing attacks when user doesn't exist
     await bcrypt.compare(pin || "", "$2b$12$dummyhashdummyhashdummyha");
@@ -171,11 +217,6 @@ export function workerOf(token) {
 
 export function logout(token) {
   sessions.delete(token);
-}
-
-export function invalidateWorkersCache() {
-  cachedWorkers = null;
-  workersLastRefresh = 0;
 }
 
 const PUBLIC_GET = new Set([
