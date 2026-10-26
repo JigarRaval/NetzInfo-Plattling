@@ -1048,12 +1048,67 @@ input[type='range'] { width: 100%; accent-color: var(--brand-2); height: 34px; }
 .info-value { font-size: var(--text-md); color: var(--text); font-weight: 500; }
 .info-value.empty { color: var(--muted); font-style: italic; font-weight: 400; }
 
-.form-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 16px; }
-@media (min-width: 600px) { .form-grid { grid-template-columns: 1fr 1fr; } }
+/* --- FIXED EDIT PROFILE FORM --- */
+.form-grid { 
+  display: grid; 
+  grid-template-columns: 1fr; 
+  gap: 20px; 
+  margin-top: 16px; 
+  width: 100%; 
+}
 
+@media (min-width: 640px) { 
+  .form-grid { 
+    grid-template-columns: 1fr 1fr; 
+  } 
+}
+
+/* Prevents inputs from stretching the grid container */
+.form-grid > * {
+  min-width: 0;
+}
+
+.form-grid .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-grid .form-group label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-grid .form-group input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Aligns Save/Cancel buttons properly */
 .form-actions { 
-  display: flex; gap: 12px; margin-top: 24px; padding-top: 24px; 
-  border-top: 1px solid var(--border); grid-column: 1 / -1; 
+  display: flex; 
+  justify-content: flex-end; /* Aligns to the right */
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px; 
+  margin-top: 24px; 
+  padding-top: 24px; 
+  border-top: 1px solid var(--border); 
+  grid-column: 1 / -1; /* Spans full width across grid */
+  width: 100%;
+}
+
+/* Mobile layout for buttons */
+@media (max-width: 640px) {
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+  .form-actions .btn {
+    width: 100%;
+  }
 }
 
 .flex-row { display: flex; flex-direction: row; align-items: center; }

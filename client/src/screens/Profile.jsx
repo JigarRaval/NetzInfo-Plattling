@@ -275,14 +275,7 @@ export default function Profile({ t, worker, signOut, go }) {
               />
             </div>
 
-            <div className="form-actions" style={{ gridColumn: "1 / -1" }}>
-              <Button
-                type="submit"
-                disabled={saving}
-                icon={<IconSave size={16} />}
-              >
-                {saving ? "Saving..." : t("c_save") || "Save Changes"}
-              </Button>
+            <div className="form-actions">
               <Button
                 type="button"
                 variant="outline"
@@ -291,6 +284,13 @@ export default function Profile({ t, worker, signOut, go }) {
                 icon={<IconX size={16} />}
               >
                 {t("c_cancel") || "Cancel"}
+              </Button>
+              <Button
+                type="submit"
+                disabled={saving}
+                icon={<IconSave size={16} />}
+              >
+                {saving ? "Saving..." : t("c_save") || "Save Changes"}
               </Button>
             </div>
           </form>
