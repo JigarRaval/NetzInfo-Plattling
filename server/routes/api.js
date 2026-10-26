@@ -642,6 +642,7 @@ api.put("/user/profile", requireSession, async (req, res) => {
 });
 
 // Update user PIN (FIXED TO HANDLE PLAIN TEXT & HASHED)
+// Update user PIN (FIXED FOR HASHED & PLAINTEXT & 500 ERROR)
 api.put("/user/pin", requireSession, async (req, res) => {
   try {
     const { currentPin, newPin } = req.body;
@@ -654,7 +655,7 @@ api.put("/user/pin", requireSession, async (req, res) => {
     if (!user) return res.status(404).json({ error: "user_not_found" });
 
     let isMatch = false;
-    // Check if the stored PIN is a bcrypt hash
+    // Check if the stored PIN is a bcrypt hash (starts with $2a$ or $2b$)
     const isHashed = /^\$2[aby]\$/.test(user.pin);
 
     if (isHashed) {
@@ -665,11 +666,16 @@ api.put("/user/pin", requireSession, async (req, res) => {
     }
 
     if (!isMatch) {
+      // Return 401 specifically for wrong current PIN
       return res.status(401).json({ error: "wrong_current_pin" });
     }
 
     // Update PIN (the pre-save hook in mongodb.js will hash it)
     user.pin = newPin;
+
+    // Explicitly mark the PIN as modified to ensure the hook runs
+    user.markModified("pin");
+
     await user.save();
 
     // Clear cache so the next login uses the new PIN immediately
@@ -677,8 +683,11 @@ api.put("/user/pin", requireSession, async (req, res) => {
 
     res.json({ success: true });
   } catch (error) {
-    console.error("Error updating PIN:", error);
-    res.status(500).json({ error: "failed_to_update_pin" });
+    // THIS WILL LOG THE EXACT 500 ERROR IN RENDER
+    console.error("CRITICAL ERROR UPDATING PIN:", error);
+    res
+      .status(500)
+      .json({ error: "failed_to_update_pin", details: error.message });
   }
 });
 

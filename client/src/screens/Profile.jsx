@@ -88,39 +88,55 @@ export default function Profile({ t, worker, signOut, go }) {
     }
   }
 
-  async function handlePinSave(e) {
-    e.preventDefault();
-    setPinError("");
-    setPinSuccess("");
+    async function handlePinSave(e) {
+      e.preventDefault();
+      setPinError("");
+      setPinSuccess("");
 
-    if (pinData.new.length < 6) {
-      setPinError(t("profile_pin_length"));
-      return;
-    }
-    if (pinData.new !== pinData.confirm) {
-      setPinError(t("profile_pin_mismatch"));
-      return;
-    }
-
-    setSavingPin(true);
-    try {
-      await api.updatePin(pinData.current, pinData.new);
-      setPinSuccess(t("profile_pin_success"));
-      setPinData({ current: "", new: "", confirm: "" });
-      setTimeout(() => {
-        setShowPinForm(false);
-        setPinSuccess("");
-      }, 3000);
-    } catch (err) {
-      if (err.status === 401) {
-        setPinError(t("profile_pin_error"));
-      } else {
-        setPinError(t("c_error"));
+      if (pinData.new.length < 6) {
+        setPinError(
+          t("profile_pin_length") || "The new PIN must be at least 6 digits."
+        );
+        return;
       }
-    } finally {
-      setSavingPin(false);
+      if (pinData.new !== pinData.confirm) {
+        setPinError(t("profile_pin_mismatch") || "The new PINs do not match.");
+        return;
+      }
+
+      setSavingPin(true);
+      try {
+        await api.updatePin(pinData.current, pinData.new);
+        setPinSuccess(t("profile_pin_success") || "PIN successfully changed.");
+        setPinData({ current: "", new: "", confirm: "" });
+        setTimeout(() => {
+          setShowPinForm(false);
+          setPinSuccess("");
+        }, 3000);
+      } catch (err) {
+        // LOG THE FULL ERROR FOR DEBUGGING
+        console.error("PIN Update Failed:", err);
+
+        // Show specific error based on backend response
+        if (err.message === "wrong_current_pin" || err.status === 401) {
+          setPinError(
+            t("profile_pin_error") || "The current PIN is incorrect."
+          );
+        } else if (err.message === "invalid_pin_length") {
+          setPinError(
+            t("profile_pin_length") || "The new PIN must be at least 6 digits."
+          );
+        } else if (err.status === 500) {
+          setPinError(
+            "Server error: Please try again later or contact support."
+          );
+        } else {
+          setPinError(`Error: ${err.message || "Unknown error"}`);
+        }
+      } finally {
+        setSavingPin(false);
+      }
     }
-  }
 
   function handleCancel() {
     setEditForm(profile);
