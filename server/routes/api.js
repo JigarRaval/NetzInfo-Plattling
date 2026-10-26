@@ -641,6 +641,7 @@ api.put("/user/profile", requireSession, async (req, res) => {
   }
 });
 
+// Update user PIN (FIXED TO HANDLE PLAIN TEXT & HASHED)
 api.put("/user/pin", requireSession, async (req, res) => {
   try {
     const { currentPin, newPin } = req.body;
@@ -652,11 +653,26 @@ api.put("/user/pin", requireSession, async (req, res) => {
     const user = await User.findOne({ workerId: req.worker.id });
     if (!user) return res.status(404).json({ error: "user_not_found" });
 
-    const isMatch = await bcrypt.compare(currentPin, user.pin);
-    if (!isMatch) return res.status(401).json({ error: "wrong_current_pin" });
+    let isMatch = false;
+    // Check if the stored PIN is a bcrypt hash
+    const isHashed = /^\$2[aby]\$/.test(user.pin);
 
+    if (isHashed) {
+      isMatch = await bcrypt.compare(currentPin, user.pin);
+    } else {
+      // Fallback for plain-text PINs
+      isMatch = currentPin === user.pin;
+    }
+
+    if (!isMatch) {
+      return res.status(401).json({ error: "wrong_current_pin" });
+    }
+
+    // Update PIN (the pre-save hook in mongodb.js will hash it)
     user.pin = newPin;
     await user.save();
+
+    // Clear cache so the next login uses the new PIN immediately
     invalidateWorkersCache();
 
     res.json({ success: true });
