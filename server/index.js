@@ -20,28 +20,25 @@ const app = express();
 app.use(express.json({ limit: "1mb" }));
 
 /**
- * CORS and a few baseline headers.
+ * CORS and baseline security headers.
  *
- * In development the app is opened from a phone on the same Wi-Fi and from
- * the Vite dev server on another port, so any origin is allowed. In
- * production set ALLOWED_ORIGINS to the real address - a wide-open API plus
- * a bearer token is an unnecessary invitation.
+ * ALLOWED_ORIGINS is a comma-separated list. Use "*" only in dev.
+ * In production, set it to your real frontend origins, e.g.:
+ *   ALLOWED_ORIGINS=https://stadtwerke-plattling.netlify.app
+ *
+ * Note: origins must NOT have a trailing slash — browsers never send one,
+ * and "https://foo.app/" will never match a real "https://foo.app" origin.
  */
-
-const cors = require("cors");
-
-app.use(
-  cors({
-    origin: "https://stadtwerke-plattling.netlify.app/", // Use your exact Netlify URL
-  })
-);
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "*")
+const allowedOrigins = (
+  process.env.ALLOWED_ORIGINS || "https://stadtwerke-plattling.netlify.app"
+)
   .split(",")
-  .map((value) => value.trim())
+  .map((value) => value.trim().replace(/\/$/, "")) // strip trailing slashes
   .filter(Boolean);
 
 app.use((req, res, next) => {
   const origin = req.get("Origin");
+
   if (allowedOrigins.includes("*")) {
     res.setHeader("Access-Control-Allow-Origin", "*");
   } else if (origin && allowedOrigins.includes(origin)) {
@@ -56,20 +53,27 @@ app.use((req, res, next) => {
 
   // Content-Security-Policy - allow scripts from self and inline scripts (for React)
   // In production, replace 'unsafe-inline' with nonce-based CSP
-  const csp = process.env.NODE_ENV === "production"
-    ? "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self' https://heimatinfo-api-platform-dev.azurewebsites.net https://*.stadtwerke-plattling.de; form-action 'self';"
-    : "default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; img-src 'self' data: *; font-src 'self' data: *; connect-src 'self' *; frame-ancestors *; form-action 'self';";
+  const csp =
+    process.env.NODE_ENV === "production"
+      ? "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self' https://heimatinfo-api-platform-dev.azurewebsites.net https://*.stadtwerke-plattling.de; form-action 'self';"
+      : "default-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; img-src 'self' data: *; font-src 'self' data: *; connect-src 'self' *; frame-ancestors *; form-action 'self';";
   res.setHeader("Content-Security-Policy", csp);
 
-  // Permissions-Policy - control browser features
-  res.setHeader("Permissions-Policy", "geolocation=(), microphone=(self), camera=()");
+  // Permissions-Policy
+  res.setHeader(
+    "Permissions-Policy",
+    "geolocation=(), microphone=(self), camera=()"
+  );
 
   // X-Frame-Options is deliberately NOT set: the city widget is meant to be
   // embedded in an iframe on the municipal website. Controlled via CSP frame-ancestors.
 
   // Strict-Transport-Security (only for HTTPS in production)
   if (req.secure) {
-    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    res.setHeader(
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubDomains"
+    );
   }
 
   res.setHeader(
@@ -99,7 +103,6 @@ startScheduler();
 
 app.listen(config.port, "0.0.0.0", () => {
   console.log(`[stadtwerke] ready on http://0.0.0.0:${config.port}`);
-  // Make the two settings that silently break a demo visible at startup.
   const hi = config.heimatInfo;
   console.log(
     `[stadtwerke] settings: ${
@@ -123,8 +126,6 @@ app.listen(config.port, "0.0.0.0", () => {
     }`
   );
 
-  // Without a WORKERS setting the pins are random, so they have to be shown
-  // once - otherwise nobody could sign in on a fresh checkout.
   if (config.auth.enabled && !process.env.WORKERS) {
     console.log(
       "[stadtwerke] WARNING: no WORKERS configured, using temporary accounts:"
