@@ -20,7 +20,6 @@ const MAX_AGE = () => config.auth.sessionHours * 60 * 60 * 1000;
 async function loadWorkersFromMongo() {
   try {
     const { User } = await import("./mongodb.js");
-    // Removed .lean() so the AES plugin can decrypt fields properly
     const users = await User.find({ isActive: true });
     return users.map((u) => ({
       id: u.workerId,
@@ -82,33 +81,30 @@ function lockedFor(workerId) {
 }
 
 /**
- * Securely verify a PIN.
- * If the stored PIN is plain text (legacy), it will allow the login
- * and automatically hash it in the database for future use.
+ * Securely verify a PIN and auto-migrate plain text PINs.
  */
 async function verifyPin(enteredPin, storedPin, workerId) {
   if (!storedPin) return false;
 
-  // Check if the stored PIN is a bcrypt hash (starts with $2a$, $2b$, or $2y$)
   const isHashed = /^\$2[aby]\$/.test(storedPin);
 
   if (isHashed) {
     return await bcrypt.compare(enteredPin, storedPin);
   }
 
-  // Fallback for plain-text PINs (config workers or un-migrated DB)
+  // Fallback for plain-text PINs
   if (enteredPin === storedPin) {
-    // If this came from the DB, hash it now
     if (config.mongoUri) {
       try {
         const { User } = await import("./mongodb.js");
-        const dbUser = await User.findOne({ workerId });
-        if (dbUser) {
-          dbUser.pin = enteredPin; // Pre-save hook will hash this
-          await dbUser.save();
-          invalidateWorkersCache(); // Reload cache
-          console.log(`[auth] Auto-migrated plain-text PIN for ${workerId}`);
-        }
+
+        // Hash manually to avoid mongoose-aes-encryption save() crash
+        const salt = await bcrypt.genSalt(12);
+        const hashed = await bcrypt.hash(enteredPin, salt);
+
+        await User.updateOne({ workerId }, { $set: { pin: hashed } });
+        invalidateWorkersCache();
+        console.log(`[auth] Auto-migrated plain-text PIN for ${workerId}`);
       } catch (err) {
         console.error(
           `[auth] Auto-migration failed for ${workerId}:`,
@@ -161,12 +157,10 @@ export async function login(workerId, pin, ip = null) {
   if (account) {
     isMatch = await verifyPin(pin || "", account.pin, account.id);
   } else {
-    // Dummy comparison to prevent timing attacks when user doesn't exist
     await bcrypt.compare(pin || "", "$2b$12$dummyhashdummyhashdummyha");
   }
 
   if (!account || !isMatch) {
-    // Record failure
     const record = attempts.get(workerId) || { failures: 0 };
     record.failures += 1;
     if (record.failures >= config.auth.maxAttempts) {

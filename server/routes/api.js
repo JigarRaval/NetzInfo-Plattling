@@ -642,7 +642,7 @@ api.put("/user/profile", requireSession, async (req, res) => {
 });
 
 // Update user PIN (FIXED TO HANDLE PLAIN TEXT & HASHED)
-// Update user PIN (FIXED FOR HASHED & PLAINTEXT & 500 ERROR)
+// Update user PIN (BYPASSES ENCRYPTION PLUGIN TO PREVENT 500 CRASH)
 api.put("/user/pin", requireSession, async (req, res) => {
   try {
     const { currentPin, newPin } = req.body;
@@ -655,39 +655,34 @@ api.put("/user/pin", requireSession, async (req, res) => {
     if (!user) return res.status(404).json({ error: "user_not_found" });
 
     let isMatch = false;
-    // Check if the stored PIN is a bcrypt hash (starts with $2a$ or $2b$)
     const isHashed = /^\$2[aby]\$/.test(user.pin);
 
     if (isHashed) {
       isMatch = await bcrypt.compare(currentPin, user.pin);
     } else {
-      // Fallback for plain-text PINs
       isMatch = currentPin === user.pin;
     }
 
     if (!isMatch) {
-      // Return 401 specifically for wrong current PIN
       return res.status(401).json({ error: "wrong_current_pin" });
     }
 
-    // Update PIN (the pre-save hook in mongodb.js will hash it)
-    user.pin = newPin;
+    // Manually hash the new PIN to bypass the mongoose-aes-encryption plugin
+    const salt = await bcrypt.genSalt(12);
+    const hashedNewPin = await bcrypt.hash(newPin, salt);
 
-    // Explicitly mark the PIN as modified to ensure the hook runs
-    user.markModified("pin");
+    // Use updateOne to save the hashed PIN without triggering the encryption crash
+    await User.updateOne(
+      { workerId: req.worker.id },
+      { $set: { pin: hashedNewPin } }
+    );
 
-    await user.save();
-
-    // Clear cache so the next login uses the new PIN immediately
     invalidateWorkersCache();
 
     res.json({ success: true });
   } catch (error) {
-    // THIS WILL LOG THE EXACT 500 ERROR IN RENDER
     console.error("CRITICAL ERROR UPDATING PIN:", error);
-    res
-      .status(500)
-      .json({ error: "failed_to_update_pin", details: error.message });
+    res.status(500).json({ error: "failed_to_update_pin", details: error.message });
   }
 });
 
