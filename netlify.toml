@@ -20,20 +20,20 @@
 # Proxy API requests to the backend. Replace {{BACKEND_URL}} with your production backend URL.
 [[redirects]]
   from = "/api/*"
-  to = "{{BACKEND_URL}}/api/:splat"
+  to = "https://stadtwerke-plattling.onrender.com/api/:splat"
   status = 200
   force = true
 
 # Proxy the feed and widget endpoints to the backend.
 [[redirects]]
   from = "/feed.xml"
-  to = "{{BACKEND_URL}}/feed.xml"
+  to = "https://stadtwerke-plattling.onrender.com/feed.xml"
   status = 200
   force = true
 
 [[redirects]]
   from = "/widget"
-  to = "{{BACKEND_URL}}/widget"
+  to = "https://stadtwerke-plattling.onrender.com/widget"
   status = 200
   force = true
 
