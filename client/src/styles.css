@@ -525,8 +525,15 @@ a { color: var(--brand-2); text-underline-offset: 2px; }
 .field:last-child { margin-bottom: 0; }
 .field-label { display: block; font-weight: 650; font-size: var(--text-sm); margin-bottom: 6px; }
 .field-hint { display: block; font-size: var(--text-xs); color: var(--muted); margin-top: 6px; }
-
-input[type='text'], input[type='password'], input[type='number'], textarea, select.control, .control {
+input[type='text'], 
+input[type='password'], 
+input[type='number'], 
+input[type='email'], 
+input[type='tel'], 
+input[type='datetime-local'], 
+textarea, 
+select.control, 
+.control {
   font-family: var(--font-body); font-size: var(--text-md); width: 100%;
   padding: 12px 14px; min-height: 50px; color: var(--text);
   background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
@@ -1181,4 +1188,24 @@ div[id*="netlify"] {
   position: absolute !important;
   left: -9999px !important;
   z-index: -9999 !important;
+}
+
+/* Bulletproof inputs for form groups */
+.form-group input {
+  font-family: var(--font-body); 
+  font-size: var(--text-md); 
+  width: 100%;
+  padding: 12px 14px; 
+  min-height: 50px; 
+  color: var(--text);
+  background: var(--surface-2); 
+  border: 1px solid var(--border-strong); 
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: var(--ring);
 }
