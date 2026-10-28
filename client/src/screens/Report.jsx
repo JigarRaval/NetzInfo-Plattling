@@ -1,12 +1,5 @@
 /**
  * Report.jsx - create an outage notice in seconds.
- *
- * The fastest path is two taps: pick what happened, pick where, press the
- * button. Everything else sits in a collapsed third step, because a crew in
- * the field has no time for a form.
- *
- * The microphone and the location are offered but never required: if the
- * browser cannot do it, or permission is refused, the report still works.
  */
 
 import React, { useEffect, useRef, useState } from "react";
@@ -29,25 +22,23 @@ export default function Report({
   const [etaMinutes, setEtaMinutes] = useState(null);
   const [street, setStreet] = useState("");
   const [note, setNote] = useState("");
-  const [coords, setCoords] = useState(null); // { lat, lng, accuracy }
-  const [address, setAddress] = useState(""); // street found for that position
+  const [coords, setCoords] = useState(null);
+  const [address, setAddress] = useState("");
   const [locating, setLocating] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const [radiusMeters, setRadiusMeters] = useState(500); // affected area radius in meters
+  const [radiusMeters, setRadiusMeters] = useState(500);
 
   const [busy, setBusy] = useState(false);
   const [duplicate, setDuplicate] = useState(null);
 
   // Small inline forms for extending the master data while reporting.
-  const [newProblem, setNewProblem] = useState(null); // null = form closed
+  const [newProblem, setNewProblem] = useState(null);
   const [newPlace, setNewPlace] = useState(null);
   const [listening, setListening] = useState(false);
-  const [heard, setHeard] = useState(""); // live text while speaking
+  const [heard, setHeard] = useState("");
   const recognitionRef = useRef(null);
   const watchRef = useRef(null);
 
-  // Stop the microphone and the GPS watch when the screen is left, otherwise
-  // they keep running in the background and drain the battery.
   useEffect(
     () => () => {
       try {
@@ -71,13 +62,6 @@ export default function Report({
     );
   }
 
-  /**
-   * Add a problem type that is missing from the list.
-   *
-   * If the chosen category does not exist yet either - a gas smell, a street
-   * light - it is created first, so the whole thing stays one step for the
-   * person standing in front of the problem.
-   */
   async function saveProblem() {
     if (!newProblem.name.trim()) {
       notify(`${t("cat_need_name")}`);
@@ -100,17 +84,27 @@ export default function Report({
         service = created.id;
       }
 
-      // Pass the correctly resolved service ID to the preset
-      const preset = await api.addPreset({ ...newProblem, service });
+      // Ensure the new problem has a valid ETA (default 120 if not set)
+      const problemData = {
+        ...newProblem,
+        service,
+        etaMinutes: newProblem.etaMinutes || 120,
+      };
+
+      const preset = await api.addPreset(problemData);
       await reloadCatalog();
-      setNewProblem(null);
+
+      // Auto-select the new problem and its ETA
       setPresetId(preset.id);
+      setEtaMinutes(preset.etaMinutes || 120);
+      setNewProblem(null);
       notify(`${t("cat_added")}`);
     } catch (error) {
       console.error("Failed to add problem:", error);
-      // Show specific error if it already exists
       if (error.status === 409 || error.message === "already_exists") {
         notify("This problem type already exists.");
+      } else if (error.status === 401) {
+        notify("Session expired. Please log in again.");
       } else {
         notify(`${t("c_error")}: ${error.message || "Unknown"}`);
       }
@@ -119,7 +113,6 @@ export default function Report({
     }
   }
 
-  /** Add a place that is missing from the list. */
   async function savePlace() {
     if (!newPlace.name.trim()) {
       notify(`${t("cat_need_name")}`);
@@ -129,13 +122,17 @@ export default function Report({
     try {
       const district = await api.addDistrict(newPlace);
       await reloadCatalog();
-      setNewPlace(null);
+
+      // Auto-select the new place
       setDistricts((current) => [...current, district.id]);
+      setNewPlace(null);
       notify(`${t("cat_added")}`);
     } catch (error) {
       console.error("Failed to add place:", error);
       if (error.status === 409 || error.message === "already_exists") {
         notify("This location already exists.");
+      } else if (error.status === 401) {
+        notify("Session expired. Please log in again.");
       } else {
         notify(`${t("c_error")}: ${error.message || "Unknown"}`);
       }
@@ -165,27 +162,14 @@ export default function Report({
 
   function choosePreset(preset) {
     setPresetId(preset.id);
-    // Auto-set etaMinutes from preset if available, otherwise default to 120 minutes
     if (preset.etaMinutes) {
       setEtaMinutes(preset.etaMinutes);
     } else {
-      setEtaMinutes(120);
+      setEtaMinutes(120); // Default fallback
     }
-    // Show details so user can adjust if needed
     setShowDetails(true);
   }
 
-  /* --- dictation --------------------------------------------------------
-   * Three things made this look broken before:
-   *   1. On a phone the app is opened over plain http on a local IP address.
-   *      Browsers block the microphone outside a secure context, and the old
-   *      code failed silently. Now it says so.
-   *   2. Errors were swallowed, so a denied permission looked like "nothing
-   *      happens". Every error case now has its own message.
-   *   3. continuous mode without interim results gives no feedback at all
-   *      while speaking. One utterance at a time with live text is far more
-   *      reliable on mobile browsers, and the user can see that it works.
-   */
   function toggleDictation() {
     const Recognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -201,7 +185,7 @@ export default function Report({
     if (listening) {
       recognitionRef.current?.stop();
       return;
-    } // onend tidies up
+    }
 
     const recognition = new Recognition();
     recognition.lang =
@@ -253,17 +237,6 @@ export default function Report({
     }
   }
 
-  /* --- exact location ---------------------------------------------------
-   * The first GPS reading is almost always poor - several hundred metres,
-   * sometimes kilometres. A single getCurrentPosition call therefore either
-   * returned a useless position or timed out, which looked like "location
-   * does not work".
-   *
-   * This watches the position for up to twelve seconds, keeps the best fix
-   * it has seen, and stops early as soon as it is accurate to 20 metres.
-   * Every failure reason is reported separately, because "you denied it",
-   * "no signal" and "it took too long" need different reactions.
-   */
   function useLocation() {
     if (!window.isSecureContext) {
       notify(`${t("rp_insecure")}`);
@@ -289,7 +262,7 @@ export default function Report({
       if (ok && best) notify(`${t("rp_location_ok")}`);
     };
 
-    timer = setTimeout(() => finish(true), 12000); // keep the best fix so far
+    timer = setTimeout(() => finish(true), 12000);
 
     watchRef.current = navigator.geolocation.watchPosition(
       (position) => {
@@ -303,7 +276,7 @@ export default function Report({
           setCoords(fix);
           describe(fix);
         }
-        if (fix.accuracy <= 20) finish(true); // good enough, stop the GPS
+        if (fix.accuracy <= 20) finish(true);
       },
       (error) => {
         finish(false);
@@ -318,29 +291,17 @@ export default function Report({
     );
   }
 
-  /**
-   * The marker was moved by hand. That position is now the truth: the
-   * accuracy of the old GPS reading no longer applies, and the address is
-   * looked up again for the new spot.
-   */
   function moveMarker(lat, lng) {
     const fix = { lat, lng, accuracy: null, manual: true };
     setCoords(fix);
     describe(fix, true);
   }
 
-  /**
-   * Ask the server which street this position belongs to and offer it as the
-   * address. It is only a suggestion: the field stays editable, and if the
-   * lookup is unavailable nothing happens at all.
-   */
   async function describe(fix, force = false) {
     try {
       const { place } = await api.reverseGeocode(fix.lat, fix.lng);
       if (place?.label) {
         setAddress(place.label);
-        // Only fill the street field while the user has not typed anything -
-        // unless the marker was moved deliberately, which is an instruction.
         setStreet((current) =>
           force || !current.trim() ? place.label : current
         );
@@ -350,7 +311,6 @@ export default function Report({
     }
   }
 
-  /* --- submit ----------------------------------------------------------- */
   async function submit() {
     if (!presetId) {
       notify(`${t("rp_need_preset")}`);
@@ -377,13 +337,10 @@ export default function Report({
         radiusMeters,
         source: note ? "speech" : "preset",
       });
-      // The text is written immediately, so the next screen is ready to send.
       await api.createDraft(incident.id, "first");
       await refresh();
       go("send");
     } catch (error) {
-      // 409 means this outage is already running - there is no way around it,
-      // the only sensible action is an update on the existing incident.
       if (error.status === 409 && error.data?.incident)
         setDuplicate(error.data.incident);
       else notify(`${t("c_error")}`);
@@ -392,7 +349,6 @@ export default function Report({
     }
   }
 
-  /** The user chose to add an update to the existing outage. */
   async function updateInstead() {
     setBusy(true);
     try {
@@ -414,7 +370,6 @@ export default function Report({
         <p className="muted small">{t("rp_sub")}</p>
       </div>
 
-      {/* --------------------------------------------- already reported -- */}
       {duplicate && (
         <Card title={t("rp_dup_title")}>
           <p className="small">{t("rp_dup_text")}</p>
@@ -433,7 +388,6 @@ export default function Report({
         </Card>
       )}
 
-      {/* ---------------------------------------------------- what ------- */}
       <Card title={t("rp_s1_title")} subtitle={t("rp_s1_hint")}>
         <div className="choices">
           {catalog.presets.map((preset) => (
@@ -474,7 +428,6 @@ export default function Report({
             </button>
           ))}
 
-          {/* anything missing can be added right here, without leaving the form */}
           <button
             className="choice choice--add"
             onClick={() =>
@@ -482,7 +435,7 @@ export default function Report({
                 name: "",
                 service: "strom",
                 tone: "steady",
-                etaMinutes: null,
+                etaMinutes: 120,
               })
             }
           >
@@ -520,7 +473,6 @@ export default function Report({
                     {serviceName(catalog, id, lang)}
                   </option>
                 ))}
-                {/* the problem does not have to belong to one of the four utilities */}
                 <option value="__new">{t("cat_add_service")}</option>
               </select>
             </Field>
@@ -604,7 +556,6 @@ export default function Report({
         )}
       </Card>
 
-      {/* ---------------------------------------------------- where ------ */}
       <Card title={t("rp_s2_title")} subtitle={t("rp_s2_hint")}>
         <div className="chips">
           {catalog.districts.map((district) => (
@@ -646,7 +597,6 @@ export default function Report({
           </button>
         </div>
 
-        {/* Duration field - always visible since it's now required */}
         <Field
           label={`⏳ ${t("rp_duration")}: ${
             etaMinutes ? `${etaMinutes} ${t("c_minutes")}` : t("rp_need_preset")
@@ -724,8 +674,6 @@ export default function Report({
           )}
         </div>
 
-        {/* The captured position: the address we found, a small map, and how
-            precise the reading currently is. */}
         {coords && (
           <div className="locbox">
             <div className="between">
@@ -742,8 +690,6 @@ export default function Report({
               </Button>
             </div>
 
-            {/* The GPS fix is a starting point: the marker can be dragged
-                or the map tapped, and the address follows the marker. */}
             <LocationPicker
               lat={coords.lat}
               lng={coords.lng}
@@ -765,7 +711,6 @@ export default function Report({
         )}
       </Card>
 
-      {/* --------------------------------------------------- details ----- */}
       <Card
         title={t("rp_s3_title")}
         subtitle={t("rp_s3_hint")}
@@ -831,7 +776,6 @@ export default function Report({
                 >
                   {listening ? t("rp_dictate_stop") : t("rp_dictate")}
                 </Button>
-                {/* live feedback, so the user can see that it is working */}
                 {listening && (
                   <span className="small muted">
                     {heard || t("rp_listening")}
