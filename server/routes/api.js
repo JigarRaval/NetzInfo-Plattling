@@ -142,22 +142,31 @@ api.get("/catalog", requireSession, async (req, res) => {
 });
 
 api.post("/catalog/districts", requireSession, async (req, res) => {
-  const name = String(req.body?.name || "").trim();
-  if (!name) return res.status(400).json({ error: "name_required" });
+  try {
+    if (!req.worker || !req.worker.id) {
+      return res.status(401).json({ error: "login_required" });
+    }
 
-  const district = {
-    id: `c_${slugify(name)}`,
-    name,
-    households: Math.max(0, Number(req.body?.households) || 0),
-    custom: true,
-  };
-  if (allDistricts().some((d) => d.id === district.id))
-    return res.status(409).json({ error: "already_exists" });
+    const name = String(req.body?.name || "").trim();
+    if (!name) return res.status(400).json({ error: "name_required" });
 
-  await insert("customDistricts", district);
-  res.status(201).json(district);
+    const district = {
+      id: `c_${slugify(name)}`,
+      name,
+      households: Math.max(0, Number(req.body?.households) || 0),
+      custom: true,
+    };
+
+    if (allDistricts().some((d) => d.id === district.id))
+      return res.status(409).json({ error: "already_exists" });
+
+    await insert("customDistricts", district);
+    res.status(201).json(district);
+  } catch (error) {
+    console.error("Error creating district:", error);
+    res.status(500).json({ error: "server_error", details: error.message });
+  }
 });
-
 api.delete("/catalog/districts/:id", async (req, res) => {
   const rows = (await all()).customDistricts || [];
   const next = rows.filter((d) => d.id !== req.params.id);
@@ -198,36 +207,45 @@ api.delete("/catalog/services/:id", async (req, res) => {
 });
 
 api.post("/catalog/presets", requireSession, async (req, res) => {
-  const name = String(req.body?.name || "").trim();
-  if (!name) return res.status(400).json({ error: "name_required" });
+  try {
+    // Defensive check: ensure worker session exists
+    if (!req.worker || !req.worker.id) {
+      return res.status(401).json({ error: "login_required" });
+    }
 
-  // Sanity check: if the service is missing or invalid, fall back to 'strom'
-  const service = getService(req.body?.service) ? req.body.service : "strom";
+    const name = String(req.body?.name || "").trim();
+    if (!name) return res.status(400).json({ error: "name_required" });
 
-  const tone = ["reassuring", "steady", "careful", "light"].includes(
-    req.body?.tone
-  )
-    ? req.body.tone
-    : "steady";
-  const cause = String(req.body?.cause || name).trim();
+    const service = getService(req.body?.service) ? req.body.service : "strom";
+    const tone = ["reassuring", "steady", "careful", "light"].includes(
+      req.body?.tone
+    )
+      ? req.body.tone
+      : "steady";
+    const cause = String(req.body?.cause || name).trim();
 
-  const preset = {
-    id: `c_${slugify(name)}`,
-    service,
-    tone,
-    custom: true,
-    icon: req.body?.icon || "document",
-    etaMinutes: Math.max(15, Number(req.body?.etaMinutes) || 120),
-    planned: Boolean(req.body?.planned),
-    boilNotice: Boolean(req.body?.boilNotice),
-    name: { de: name, en: name, fr: name, es: name },
-    cause: { de: cause, en: cause, fr: cause, es: cause },
-  };
-  if (allPresets().some((p) => p.id === preset.id))
-    return res.status(409).json({ error: "already_exists" });
+    const preset = {
+      id: `c_${slugify(name)}`,
+      service,
+      tone,
+      custom: true,
+      icon: req.body?.icon || "document",
+      etaMinutes: Math.max(15, Number(req.body?.etaMinutes) || 120),
+      planned: Boolean(req.body?.planned),
+      boilNotice: Boolean(req.body?.boilNotice),
+      name: { de: name, en: name, fr: name, es: name },
+      cause: { de: cause, en: cause, fr: cause, es: cause },
+    };
 
-  await insert("customPresets", preset);
-  res.status(201).json(preset);
+    if (allPresets().some((p) => p.id === preset.id))
+      return res.status(409).json({ error: "already_exists" });
+
+    await insert("customPresets", preset);
+    res.status(201).json(preset);
+  } catch (error) {
+    console.error("Error creating preset:", error);
+    res.status(500).json({ error: "server_error", details: error.message });
+  }
 });
 
 api.delete("/catalog/presets/:id", async (req, res) => {

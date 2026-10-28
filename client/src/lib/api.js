@@ -33,7 +33,9 @@ export function setToken(token) {
 async function request(path, { method = "GET", body } = {}) {
   const headers = {};
   if (body) headers["Content-Type"] = "application/json";
-  const token = getToken();
+
+  // Force read from localStorage to ensure freshest token
+  const token = localStorage.getItem(TOKEN_KEY);
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(BASE + path, {
@@ -42,11 +44,15 @@ async function request(path, { method = "GET", body } = {}) {
     body: body ? JSON.stringify(body) : undefined,
   });
 
+  // Handle 502 (Render crashed or restarting)
+  if (res.status === 502) {
+    throw new Error(
+      "Server is currently restarting. Please wait a moment and try again."
+    );
+  }
+
   const raw = await res.text();
 
-  // An error page from Express is HTML, not JSON. Parsing it blindly throws
-  // "Unexpected token" and hides the real status code, so parse defensively
-  // and keep the raw text for the message instead.
   let data = null;
   if (raw) {
     try {
@@ -60,8 +66,13 @@ async function request(path, { method = "GET", body } = {}) {
     const error = new Error(data?.error || `HTTP ${res.status}`);
     error.status = res.status;
     error.data = data;
-    // An expired or missing session must send the user back to the PIN screen.
-    if (res.status === 401 && data?.error === "login_required") setToken("");
+
+    // If session expired, force logout
+    if (res.status === 401) {
+      setToken("");
+      window.location.reload(); // Forces a clean logout to login screen
+    }
+
     throw error;
   }
   return data;
