@@ -161,6 +161,8 @@ const customDistrictSchema = new mongoose.Schema(
   {
     id: { type: String, required: true, unique: true },
     name: String,
+    households: { type: Number, default: 0 },
+    custom: { type: Boolean, default: true },
     center: {
       lat: Number,
       lng: Number,
@@ -179,7 +181,18 @@ const customPresetSchema = new mongoose.Schema(
       fr: String,
       es: String,
     },
+    cause: {
+      de: String,
+      en: String,
+      fr: String,
+      es: String,
+    },
     icon: String,
+    tone: { type: String, default: "steady" },
+    etaMinutes: { type: Number, default: 120 },
+    planned: { type: Boolean, default: false },
+    boilNotice: { type: Boolean, default: false },
+    custom: { type: Boolean, default: true },
     critical: { type: Boolean, default: false },
   },
   { timestamps: true }
@@ -195,6 +208,7 @@ const customServiceSchema = new mongoose.Schema(
       es: String,
     },
     icon: String,
+    custom: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
