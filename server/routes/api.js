@@ -157,7 +157,8 @@ api.post("/catalog/districts", requireSession, async (req, res) => {
       custom: true,
     };
 
-    if (allDistricts().some((d) => d.id === district.id))
+    const allDists = await allDistricts();
+    if (allDists.some((d) => d.id === district.id))
       return res.status(409).json({ error: "already_exists" });
 
     await insert("customDistricts", district);
@@ -192,7 +193,7 @@ api.post("/catalog/services", requireSession, async (req, res) => {
       custom: true,
       name: { de: name, en: name, fr: name, es: name },
     };
-    if (getService(service.id))
+    if (await getService(service.id))
       return res.status(409).json({ error: "already_exists" });
 
     await insert("customServices", service);
@@ -209,7 +210,8 @@ api.delete("/catalog/services/:id", requireSession, async (req, res) => {
   if (next.length === rows.length)
     return res.status(404).json({ error: "not_found" });
 
-  if (allPresets().some((p) => p.service === req.params.id)) {
+  const allPres = await allPresets();
+  if (allPres.some((p) => p.service === req.params.id)) {
     return res.status(409).json({ error: "still_in_use" });
   }
   replace("customServices", next);
@@ -226,7 +228,7 @@ api.post("/catalog/presets", requireSession, async (req, res) => {
     const name = String(req.body?.name || "").trim();
     if (!name) return res.status(400).json({ error: "name_required" });
 
-    const service = getService(req.body?.service) ? req.body.service : "strom";
+    const service = (await getService(req.body?.service)) ? req.body.service : "strom";
     const tone = ["reassuring", "steady", "careful", "light"].includes(
       req.body?.tone
     )
@@ -247,7 +249,8 @@ api.post("/catalog/presets", requireSession, async (req, res) => {
       cause: { de: cause, en: cause, fr: cause, es: cause },
     };
 
-    if (allPresets().some((p) => p.id === preset.id))
+    const allPres = await allPresets();
+    if (allPres.some((p) => p.id === preset.id))
       return res.status(409).json({ error: "already_exists" });
 
     await insert("customPresets", preset);
