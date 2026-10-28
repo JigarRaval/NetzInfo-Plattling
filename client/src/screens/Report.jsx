@@ -99,14 +99,21 @@ export default function Report({
         });
         service = created.id;
       }
+
+      // Pass the correctly resolved service ID to the preset
       const preset = await api.addPreset({ ...newProblem, service });
       await reloadCatalog();
       setNewProblem(null);
       setPresetId(preset.id);
-      // Don't auto-set etaMinutes - user must explicitly set it
       notify(`${t("cat_added")}`);
-    } catch {
-      notify(`${t("c_error")}`);
+    } catch (error) {
+      console.error("Failed to add problem:", error);
+      // Show specific error if it already exists
+      if (error.status === 409 || error.message === "already_exists") {
+        notify("This problem type already exists.");
+      } else {
+        notify(`${t("c_error")}: ${error.message || "Unknown"}`);
+      }
     } finally {
       setBusy(false);
     }
@@ -125,8 +132,13 @@ export default function Report({
       setNewPlace(null);
       setDistricts((current) => [...current, district.id]);
       notify(`${t("cat_added")}`);
-    } catch {
-      notify(`${t("c_error")}`);
+    } catch (error) {
+      console.error("Failed to add place:", error);
+      if (error.status === 409 || error.message === "already_exists") {
+        notify("This location already exists.");
+      } else {
+        notify(`${t("c_error")}: ${error.message || "Unknown"}`);
+      }
     } finally {
       setBusy(false);
     }

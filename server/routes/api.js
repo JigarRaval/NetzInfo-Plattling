@@ -201,7 +201,9 @@ api.post("/catalog/presets", requireSession, async (req, res) => {
   const name = String(req.body?.name || "").trim();
   if (!name) return res.status(400).json({ error: "name_required" });
 
+  // Sanity check: if the service is missing or invalid, fall back to 'strom'
   const service = getService(req.body?.service) ? req.body.service : "strom";
+
   const tone = ["reassuring", "steady", "careful", "light"].includes(
     req.body?.tone
   )
