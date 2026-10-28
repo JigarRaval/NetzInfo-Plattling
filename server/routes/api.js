@@ -167,7 +167,7 @@ api.post("/catalog/districts", requireSession, async (req, res) => {
     res.status(500).json({ error: "server_error", details: error.message });
   }
 });
-api.delete("/catalog/districts/:id", async (req, res) => {
+api.delete("/catalog/districts/:id", requireSession, async (req, res) => {
   const rows = (await all()).customDistricts || [];
   const next = rows.filter((d) => d.id !== req.params.id);
   if (next.length === rows.length)
@@ -177,23 +177,33 @@ api.delete("/catalog/districts/:id", async (req, res) => {
 });
 
 api.post("/catalog/services", requireSession, async (req, res) => {
-  const name = String(req.body?.name || "").trim();
-  if (!name) return res.status(400).json({ error: "name_required" });
+  try {
+    // Defensive check: ensure worker session exists
+    if (!req.worker || !req.worker.id) {
+      return res.status(401).json({ error: "login_required" });
+    }
 
-  const service = {
-    id: `c_${slugify(name)}`,
-    icon: String(req.body?.icon || "⚠️").slice(0, 4),
-    custom: true,
-    name: { de: name, en: name, fr: name, es: name },
-  };
-  if (getService(service.id))
-    return res.status(409).json({ error: "already_exists" });
+    const name = String(req.body?.name || "").trim();
+    if (!name) return res.status(400).json({ error: "name_required" });
 
-  await insert("customServices", service);
-  res.status(201).json(service);
+    const service = {
+      id: `c_${slugify(name)}`,
+      icon: String(req.body?.icon || "⚠️").slice(0, 4),
+      custom: true,
+      name: { de: name, en: name, fr: name, es: name },
+    };
+    if (getService(service.id))
+      return res.status(409).json({ error: "already_exists" });
+
+    await insert("customServices", service);
+    res.status(201).json(service);
+  } catch (error) {
+    console.error("Error creating service:", error);
+    res.status(500).json({ error: "server_error", details: error.message });
+  }
 });
 
-api.delete("/catalog/services/:id", async (req, res) => {
+api.delete("/catalog/services/:id", requireSession, async (req, res) => {
   const rows = (await all()).customServices || [];
   const next = rows.filter((x) => x.id !== req.params.id);
   if (next.length === rows.length)
@@ -248,7 +258,7 @@ api.post("/catalog/presets", requireSession, async (req, res) => {
   }
 });
 
-api.delete("/catalog/presets/:id", async (req, res) => {
+api.delete("/catalog/presets/:id", requireSession, async (req, res) => {
   const rows = (await all()).customPresets || [];
   const next = rows.filter((p) => p.id !== req.params.id);
   if (next.length === rows.length)
@@ -286,7 +296,7 @@ api.post("/incidents", requireSession, async (req, res) => {
   res.status(201).json(created);
 });
 
-api.delete("/incidents/:id", async (req, res) => {
+api.delete("/incidents/:id", requireSession, async (req, res) => {
   const incident = await findById("incidents", req.params.id);
   if (!incident) return res.status(404).json({ error: "not_found" });
 
@@ -306,7 +316,7 @@ api.delete("/incidents/:id", async (req, res) => {
   res.json({ ok: true });
 });
 
-api.patch("/incidents/:id", async (req, res) => {
+api.patch("/incidents/:id", requireSession, async (req, res) => {
   const incident = await findById("incidents", req.params.id);
   if (!incident) return res.status(404).json({ error: "not_found" });
   res.json(
@@ -378,7 +388,7 @@ api.post("/drafts", requireSession, async (req, res) => {
   res.status(201).json(await insert("drafts", await makeDraft(incident, kind)));
 });
 
-api.put("/drafts/:id", async (req, res) => {
+api.put("/drafts/:id", requireSession, async (req, res) => {
   const draft = await findById("drafts", req.params.id);
   if (!draft) return res.status(404).json({ error: "not_found" });
   const incident = await findById("incidents", draft.incidentId);
@@ -397,7 +407,7 @@ api.put("/drafts/:id", async (req, res) => {
   );
 });
 
-api.delete("/drafts/:id", async (req, res) => {
+api.delete("/drafts/:id", requireSession, async (req, res) => {
   const draft = await findById("drafts", req.params.id);
   if (!draft) return res.status(404).json({ error: "not_found" });
   if (draft.status === "published")
